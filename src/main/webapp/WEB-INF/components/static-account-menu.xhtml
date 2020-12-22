@@ -1,0 +1,57 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:pa="http://primefaces.org/atlantis" xmlns:pe="http://primefaces.org/ui/extensions">
+
+    
+    <li class="profile-item">
+        <a href="#">                            
+            <div class="profile-image">
+                <!--
+                <p:graphicImage name="images/profile-image.png" library="atlantis-layout" backgroundColor="#ff1744" />
+                -->
+                <pe:letterAvatar value="Ange Koffi" rounded="true" size="2.5rem"/>
+            </div>
+            <div class="profile-info ">
+                <span class="topbar-item-name profile-name">Koffi Ange</span>
+                <span class="topbar-item-name profile-role">Developpeur</span>
+            </div>
+        </a>
+
+        <ul class="animated">
+            <h:form id="account-menu-form">
+                <div class="profile-menu-image text-centered">
+                    <pe:letterAvatar value="Ange Koffi" rounded="true" size="7rem"/>
+                    <!--
+                    <p:graphicImage name="images/profile-image.png" library="atlantis-layout" />
+                    -->
+                </div>
+                <p:spacer height="10" width="0"/>
+                <div class="text-centered" style="margin: 0px 4px">
+                    <b style="font-size: 1.3em; margin-bottom: 10px;">Ange Koffi</b>
+                    <br/>
+                    <b>koffiange62@gmail.com</b>
+                    <br/>
+                    <span>Developpeur</span>
+                    <br/>
+                    <span style="font-size: 10px">Direction Générale du Budget et des Finances</span>
+                </div>
+                <p:spacer height="10" width="0"/>
+                <div class="text-centered" style="margin: 0px 4px">
+                    <p:button value="Gérer votre compte SIGOBE" styleClass="moncompte-btn" target="_blank" href="#{micBacking.getAccountUri()}"/>
+                </div>
+                <!--
+                <pa:menu class="animated" id="account-menu" model="#{menuBacking.accountMenuModel}"/>
+                -->
+                <p:spacer height="10" width="0"/>
+                <pa:menu id="account-menu" widgetVar="user-menu" style="list-style: none !important; padding-left: 0px;" model="#{menuBacking.accountMenuModel}"/>
+            </h:form>
+        </ul>
+    </li>
+        
+</ui:composition>
+
+

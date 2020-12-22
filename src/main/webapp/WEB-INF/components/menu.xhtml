@@ -1,0 +1,115 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pa="http://primefaces.org/atlantis">
+    
+    <div class="layout-sidebar #{guestPreferences.darkMenu ? 'layout-sidebar-dark': ''}">
+        <h:form id="menu-form">
+            <pa:tabMenu>
+                <pa:tab icon="fa fa-cube" title="Menu">
+                    <pa:menu widgetVar="mg">
+                        <p:menuitem id="accueil" value="Accueil" icon="fa fa-fw fa-home" outcome="/protected/user/pages/index"/>
+                        <p:menuitem id="retour" class="menu-link portal-back-link" icon="fa fa-fw fa-windows" value="Retour au Portail" outcome="/protected/user/pages/index" />
+                    </pa:menu>
+                </pa:tab>
+
+                <!--
+                <pa:tab icon="fa fa-cog" title="Parametres G.">
+                    <pa:menu widgetVar="pg">
+                        <p:menuitem id="sub_1_item1" value="Exercices" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/exercice"/>
+                        <p:menuitem id="sub_1_item2" value="Clés/Valeurs" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/parametre"/>
+                    </pa:menu>
+                </pa:tab>
+
+                <pa:tab icon="fa fa-sticky-note" title="Actes Budgétaires">
+                    <pa:menu widgetVar="ab">
+                        <p:menuitem id="sub_2_item1" value="Types d'Acte" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/type-acte"/>
+                        <p:menuitem id="sub_2_item2" value="Categorie d'Actes" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/categorie-acte"/>
+                        <p:menuitem id="sub_2_item3" value="Types d'Acte" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/categorie-budget"/>
+                        <p:menuitem id="sub_2_item4" value="Type opération" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/categorie-acte"/>
+                    </pa:menu>
+                </pa:tab>
+
+
+                <pa:tab icon="fa fa-sliders" title="Projects">
+                     <div class="projects-tab">
+                        <ul>
+                          <li class="clearfix">
+                              <i class="fa fa-github"></i>
+                              <span class="project-title">GitHub Tasks</span>
+                              <span>3 open, 4 closed</span>
+                              <div class="project-progressbar">
+                                  <div class="project-progressbar-value" style="width: 50%"></div>
+                              </div>
+                          </li>
+                          <li class="clearfix">
+                              <i class="fa fa-youtube"></i>
+                              <span class="project-title">YouTube Videos</span>
+                              <span>12 new, 2 subscribers</span>
+                              <div class="project-progressbar">
+                                  <div class="project-progressbar-value" style="width: 20%"></div>
+                              </div>
+                          </li>
+                          <li class="clearfix">
+                              <i class="fa fa-twitter"></i>
+                              <span class="project-title">Twitter Posts</span>
+                              <span>24 new messages</span>
+                              <div class="project-progressbar">
+                                  <div class="project-progressbar-value" style="width: 65%"></div>
+                              </div>
+                          </li>
+                          <li class="clearfix">
+                              <i class="fa fa-facebook"></i>
+                              <span class="project-title">Facebook Messages</span>
+                              <span>8 total, 4 unread</span>
+                              <div class="project-progressbar">
+                                  <div class="project-progressbar-value" style="width: 80%"></div>
+                              </div>
+                          </li>
+                          <li class="clearfix">
+                              <i class="fa fa-linkedin"></i>
+                              <span class="project-title">Linkedin Contacts</span>
+                              <span>90 total</span>
+                              <div class="project-progressbar">
+                                  <div class="project-progressbar-value" style="width: 90%"></div>
+                              </div>
+                          </li>
+                        </ul>
+                     </div>
+                </pa:tab>
+
+                <pa:tab icon="fa fa-users" title="Team">
+                    <div class="team-tab">
+                        <ul>
+                            <li class="clearfix">
+                               <p:graphicImage name="images/avatar1.png" library="atlantis-layout" width="45"/>
+                               <span class="name">Joshua Williams</span>
+                               <span class="location">New York, USA</span>
+                            </li>
+                            <li class="clearfix">
+                               <p:graphicImage name="images/avatar2.png" library="atlantis-layout" width="45"/>
+                               <span class="name">Emily Clark</span>
+                               <span class="location">Paris, France</span>
+                            </li>
+                            <li class="clearfix">
+                               <p:graphicImage name="images/avatar3.png" library="atlantis-layout" width="45"/>
+                               <span class="name">Tim Johnson</span>
+                               <span class="location">London, UK</span>
+                            </li>
+                            <li class="clearfix">
+                               <p:graphicImage name="images/avatar4.png" library="atlantis-layout" width="45"/>
+                               <span class="name">David Stark</span>
+                               <span class="location">San Francisco, USA</span>
+                            </li>
+                        </ul>
+                    </div>
+                </pa:tab>
+                -->
+            </pa:tabMenu>
+        </h:form>
+    </div>
+    
+</ui:composition>

@@ -1,0 +1,73 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pa="http://primefaces.org/atlantis">
+
+    <div class="topbar">
+        <div class="logo">
+            <p:graphicImage name="images/logo.png" library="atlantis-layout" />
+        </div>
+        <!--
+        <p:graphicImage name="images/appname.svg" library="atlantis-layout" styleClass="app-name"/>
+        -->
+
+        <p:outputLabel styleClass="app-name-style">
+            <p:link value="SIGOBE" style="color: #ffffff !important;" href="#{micBacking.portailUri}" />
+            <p:spacer width="2" />
+            
+            <i class="fa fa-caret-right" style="font-size: 20px; margin-top: -1px"></i>
+            <p:spacer width="6" />
+            <p:link value="#{micBacking.appDisplayName}" style="color: #ffffff !important;" outcome="#{micBacking.accueil}"/>
+            
+            </p:outputLabel>
+
+        <a id="topbar-menu-button" href="#">
+            <i class="fa fa-bars"></i>
+        </a>
+        
+        <ul class="topbar-menu fadeInDown animated">
+            <ui:include src="#{menuBacking.resolveAccountMenuFile()}"/>
+            <li>
+                <a href="#">
+                    <i class="topbar-icon fa fa-fw fa-bell-o"></i>
+                    <span class="topbar-badge animated rubberBand">4</span>
+                    <span class="topbar-item-name">Notifications</span>
+                </a>
+                <ul class="animated">
+                    <li role="menuitem">
+                        <a href="#">
+                            <i class="fa fa-fw fa-tasks"></i>
+                            <span>Pending tasks</span>
+                            <span class="topbar-submenuitem-badge">6</span>
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a href="#">
+                            <i class="fa fa-fw fa-calendar-check-o"></i>
+                            <span>Meeting today</span>
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a href="#">
+                            <i class="fa fa-fw fa-download"></i>
+                            <span>Download</span>
+                        </a>
+                    </li>
+                    <li role="menuitem">
+                        <a href="#">
+                            <i class="fa fa-fw fa-plane"></i>
+                            <span>Book flight</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            
+        </ul>
+        
+        
+    </div>
+
+</ui:composition>

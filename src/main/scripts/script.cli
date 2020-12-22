@@ -1,0 +1,2 @@
+#PORT
+/socket-binding-group=standard-sockets/socket-binding=http/:write-attribute(name=port,value=8821)

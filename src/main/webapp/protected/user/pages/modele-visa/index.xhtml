@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:of="http://omnifaces.org/functions"
+                template="/WEB-INF/components/template.xhtml">
+    <ui:define name="title">Modele Visa</ui:define>
+
+    <ui:define name="content">
+        <h:form id="messageForm">
+            <p:growl closable="true" showIcon="true" showSummary="true" showDetail="true"/>
+        </h:form>
+        <h:form>
+            <p:breadCrumb styleClass="breadcrumb" homeDisplay="false">
+                <p:menuitem value="App Modele" outcome="#{micBacking.accueil}" style="font-weight: bolder"/>
+                <p:menuitem value="Modele Visa" url="#" />
+            </p:breadCrumb>
+        </h:form>
+
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <h1 style="text-transform: uppercase;">Modele de visa</h1>
+                <h:form id="createBtnForm">
+                    <p:toolbar id="viewToolBar">
+                        <f:facet name="left">
+                            <p:commandButton value="Créér un modele de visa"
+                                             action="#{modeleVisaBacking.openCreateDialog()}">
+                                <p:ajax event="dialogReturn" listener="#{modeleVisaBacking.handleReturn}"
+                                        update=":listModeleForm messageForm"/>
+                            </p:commandButton>
+                        </f:facet>
+                    </p:toolbar>
+                </h:form>
+
+                <p:fieldset legend="Liste des modele de visa">
+                    <h:form id="listModeleForm">
+                        <p:dataTable id="listModeleDataTable" value="#{modeleVisaBacking.modeleVisaList}"
+                                     emptyMessage="#{messages.empty_dataTable_message}"
+                                     var="composition"
+                                     rowIndexVar="index"
+                                     tableStyle="font-size: 13px;"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="6,12,16"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
+                            <p:column styleClass="col-w5" headerText="#">#{index + 1}</p:column>
+                            <p:column styleClass="col-w10" headerText="Code">#{composition.code}</p:column>
+                            <p:column styleClass="col-w20" headerText="Libelle">#{composition.libelle}</p:column>
+                            <p:column headerText="Description">#{of:abbreviate(composition.description, 100)}</p:column>
+                            <p:column headerText="Actions" styleClass="col-w10">
+                                <p:commandButton icon="fa fa-caret-down"
+                                                 id="actionBtn" type="button"
+                                                 value="Actions" styleClass="btn-block"/>
+                                <!-- Overlay panel -->
+                                <p:overlayPanel id="actionPanel" for="actionBtn"
+                                                at="left bottom"
+                                                hideEffect="fade" showCloseIcon="true">
+                                    <p:link value="Détails" styleClass="text-bold" style="color: #ffffff"
+                                            outcome="/protected/user/pages/modele-visa/detail">
+                                        <f:param name="uuid" value="#{composition.uuid}"/>
+                                    </p:link>
+                                    <hr style="border: dashed 1px #ffffff"/>
+                                    <p:commandLink value="Modifier"
+                                                   actionListener="#{modeleVisaBacking.openUpdateDialog(composition.uuid)}"
+                                                   styleClass="text-bold">
+                                        <p:ajax event="dialogReturn" listener="#{modeleVisaBacking.handleReturn}"
+                                                update=":listModeleForm messageForm"/>
+                                    </p:commandLink>
+                                    <br/>
+                                    <p:commandLink value="Supprimer"
+                                                   actionListener="#{modeleVisaBacking.delete(composition.uuid)}"
+                                                   styleClass="text-bold"
+                                                   update="@form">
+                                        <p:confirm header="Confirmation"
+                                                   message="#{modeleVisaBacking.getDeleteMessage(composition.code)}"
+                                                   icon="ui-icon-alert">
+                                        </p:confirm>
+                                    </p:commandLink>
+                                </p:overlayPanel>
+                            </p:column>
+                        </p:dataTable>
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+                            <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-times" />
+                        </p:confirmDialog>
+                    </h:form>
+                </p:fieldset>
+            </div>
+        </div>
+
+    </ui:define>
+</ui:composition>
+
+

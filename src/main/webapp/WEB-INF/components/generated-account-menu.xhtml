@@ -1,0 +1,48 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:pa="http://primefaces.org/atlantis" xmlns:pe="http://primefaces.org/ui/extensions">
+    
+    <li class="profile-item">
+        <a href="#">                            
+            <div class="profile-image">
+                <!--<p:graphicImage name="images/profile-image.png" library="atlantis-layout" />-->
+                <pe:letterAvatar value="#{micBacking.getToken(request).name}" rounded="true"/>
+            </div>
+            <div class="profile-info">
+                <span class="topbar-item-name profile-name">#{micBacking.getToken(request).name}</span>
+                <span class="topbar-item-name profile-role">#{micBacking.user.fonction}</span>
+            </div>
+        </a>
+        
+        <ul class="animated">
+            <h:form>
+                <div class="profile-menu-image">
+                    <p:graphicImage name="images/profile-image.png" library="atlantis-layout" />
+                </div>
+                <p:spacer height="10" width="0"/>
+                <div class="text-centered" style="margin: 0px 4px">
+                    <b style="font-size: 1.3em; margin-bottom: 10px;">#{micBacking.getToken(request).name}</b>
+                    <br/>
+                    <b>#{micBacking.user.electronicMailAddress}</b>
+                    <br/>
+                    <span>#{micBacking.user.fonction}</span>
+                    <!-- <span>#{micBacking.getOtherAttribute(request, "fonction")}</span> -->
+                    <br/>
+                    <span style="font-size: 10px">#{micBacking.user.administrativeUnitAsString}</span>
+                    <!-- <span style="font-size: 10px">#{micBacking.getOtherAttribute(request, "ua")}</span> -->
+                </div>
+                <p:spacer height="10" width="0"/>
+                <div class="text-centered" style="margin: 0px 4px">
+                    <p:button value="Gérer votre compte SIGOBE" styleClass="moncompte-btn" target="_blank" href="#{micBacking.getAccountUri()}"/>
+                </div>
+                <p:spacer height="10" width="0"/>
+                <pa:menu id="account-menu" widgetVar="user-menu" style="list-style: none !important; padding-left: 0px;" model="#{menuBacking.accountMenuModel}"/>
+            </h:form>
+        </ul>
+    </li>
+</ui:composition>
+

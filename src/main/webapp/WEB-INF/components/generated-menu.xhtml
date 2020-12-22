@@ -1,0 +1,75 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:pa="http://primefaces.org/atlantis">
+    <div class="layout-sidebar">
+        <style>
+            .menu-pin-button{
+                display: none;
+            }
+            .layout-submenu-title{
+                padding-left: 4px !important;
+            }
+            .layout-submenu-title span{
+                width: calc(100% - 23px);
+                overflow: hidden;
+                display: inline-block;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+        </style>
+        <pa:tabMenu>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(0).icon}" title="#{menuBacking.listMenusTabs.get(0).title}" rendered="#{menuBacking.listMenusTabs.size() gt 0}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(0).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(1).icon}" title="#{menuBacking.listMenusTabs.get(1).title}" rendered="#{menuBacking.listMenusTabs.size() gt 1}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(1).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(2).icon}" title="#{menuBacking.listMenusTabs.get(2).title}" rendered="#{menuBacking.listMenusTabs.size() gt 2}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(2).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(3).icon}" title="#{menuBacking.listMenusTabs.get(3).title}" rendered="#{menuBacking.listMenusTabs.size() gt 3}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(3).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(4).icon}" title="#{menuBacking.listMenusTabs.get(4).title}" rendered="#{menuBacking.listMenusTabs.size() gt 4}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(4).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(5).icon}" title="#{menuBacking.listMenusTabs.get(5).title}" rendered="#{menuBacking.listMenusTabs.size() gt 5}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(5).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(6).icon}" title="#{menuBacking.listMenusTabs.get(6).title}" rendered="#{menuBacking.listMenusTabs.size() gt 6}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(6).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(7).icon}" title="#{menuBacking.listMenusTabs.get(7).title}" rendered="#{menuBacking.listMenusTabs.size() gt 7}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(7).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(8).icon}" title="#{menuBacking.listMenusTabs.get(8).title}" rendered="#{menuBacking.listMenusTabs.size() gt 8}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(8).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(9).icon}" title="#{menuBacking.listMenusTabs.get(9).title}" rendered="#{menuBacking.listMenusTabs.size() gt 9}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(9).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(10).icon}" title="#{menuBacking.listMenusTabs.get(10).title}" rendered="#{menuBacking.listMenusTabs.size() gt 10}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(10).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(11).icon}" title="#{menuBacking.listMenusTabs.get(11).title}" rendered="#{menuBacking.listMenusTabs.size() gt 11}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(11).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(12).icon}" title="#{menuBacking.listMenusTabs.get(12).title}" rendered="#{menuBacking.listMenusTabs.size() gt 12}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(12).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(13).icon}" title="#{menuBacking.listMenusTabs.get(13).title}" rendered="#{menuBacking.listMenusTabs.size() gt 13}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(13).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(14).icon}" title="#{menuBacking.listMenusTabs.get(14).title}" rendered="#{menuBacking.listMenusTabs.size() gt 14}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(14).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+            <pa:tab icon="#{menuBacking.listMenusTabs.get(15).icon}" title="#{menuBacking.listMenusTabs.get(15).title}" rendered="#{menuBacking.listMenusTabs.size() gt 15}">
+                <h:form><pa:menu model="#{menuBacking.listMenusTabs.get(15).menuModel}"></pa:menu></h:form>
+            </pa:tab>
+        </pa:tabMenu>
+    </div>
+</ui:composition>

@@ -1,0 +1,10 @@
+{
+  "realm": "${env.KEYCLOAK_REALM}",
+  "auth-server-url": "https://security.dgbf.ci:8443/auth/",
+  "ssl-required": "external",
+  "resource": "mic-acte-gestion-credit",
+  "credentials": {
+    "secret": "b3b2a76b-7768-4e4a-857f-dd092be79259"
+  },
+  "confidential-port": 0
+}

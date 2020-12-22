@@ -1,0 +1,23 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pa="http://primefaces.org/atlantis">
+        <li class="profile-item">
+            <a href="#">                            
+                <div class="profile-image">
+                    <p:graphicImage name="images/profile-image.png" library="atlantis-layout" />
+                </div>
+                <div class="profile-info">
+                    <span class="topbar-item-name profile-name">Mr Sib</span>
+                    <span class="topbar-item-name profile-role">System Admin</span>
+                </div>
+            </a>
+
+            <ul class="animated">
+                <pa:menu class="animated" id="account-menu" model="#{menuBacking.accountMenuModel}"/>
+            </ul>
+        </li>
+        
+</ui:composition>

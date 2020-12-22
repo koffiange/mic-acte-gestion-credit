@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:of="http://omnifaces.org/functions"
+                template="/WEB-INF/components/template.xhtml">
+    <ui:define name="title">Nature d'Acte</ui:define>
+    <p:importEnum type="ci.gouv.dgbf.agc.enumeration.NatureActe" var="composition" allSuffix="ALL_ENUM_VALUES" />
+
+    <ui:define name="content">
+        <h:form id="messageForm">
+            <p:growl closable="true" showIcon="true" showSummary="true" showDetail="true"/>
+        </h:form>
+        <h:form>
+            <p:breadCrumb styleClass="breadcrumb" homeDisplay="false">
+                <p:menuitem value="App Modele" outcome="#{micBacking.accueil}" style="font-weight: bolder"/>
+                <p:menuitem value="Nature d'Acte" url="#" />
+            </p:breadCrumb>
+        </h:form>
+
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <h1 style="text-transform: uppercase;">Nature d'Acte</h1>
+
+                <p:fieldset legend="Liste des natures d'acte">
+                    <h:form id="listModeleForm">
+                        <p:dataTable id="listModeleDataTable" value="#{parametreBacking.natureActeList}"
+                                     emptyMessage="#{messages.empty_dataTable_message}"
+                                     var="natureActe"
+                                     rowIndexVar="index"
+                                     tableStyle="font-size: 13px;"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="6,12,16"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
+                            <p:column styleClass="col-w5" headerText="#">#{index + 1}</p:column>
+                            <p:column styleClass="col-w10" headerText="libelle">#{natureActe.libelle}</p:column>
+                            <p:column styleClass="col-w20" headerText="Type Acte">#{natureActe.typeActe}</p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:fieldset>
+            </div>
+        </div>
+
+    </ui:define>
+</ui:composition>
+
+

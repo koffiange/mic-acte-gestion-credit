@@ -1,0 +1,80 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:o="http://omnifaces.org/ui"
+    xmlns:of="http://omnifaces.org/functions"
+    xmlns:pa="http://primefaces.org/atlantis">
+    
+    <div class="layout-sidebar">
+        <pa:tabMenu>
+            <pa:tab icon="fa fa-home" title="Menu Principal">
+                <h:form>
+                    <pa:menu widgetVar="pg">
+                        <p:menuitem id="sub_1_item1" value="#{of:abbreviate('Accueil', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/index"/>
+
+                        <p:menuitem id="sub_1_item2" value="Retour au portail" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/index"/>
+                    </pa:menu>
+                </h:form>
+            </pa:tab>
+
+
+            <pa:tab icon="fa fa-cog" title="Parametres">
+                <h:form>
+                    <pa:menu widgetVar="pg">
+
+                        <p:menuitem id="sub_2_item1" value="#{of:abbreviate('Type d\'actes', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/type-acte/index"/>
+                        <p:menuitem id="sub_2_item2" value="#{of:abbreviate('Nature d\'actes', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/nature-acte/index"/>
+                        <p:menuitem id="sub_2_item3" value="#{of:abbreviate('Categorie d\'actes', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/categorie-acte/index"/>
+
+                        <p:menuitem id="sub_2_item4" value="#{of:abbreviate('Visa', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/visa/index"/>
+                        <p:menuitem id="sub_2_item5" value="#{of:abbreviate('Modele de visa', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/modele-visa/index"/>
+                    </pa:menu>
+                </h:form>
+            </pa:tab>
+
+            <pa:tab icon="fa fa-file" title="Demandes">
+                <h:form>
+                    <pa:menu widgetVar="dem">
+                        <p:menuitem id="sub_3_item1" value="#{of:abbreviate('Demandes', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/index"/>
+                        <p:menuitem id="sub_3_item2" value="#{of:abbreviate('Demande à traiter', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/index"/>
+                    </pa:menu>
+                </h:form>
+            </pa:tab>
+
+            <pa:tab icon="fa fa-calculator" title="Actes de gestion">
+                <h:form>
+                    <pa:menu widgetVar="pg">
+                        <p:menuitem id="sub_4_item1" value="#{of:abbreviate('Opérations', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/index"/>
+                        <p:menuitem id="sub_4_item2" value="#{of:abbreviate('Acte de gestion', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/index"/>
+                        <p:menuitem id="sub_4_item3" value="#{of:abbreviate('Contrôles', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/index"/>
+                        <p:menuitem id="sub_4_item4" value="#{of:abbreviate('Déréservation', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/index"/>
+                        </pa:menu>
+                </h:form>
+            </pa:tab>
+
+            <pa:tab icon="fa fa-pencil" title="Edition">
+                <h:form>
+                    <pa:menu widgetVar="ed">
+                        <p:menuitem id="sub_5_item1" value="#{of:abbreviate('Acte de mouvements', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/index"/>
+                        <p:menuitem id="sub_5_item2" value="#{of:abbreviate('Réservation en cours', 60)}" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/index"/>
+                        </pa:menu>
+                </h:form>
+            </pa:tab>
+
+            <!--
+            <pa:tab icon="fa fa-sticky-note" title="DPPDs">
+                <h:form>
+                    <pa:menu widgetVar="pg">
+                        <p:menuitem id="sub_3_item1" value="Modèles" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/modeles/index"/>
+                        <p:menuitem id="sub_3_item2" value="Documents" icon="fa fa-fw fa-bookmark" outcome="/protected/user/pages/documents/index"/>
+                    </pa:menu>
+                </h:form> 
+            </pa:tab>
+            -->
+        </pa:tabMenu>
+    </div>
+    
+</ui:composition>

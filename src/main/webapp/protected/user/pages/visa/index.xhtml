@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/components/template.xhtml">
+    <ui:define name="title">Visa</ui:define>
+
+    <ui:define name="content">
+        <h:form id="messageForm">
+            <p:growl closable="true" showIcon="true" showSummary="true" showDetail="true"/>
+        </h:form>
+        <h:form>
+            <p:breadCrumb styleClass="breadcrumb" homeDisplay="false">
+                <p:menuitem value="App Modele" outcome="#{micBacking.accueil}" style="font-weight: bolder"/>
+                <p:menuitem value="Visa" url="#" />
+            </p:breadCrumb>
+        </h:form>
+
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <h1 style="text-transform: uppercase;">Visa</h1>
+
+                <h:form id="createBtnForm">
+                    <p:toolbar id="viewToolBar">
+                        <f:facet name="left">
+                            <p:commandButton value="Créér un visa"
+                                             action="#{visaBacking.openCreateDialog()}">
+                                <p:ajax event="dialogReturn" listener="#{visaBacking.handleReturn}"
+                                        update=":listModeleForm messageForm"/>
+                            </p:commandButton>
+                        </f:facet>
+                    </p:toolbar>
+                </h:form>
+
+                <p:fieldset legend="Liste des types d'acte">
+                    <h:form id="listModeleForm">
+                        <p:dataTable id="listModeleDataTable" value="#{visaBacking.visaList}"
+                                     emptyMessage="#{messages.empty_dataTable_message}"
+                                     var="composition"
+                                     rowIndexVar="index"
+                                     tableStyle="font-size: 13px;"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="6,12,16"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
+                            <p:column styleClass="col-w5" headerText="#">#{index + 1}</p:column>
+                            <p:column styleClass="col-w10" headerText="Code">#{composition.code}</p:column>
+                            <p:column headerText="Libelle">#{composition.intitule}</p:column>
+                            <p:column headerText="Actions" styleClass="col-w10">
+                                <p:commandButton icon="fa fa-caret-down"
+                                                 id="actionBtn" type="button"
+                                                 value="Actions" styleClass="btn-block"/>
+                                <!-- Overlay panel -->
+                                <p:overlayPanel id="actionPanel" for="actionBtn"
+                                                at="left bottom"
+                                                hideEffect="fade" showCloseIcon="true">
+                                    <hr style="border: dashed 1px #ffffff"/>
+                                    <p:commandLink value="Modifier"
+                                                   actionListener="#{visaBacking.openUpdateDialog(composition.uuid)}"
+                                                   styleClass="text-bold">
+                                        <p:ajax event="dialogReturn" listener="#{visaBacking.handleReturn}"
+                                                update=":listModeleForm messageForm"/>
+                                    </p:commandLink>
+                                    <br/>
+                                    <p:commandLink value="Supprimer"
+                                                   actionListener="#{visaBacking.delete(composition.uuid)}"
+                                                   styleClass="text-bold"
+                                                   update="@form">
+                                        <p:confirm header="Confirmation"
+                                                   message="#{visaBacking.getDeleteMessage(composition.code)}"
+                                                   icon="ui-icon-alert">
+                                        </p:confirm>
+                                    </p:commandLink>
+                                </p:overlayPanel>
+                            </p:column>
+                        </p:dataTable>
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />
+                            <p:commandButton value="Non" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-times" />
+                        </p:confirmDialog>
+                    </h:form>
+                </p:fieldset>
+            </div>
+        </div>
+
+    </ui:define>
+</ui:composition>
+
+
