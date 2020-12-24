@@ -5,7 +5,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:o="http://omnifaces.org/ui">
 <h:head>
-    <title style="font-size: larger; font-weight: bold">Mise à jour d'une catégorie d'acte</title>
+    <title style="font-size: larger; font-weight: bold">Mise à jour d'un modele de visa</title>
     <ui:include src="/resources/common/css.xhtml"/>
 </h:head>
 
@@ -15,8 +15,7 @@
 
         <div class="ui-g">
             <div class="ui-g-12">
-                <div class="card">
-
+                <p:fieldset legend="Informations du modèle">
                     <div class="ui-g">
                         <div class="ui-g-12">
                             <p:message for="code"/>
@@ -24,7 +23,7 @@
                         </div>
                         <div class="ui-g-12">
                             <p:inputText id="code" required="true" requiredMessage="#{messages.required_field_message}"
-                                         value="#{categorieActeUpdateBacking.categorieActe.code}"
+                                         value="#{modeleVisaUpdateBacking.modeleVisa.code}"
                                          styleClass="col-w30"/>
                         </div>
                     </div>
@@ -36,7 +35,7 @@
                         </div>
                         <div class="ui-g-12">
                             <p:inputText id="libelle" required="true" requiredMessage="#{messages.required_field_message}"
-                                         value="#{categorieActeUpdateBacking.categorieActe.libelle}"
+                                         value="#{modeleVisaUpdateBacking.modeleVisa.libelle}"
                                          styleClass="col-w100"/>
                         </div>
                     </div>
@@ -49,17 +48,32 @@
                         <div class="ui-g-12">
                             <p:inputTextarea id="description" required="true" rows="3"
                                              requiredMessage="#{messages.required_field_message}"
-                                             value="#{categorieActeUpdateBacking.categorieActe.description}"
+                                             value="#{modeleVisaUpdateBacking.modeleVisa.description}"
                                              styleClass="col-w100"/>
                         </div>
                     </div>
-
-                </div>
-
+                </p:fieldset>
+                <!--
+                <p:fieldset legend="Composition des visas">
+                    <p:dataTable id="compositionDT" var="visa" value="#{modeleVisaUpdateBacking.visaList}" selection="#{modeleVisaUpdateBacking.selectedVisaList}"
+                                 rowKey="#{visa.uuid}" style="margin-bottom:0" filteredValue="#{modeleVisaUpdateBacking.filteredVisaList}">
+                        <f:facet name="header">
+                            Liste des visas
+                        </f:facet>
+                        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                        <p:column styleClass="col-w10" headerText="Code" filterBy="#{visa.code}" filterMatchMode="contains">
+                            <h:outputText value="#{visa.code}" />
+                        </p:column>
+                        <p:column headerText="Intitulé" filterBy="#{visa.intitule}" filterMatchMode="contains">
+                            <h:outputText value="#{visa.intitule}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:fieldset>
+                -->
                 <p:spacer height="20" width="10"/>
                 <div class="ui-g">
                     <div class="ui-g-6" style="margin: 0px auto !important;">
-                        <p:commandButton action="#{categorieActeUpdateBacking.persist}"
+                        <p:commandButton action="#{modeleVisaUpdateBacking.persist}"
                                          value="#{messages.enregistrer}" update="@form" style="width: 100%"/>
                     </div>
                 </div>

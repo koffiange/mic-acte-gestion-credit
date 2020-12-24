@@ -47,9 +47,9 @@ public class ModeleVisaUpdateBacking extends BaseBacking {
         params = getRequestParameterMap();
         if (params.containsKey("uuid")){
             modeleVisa = modeleVisaService.findById(params.get("uuid"));
+        } else {
+            modeleVisa = new ModeleVisa();
         }
-        modeleVisa = new ModeleVisa();
-        visaList = visaService.listAll();
     }
 
     public void persist(){

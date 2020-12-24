@@ -12,4 +12,14 @@ public class ModeleVisa {
     private String libelle;
     @Getter @Setter
     private String description;
+
+    @Override
+    public String toString() {
+        return "ModeleVisa{" +
+                "uuid='" + uuid + '\'' +
+                ", code='" + code + '\'' +
+                ", libelle='" + libelle + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

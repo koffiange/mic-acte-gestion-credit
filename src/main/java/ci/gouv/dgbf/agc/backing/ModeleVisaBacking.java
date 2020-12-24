@@ -46,7 +46,7 @@ public class ModeleVisaBacking extends BaseBacking {
 
     public void openUpdateDialog(String uuid){
         Map<String,Object> options = getLevelTwoDialogOptions();
-        options.replace("height", "50vh");
+        options.replace("height", "60vh");
         Map<String, List<String>> params = new HashMap<>();
         List<String> uuidList = new ArrayList<>();
         uuidList.add(uuid);
