@@ -3,6 +3,7 @@ package ci.gouv.dgbf.agc.dto;
 
 import ci.gouv.dgbf.agc.enumeration.DisponibiliteCreditOperation;
 import ci.gouv.dgbf.agc.enumeration.EffetOperation;
+import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,9 +21,11 @@ public class Operation{
     @Getter @Setter
     private String natureEconomiqueCode;
     @Getter @Setter
-    private String natureEconomique;
+    private String natureEconomiqueId;
     @Getter @Setter
     private String exercice;
+    @Getter @Setter
+    private String sourceFinancement;
     @Getter @Setter
     private BigDecimal budgetActuelAE;
     @Getter @Setter
@@ -32,12 +35,11 @@ public class Operation{
     @Getter @Setter
     private BigDecimal montantOperationCP;
     @Getter @Setter
+    private TypeOperation typeOperation;
+    @Getter @Setter
     private EffetOperation effetOperation;
     @Getter @Setter
     private DisponibiliteCreditOperation disponibiliteCredit;
-
-    @ManyToOne
-    public Acte acte;
 
     public Operation() {
     }
@@ -51,20 +53,19 @@ public class Operation{
                 Objects.equals(activiteCode, operation.activiteCode) &&
                 Objects.equals(activiteLibelle, operation.activiteLibelle) &&
                 Objects.equals(natureEconomiqueCode, operation.natureEconomiqueCode) &&
-                Objects.equals(natureEconomique, operation.natureEconomique) &&
+                Objects.equals(natureEconomiqueId, operation.natureEconomiqueId) &&
                 Objects.equals(exercice, operation.exercice) &&
                 Objects.equals(budgetActuelAE, operation.budgetActuelAE) &&
                 Objects.equals(budgetActuelCP, operation.budgetActuelCP) &&
                 Objects.equals(montantOperationAE, operation.montantOperationAE) &&
                 Objects.equals(montantOperationCP, operation.montantOperationCP) &&
                 effetOperation == operation.effetOperation &&
-                disponibiliteCredit == operation.disponibiliteCredit &&
-                Objects.equals(acte, operation.acte);
+                disponibiliteCredit == operation.disponibiliteCredit;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ligneDepenseUuid, activiteCode, activiteLibelle, natureEconomiqueCode, natureEconomique, exercice, budgetActuelAE, budgetActuelCP, montantOperationAE, montantOperationCP, effetOperation, disponibiliteCredit, acte);
+        return Objects.hash(ligneDepenseUuid, activiteCode, activiteLibelle, natureEconomiqueCode, natureEconomiqueId, exercice, budgetActuelAE, budgetActuelCP, montantOperationAE, montantOperationCP, effetOperation, disponibiliteCredit);
     }
 
     @Override
@@ -74,7 +75,7 @@ public class Operation{
                 ", activiteCode='" + activiteCode + '\'' +
                 ", activiteLibelle='" + activiteLibelle + '\'' +
                 ", natureEconomiqueCode='" + natureEconomiqueCode + '\'' +
-                ", natureEconomique='" + natureEconomique + '\'' +
+                ", natureEconomique='" + natureEconomiqueId + '\'' +
                 ", exercice='" + exercice + '\'' +
                 ", budgetActuelAE=" + budgetActuelAE +
                 ", budgetActuelCP=" + budgetActuelCP +
@@ -82,7 +83,6 @@ public class Operation{
                 ", montantOperationCP=" + montantOperationCP +
                 ", effetOperation=" + effetOperation +
                 ", disponibiliteCredit=" + disponibiliteCredit +
-                ", acte=" + acte +
                 '}';
     }
 }

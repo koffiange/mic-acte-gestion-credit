@@ -76,7 +76,90 @@
                         </p:panelGrid>
                     </p:fieldset>
 
-                    <p:fieldset legend="Opérations"> </p:fieldset>
+                    <p:fieldset legend="Imputations d'origine">
+                        <p:menubar>
+                            <f:facet name="options">
+                                <p:commandButton value="Rechercher une source de financement" action="#{amcCreateBacking.openLigneDepenseDialog}" icon="fa fa-search" />
+                            </f:facet>
+                        </p:menubar>
+
+                        <p:spacer height="5"/>
+
+                        <p:dataTable id="origineDT" var="operation" value="#{amcCreateBacking.operationList}" rowIndexVar="index">
+                            <p:column headerText="#" styleClass="col-w5">
+                                <h:outputText value="#{index + 1}" />
+                            </p:column>
+
+                            <p:column headerText="Activité">
+                                <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
+                            </p:column>
+
+                            <p:column headerText="Nature Eco.">
+                                <h:outputText value="#{operation.natureEconomiqueCode}" />
+                            </p:column>
+
+                            <p:column headerText="Src. Financement">
+                                <h:outputText value="#{operation.sourceFinancement}" />
+                            </p:column>
+
+                            <p:column headerText="Budget actuel">
+                                <h:outputText value="AE : #{operation.budgetActuelAE}" />
+                                <p:separator style="border: dotted 1px #000000"/>
+                                <h:outputText value="CP : #{operation.budgetActuelCP}" />
+                            </p:column>
+
+                            <p:column headerText="Budget disponible">
+                                <h:outputText value="AE : #{operation.budgetActuelAE}" />
+                                <p:separator style="border: dotted 1px #000000"/>
+                                <h:outputText value="CP : #{operation.budgetActuelCP}" />
+                            </p:column>
+
+                            <p:column headerText="Retranchements">
+                                <h:outputText value="AE : #{operation.montantOperationAE}" />
+                                <p:separator style="border: dotted 1px #000000"/>
+                                <h:outputText value="CP : #{operation.montantOperationCP}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:fieldset>
+
+                    <p:fieldset legend="Imputations de destination">
+                        <p:dataTable id="cibleDT" var="operation" value="#{amcCreateBacking.operationList}" rowIndexVar="index">
+
+                            <p:column headerText="#" styleClass="col-w5">
+                                <h:outputText value="#{index + 1}" />
+                            </p:column>
+
+                            <p:column headerText="Activité">
+                                <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
+                            </p:column>
+
+                            <p:column headerText="Nature Eco.">
+                                <h:outputText value="#{operation.natureEconomiqueCode}" />
+                            </p:column>
+
+                            <p:column headerText="Src. Financement">
+                                <h:outputText value="#{operation.sourceFinancement}" />
+                            </p:column>
+
+                            <p:column headerText="Budget actuel">
+                                <h:outputText value="AE : #{operation.budgetActuelAE}" />
+                                <p:separator style="border: dotted 1px #000000"/>
+                                <h:outputText value="CP : #{operation.budgetActuelCP}" />
+                            </p:column>
+
+                            <p:column headerText="Budget disponible">
+                                <h:outputText value="AE : #{operation.budgetActuelAE}" />
+                                <p:separator style="border: dotted 1px #000000"/>
+                                <h:outputText value="CP : #{operation.budgetActuelCP}" />
+                            </p:column>
+
+                            <p:column headerText="Ajouts">
+                                <h:outputText value="AE : #{operation.montantOperationAE}" />
+                                <p:separator style="border: dotted 1px #000000"/>
+                                <h:outputText value="CP : #{operation.montantOperationCP}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:fieldset>
 
                     <p:spacer height="20" width="10"/>
                     <div class="ui-g">
