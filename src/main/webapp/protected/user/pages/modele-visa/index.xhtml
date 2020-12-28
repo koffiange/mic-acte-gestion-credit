@@ -37,16 +37,16 @@
                     <h:form id="listModeleForm">
                         <p:dataTable id="listModeleDataTable" value="#{modeleVisaBacking.modeleVisaList}"
                                      emptyMessage="#{messages.empty_dataTable_message}"
-                                     var="modeleVisa"
+                                     var="acte"
                                      rowIndexVar="index"
                                      tableStyle="font-size: 13px;"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      rowsPerPageTemplate="6,12,16"
                                      currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
                             <p:column styleClass="col-w5" headerText="#">#{index + 1}</p:column>
-                            <p:column styleClass="col-w10" headerText="Code">#{modeleVisa.code}</p:column>
-                            <p:column styleClass="col-w20" headerText="Libelle">#{modeleVisa.libelle}</p:column>
-                            <p:column headerText="Description">#{of:abbreviate(modeleVisa.description, 100)}</p:column>
+                            <p:column styleClass="col-w10" headerText="Code">#{acte.code}</p:column>
+                            <p:column styleClass="col-w20" headerText="Libelle">#{acte.libelle}</p:column>
+                            <p:column headerText="Description">#{of:abbreviate(acte.description, 100)}</p:column>
                             <p:column headerText="Actions" styleClass="col-w10">
                                 <p:commandButton icon="fa fa-caret-down"
                                                  id="actionBtn" type="button"
@@ -57,22 +57,22 @@
                                                 hideEffect="fade" showCloseIcon="true">
                                     <p:link value="Détails" styleClass="text-bold" style="color: #ffffff"
                                             outcome="/protected/user/pages/modele-visa/detail">
-                                        <f:param name="uuid" value="#{modeleVisa.uuid}"/>
+                                        <f:param name="uuid" value="#{acte.uuid}"/>
                                     </p:link>
                                     <hr style="border: dashed 1px #ffffff"/>
                                     <p:commandLink value="Modifier"
-                                                   actionListener="#{modeleVisaBacking.openUpdateDialog(modeleVisa.uuid)}"
+                                                   actionListener="#{modeleVisaBacking.openUpdateDialog(acte.uuid)}"
                                                    styleClass="text-bold">
                                         <p:ajax event="dialogReturn" listener="#{modeleVisaBacking.handleReturn}"
                                                 update=":listModeleForm messageForm"/>
                                     </p:commandLink>
                                     <br/>
                                     <p:commandLink value="Supprimer"
-                                                   actionListener="#{modeleVisaBacking.delete(modeleVisa.uuid)}"
+                                                   actionListener="#{modeleVisaBacking.delete(acte.uuid)}"
                                                    styleClass="text-bold"
                                                    update="@form">
                                         <p:confirm header="Confirmation"
-                                                   message="#{modeleVisaBacking.getDeleteMessage(modeleVisa.code)}"
+                                                   message="#{modeleVisaBacking.getDeleteMessage(acte.code)}"
                                                    icon="ui-icon-alert">
                                         </p:confirm>
                                     </p:commandLink>

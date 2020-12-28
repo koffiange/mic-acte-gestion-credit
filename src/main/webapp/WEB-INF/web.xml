@@ -50,7 +50,7 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>/protected/user/pages/index.xhtml</welcome-file>
+        <welcome-file>/protected/user/pages/acte/index.xhtml</welcome-file>
     </welcome-file-list>
 
     <!--

@@ -1,6 +1,8 @@
 package ci.gouv.dgbf.agc.client;
 
 import ci.gouv.dgbf.agc.dto.Acte;
+import ci.gouv.dgbf.agc.dto.ActeDto;
+
 import javax.ws.rs.*;
 import java.util.List;
 
@@ -16,7 +18,7 @@ public interface ActeClient {
 
     @POST
     @Path("/acte")
-    void persist(Acte acte);
+    void persist(ActeDto acteDto);
 
     @PUT
     @Path("/acte")
