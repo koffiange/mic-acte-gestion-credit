@@ -7,10 +7,17 @@ public enum NatureTransaction {
     VIREMENT("Virement"),
     TRANSFERT("Transfert");
 
-    @Getter @Setter
-    private String value;
+    private String libelle;
 
-    NatureTransaction(String value) {
-        this.value = value;
+    public String getLibelle() {
+        return libelle;
+    }
+
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
+
+    NatureTransaction(String libelle) {
+        this.libelle = libelle;
     }
 }

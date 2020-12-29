@@ -3,6 +3,7 @@ package ci.gouv.dgbf.agc.dto;
 
 import ci.gouv.dgbf.agc.enumeration.DisponibiliteCreditOperation;
 import ci.gouv.dgbf.agc.enumeration.EffetOperation;
+import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import lombok.Getter;
 import lombok.Setter;

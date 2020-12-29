@@ -3,6 +3,7 @@ package ci.gouv.dgbf.agc.dto;
 
 import ci.gouv.dgbf.agc.enumeration.CategorieActe;
 import ci.gouv.dgbf.agc.enumeration.NatureActe;
+import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
 import ci.gouv.dgbf.agc.enumeration.StatutActe;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,8 @@ public class Acte{
     private CategorieActe categorieActe;
     @Getter @Setter
     private NatureActe natureActe;
+    @Getter @Setter
+    private NatureTransaction natureTransaction;
     @Getter @Setter
     private StatutActe statutActe;
     @Getter @Setter

@@ -61,7 +61,7 @@ public class SourceFinancementBacking extends BaseBacking {
     }
 
     public void rechercher(){
-        ligneDepenseList = ligneDepenseService.findByCritere(natureEconomiqueCode, activiteCode, null);
+        ligneDepenseList = ligneDepenseService.findByCritere(natureEconomiqueCode, activiteCode, "");
         operationList = operationService.buildOperationListFromLigneDepenseList(ligneDepenseList);
         selectedActivite = activiteService.findByCode(activiteCode);
         selectedNatureEconomique = natureEconomiqueService.findByCode(natureEconomiqueCode);

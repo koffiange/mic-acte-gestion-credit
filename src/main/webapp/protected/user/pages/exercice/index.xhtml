@@ -1,0 +1,40 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/components/template.xhtml">
+    <ui:define name="title">Exercice Courant</ui:define>
+
+    <ui:define name="content">
+        <h:form id="messageForm">
+            <p:growl closable="true" showIcon="true" showSummary="true" showDetail="true"/>
+        </h:form>
+        <h:form>
+            <p:breadCrumb styleClass="breadcrumb" homeDisplay="false">
+                <p:menuitem value="Parametrage" outcome="#{micBacking.accueil}" style="font-weight: bolder"/>
+                <p:menuitem value="Exercice Courant" url="#" />
+            </p:breadCrumb>
+        </h:form>
+
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <h1 style="text-transform: uppercase;">Exercices courants</h1>
+                <h:form>
+                    <p:fieldset legend="Exercice">
+                        <div class="ui-g">
+                            <div class="ui-g-12"><h3>Exercice courant : #{exerciceBacking.exercice.annee}</h3></div>
+                            <div class="ui-g-2">Modifier exercice courant</div>
+                            <div class="ui-g-3"><p:inputText value="#{exerciceBacking.annee}" placeholder="nouvelle valeur" styleClass="form-control"/> </div>
+                            <div class="ui-g-2"><p:commandButton value="Enregistrer" action="#{exerciceBacking.persist}" update="@form"/>  </div>
+                        </div>
+                    </p:fieldset>
+                </h:form>
+
+            </div>
+        </div>
+
+    </ui:define>
+</ui:composition>
+
+

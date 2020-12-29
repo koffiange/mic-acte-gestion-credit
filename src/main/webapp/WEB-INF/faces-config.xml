@@ -15,7 +15,7 @@
         </view-handler>
 
         <resource-bundle>
-            <base-name>/Messages</base-name>
+            <base-name>/messages</base-name>
             <var>messages</var>
         </resource-bundle>
     </application>

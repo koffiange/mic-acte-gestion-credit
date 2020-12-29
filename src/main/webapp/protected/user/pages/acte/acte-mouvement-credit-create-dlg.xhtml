@@ -3,7 +3,9 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:o="http://omnifaces.org/ui">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:of="http://omnifaces.org/functions"
+      xmlns:o="http://omnifaces.org/ui">
     <h:head>
         <title style="font-size: larger; font-weight: bold">Création d'un acte de mouvement de crédit</title>
         <ui:include src="/resources/common/css.xhtml"/>
@@ -12,6 +14,7 @@
     <h:body styleClass="main-body">
         <p:importEnum type="ci.gouv.dgbf.agc.enumeration.NatureActe" var="natureActe" allSuffix="ALL_VALUES"/>
         <p:importEnum type="ci.gouv.dgbf.agc.enumeration.CategorieActe" var="categorieActe" allSuffix="ALL_VALUES"/>
+        <p:importEnum type="ci.gouv.dgbf.agc.enumeration.NatureTransaction" var="natureTransaction" allSuffix="ALL_VALUES"/>
         <h:form id="createForm">
             <p:growl globalOnly="true" showDetail="true" showSummary="true" severity="info, warn, error" life="15000"/>
 
@@ -28,15 +31,44 @@
                                     <h:outputLabel for="natureActe" value="Nature d'acte" styleClass="text-bold"/><br/>
                                     <p:selectOneMenu id="natureActe" value="#{amcCreateBacking.acte.natureActe}" styleClass="form-control">
                                         <f:selectItem itemLabel="Choissisez une nature d'acte" itemValue="" />
-                                        <f:selectItems value="#{natureActe.ALL_VALUES}" var="nature" itemLabel="#{nature.libelle}" itemValue="#{nature}"/>
+                                        <f:selectItem itemLabel="#{natureActe.ORDONNANCE.libelle}" itemValue="#{natureActe.ORDONNANCE}"/>
+                                        <f:selectItem itemLabel="#{natureActe.ARRETE.libelle}" itemValue="#{natureActe.ARRETE}"/>
+                                        <f:selectItem itemLabel="#{natureActe.ARRETE_INTERMINISTERIEL.libelle}" itemValue="#{natureActe.ARRETE_INTERMINISTERIEL}"/>
+                                        <f:selectItem itemLabel="#{natureActe.DECISION.libelle}" itemValue="#{natureActe.DECISION}"/>
                                     </p:selectOneMenu>
                                 </p:column>
                                 <p:column>
                                     <h:outputLabel for="categorieActe" value="Categorie d'acte" styleClass="text-bold"/><br/>
-                                    <p:selectOneMenu id="categorieActe" value="#{amcCreateBacking.acte.categorieActe}" styleClass="form-control">
-                                        <f:selectItem itemLabel="Choissisez une categorie d'acte" itemValue="" />
-                                        <f:selectItems value="#{categorieActe.ALL_VALUES}" var="categorie" itemLabel="#{categorie.libelle}" itemValue="#{categorie}"/>
+                                    <p:selectOneMenu id="categorieActe" value="#{amcCreateBacking.acte.categorieActe}" styleClass="form-control" disabled="true">
+                                        <f:selectItem itemLabel="#{categorieActe.ACTE_MOUVEMENT.libelle}" itemValue="#{categorieActe.ACTE_MOUVEMENT}"/>
                                     </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel for="natureTransaction" value="Nature de la Transaction" styleClass="text-bold"/><br/>
+                                    <p:selectOneMenu id="natureTransaction" value="#{amcCreateBacking.acte.natureTransaction}" styleClass="form-control">
+                                        <f:selectItem itemLabel="Choissisez une nature de transaction" itemValue="" />
+                                        <f:selectItems value="#{natureTransaction.ALL_VALUES}" var="nt" itemLabel="#{nt.libelle}" itemValue="#{nt}"/>
+                                        <!--
+                                        <f:selectItem itemLabel="#{natureTransaction.VIREMENT.libelle}" itemValue="#{natureTransaction.VIREMENT}"/>
+                                        <f:selectItem itemLabel="#{natureTransaction.TRANSFERT.libelle}" itemValue="#{natureTransaction.TRANSFERT}"/>
+                                        -->
+                                    </p:selectOneMenu>
+                                </p:column>
+
+                                <p:column>
+                                    <h:outputLabel for="section" value="Section Budgetaire" styleClass="text-bold"/><br/>
+                                    <p:selectOneMenu id="section" value="#{amcCreateBacking.selectedSection}"
+                                                     converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith"  styleClass="form-control">
+                                        <f:selectItem itemLabel="Choissisez une section budgétaire" itemValue=""/>
+                                        <f:selectItems value="#{amcCreateBacking.sectionList}" var="section" itemLabel="#{section.code} - #{of:abbreviate(section.libelle, 60)} " itemValue="#{section}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+
+                                <p:column>
+                                    <h:outputLabel for="dateSignature" value="Date signature" styleClass="text-bold"/><br/>
+                                    <p:datePicker id="dateSignature" value="#{amcCreateBacking.date}"/>
                                 </p:column>
                             </p:row>
 
@@ -51,27 +83,27 @@
                                 </p:column>
                                 <p:column>
                                     <p:spacer height="5"/>
-                                    <p:commandButton value="Ajouter" action="#{amcCreateBacking.addSignataire}" update="createForm:signataireList  createForm:signataireFonction  createForm:signataireNom" styleClass="btn-block"/>
+                                    <p:commandButton value="Ajouter" action="#{amcCreateBacking.addSignataire}" update="createForm:signataireList  createForm:signataireFonction  createForm:signataireNom"
+                                                     styleClass="btn-block" icon="fa fa-plus"/>
                                 </p:column>
                             </p:row>
 
                             <p:row>
                                 <p:column colspan="3">
-                                    <p:dataList id="signataireList" value="#{amcCreateBacking.signataireList}" var="signataire" type="ordered" rowIndexVar="index"
-                                        emptyMessage="#{messages.empty_dataTable_message}">
+                                    <p:dataTable id="signataireList" value="#{amcCreateBacking.signataireList}" var="signataire" type="ordered" rowIndexVar="index"
+                                        emptyMessage="#{messages.empty_dataTable_message}" styleClass="borderless">
                                         <f:facet name="header">
                                             Liste des signataires
                                         </f:facet>
-                                        #{signataire.fonction} , #{signataire.nom}
-                                    </p:dataList>
+                                        <p:column headerText="#" styleClass="col-w5">#{index + 1}</p:column>
+                                        <p:column headerText="Fonction" >#{signataire.fonction}</p:column>
+                                        <p:column headerText="Nom du signataire">#{signataire.nom}</p:column>
+                                        <p:column headerText="" styleClass="col-w10"><p:commandButton action="#{amcCreateBacking.deleteSignataire(signataire)}"
+                                                  value="Retirer" update="createForm:signataireList" icon="fa fa-trash" styleClass="btn-block"/> </p:column>
+                                    </p:dataTable>
                                 </p:column>
                             </p:row>
-                            <p:row>
-                                <p:column colspan="3">
-                                    <h:outputLabel for="dateSignature" value="Date signature" styleClass="text-bold"/><br/>
-                                    <p:datePicker id="dateSignature" value="#{amcCreateBacking.date}"/>
-                                </p:column>
-                            </p:row>
+
 
                         </p:panelGrid>
                     </p:fieldset>
@@ -108,7 +140,7 @@
                                 <h:outputText value="CP : #{operation.budgetActuelCP}" />
                             </p:column>
 
-                            <p:column headerText="Budget disponible">
+                            <p:column headerText="Crédits disponibles">
                                 <h:outputText value="AE : #{operation.budgetActuelAE}" />
                                 <p:separator style="border: dotted 1px #000000"/>
                                 <h:outputText value="CP : #{operation.budgetActuelCP}" />
@@ -147,7 +179,7 @@
                                 <h:outputText value="CP : #{operation.budgetActuelCP}" />
                             </p:column>
 
-                            <p:column headerText="Budget disponible">
+                            <p:column headerText="Crédits disponibles">
                                 <h:outputText value="AE : #{operation.budgetActuelAE}" />
                                 <p:separator style="border: dotted 1px #000000"/>
                                 <h:outputText value="CP : #{operation.budgetActuelCP}" />

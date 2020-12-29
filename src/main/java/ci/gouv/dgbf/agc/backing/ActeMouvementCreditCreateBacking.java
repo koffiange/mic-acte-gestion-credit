@@ -1,10 +1,8 @@
 package ci.gouv.dgbf.agc.backing;
 
-import ci.gouv.dgbf.agc.dto.Acte;
-import ci.gouv.dgbf.agc.dto.ActeDto;
-import ci.gouv.dgbf.agc.dto.Operation;
-import ci.gouv.dgbf.agc.dto.Signataire;
+import ci.gouv.dgbf.agc.dto.*;
 import ci.gouv.dgbf.agc.service.ActeService;
+import ci.gouv.dgbf.agc.service.SectionService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,11 +23,17 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     @Inject
     ActeService acteService;
 
+    @Inject
+    SectionService sectionService;
+
     @Getter @Setter
     List<Signataire> signataireList = new ArrayList<>();
 
     @Getter @Setter
     List<Operation> operationList = new ArrayList<>();
+
+    @Getter @Setter
+    List<Section> sectionList;
 
     @Getter @Setter
     private ActeDto acteDto;
@@ -43,16 +47,24 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     @Getter @Setter
     private Signataire signataire;
 
+    @Getter @Setter
+    private Section selectedSection;
+
     @PostConstruct
     public void init(){
         acte = new Acte();
         signataire = new Signataire();
         acteDto = new ActeDto();
+        sectionList = sectionService.list();
     }
 
     public void addSignataire(){
         signataireList.add(signataire);
         signataire = new Signataire();
+    }
+
+    public void deleteSignataire(Signataire signataire){
+        signataireList.remove(signataire);
     }
 
     public void addSignataire(String s){
