@@ -60,7 +60,7 @@
                                 <p:column>
                                     <h:outputLabel for="section" value="Section Budgetaire" styleClass="text-bold"/><br/>
                                     <p:selectOneMenu id="section" value="#{amcCreateBacking.selectedSection}"
-                                                     converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="startsWith"  styleClass="form-control">
+                                                     converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains"  styleClass="form-control">
                                         <f:selectItem itemLabel="Choissisez une section budgétaire" itemValue=""/>
                                         <f:selectItems value="#{amcCreateBacking.sectionList}" var="section" itemLabel="#{section.code} - #{of:abbreviate(section.libelle, 60)} " itemValue="#{section}"/>
                                     </p:selectOneMenu>
@@ -111,7 +111,7 @@
                     <p:fieldset legend="Imputations d'origine">
                         <p:menubar>
                             <f:facet name="options">
-                                <p:commandButton value="Rechercher une source de financement" action="#{amcCreateBacking.openLigneDepenseDialog}" icon="fa fa-search" />
+                                <p:commandButton value="Rechercher une source de financement" action="#{amcCreateBacking.openLigneDepenseDialog('origine')}" icon="fa fa-search" />
                             </f:facet>
                         </p:menubar>
 

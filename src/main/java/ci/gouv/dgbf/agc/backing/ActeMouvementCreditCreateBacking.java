@@ -12,10 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named(value = "amcCreateBacking")
 @ViewScoped
@@ -85,10 +82,24 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
     }
 
-    public void openLigneDepenseDialog(){
+    public void openLigneDepenseDialog(String typeImputation){
         Map<String,Object> options = getLevelOneDialogOptions();
         options.replace("width", "90vw");
         options.replace("height", "90vh");
-        PrimeFaces.current().dialog().openDynamic("rechercher-source-financement-dlg", options, null);
+        Map<String, List<String>> params = new HashMap<>();
+
+        List<String> sectionList = new ArrayList<>();
+        sectionList.add(selectedSection.getCode());
+        params.put("sectionCode", sectionList);
+
+        List<String> natureTransactionList = new ArrayList<>();
+        natureTransactionList.add(acte.getNatureTransaction().toString());
+        params.put("natureTransaction", natureTransactionList);
+
+        List<String> typeImputationList = new ArrayList<>();
+        typeImputationList.add(typeImputation);
+        params.put("typeImputation", typeImputationList);
+
+        PrimeFaces.current().dialog().openDynamic("rechercher-source-financement-dlg", options, params);
     }
 }
