@@ -3,15 +3,19 @@ package ci.gouv.dgbf.agc.backing;
 import ci.gouv.dgbf.agc.dto.*;
 import ci.gouv.dgbf.agc.service.ActeService;
 import ci.gouv.dgbf.agc.service.SectionService;
+import ci.gouv.dgbf.agc.service.operationSessionService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Named(value = "amcCreateBacking")
@@ -23,11 +27,17 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     @Inject
     SectionService sectionService;
 
+    @Inject
+    operationSessionService operationSessionService;
+
     @Getter @Setter
     List<Signataire> signataireList = new ArrayList<>();
 
     @Getter @Setter
-    List<Operation> operationList = new ArrayList<>();
+    List<Operation> operationOrigineList = new ArrayList<>();
+
+    @Getter @Setter
+    List<Operation> operationDestinationList = new ArrayList<>();
 
     @Getter @Setter
     List<Section> sectionList;
@@ -47,12 +57,29 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     @Getter @Setter
     private Section selectedSection;
 
+    @Getter @Setter
+    private BigDecimal cumulRetranchementAE = BigDecimal.ZERO;
+
+    @Getter @Setter
+    private BigDecimal cumulRetranchementCP = BigDecimal.ZERO;
+
+    @Getter @Setter
+    private BigDecimal cumulAjoutAE = BigDecimal.ZERO;
+
+    @Getter @Setter
+    private BigDecimal cumulAjoutCP = BigDecimal.ZERO;
+
     @PostConstruct
     public void init(){
         acte = new Acte();
         signataire = new Signataire();
         acteDto = new ActeDto();
         sectionList = sectionService.list();
+    }
+
+    @PreDestroy
+    public void destroy(){
+        operationSessionService.reset();
     }
 
     public void addSignataire(){
@@ -101,5 +128,54 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         params.put("typeImputation", typeImputationList);
 
         PrimeFaces.current().dialog().openDynamic("rechercher-source-financement-dlg", options, params);
+    }
+
+    public void handleReturn(SelectEvent event){
+        operationOrigineList = operationSessionService.getOperationOrigineList();
+        operationDestinationList = operationSessionService.getOperationDestinationList();
+        this.cumules();
+        if (event != null)
+            showSuccess();
+    }
+
+    public void deleteOperation(String location, Operation operation){
+        if (location.equals("origine")){
+            operationSessionService.getOperationOrigineList().remove(operation);
+        } else{
+            operationSessionService.getOperationDestinationList().remove(operation);
+        }
+
+        operationOrigineList = operationSessionService.getOperationOrigineList();
+        operationDestinationList = operationSessionService.getOperationDestinationList();
+        this.cumules();
+    }
+
+    private void cumules(){
+        operationSessionService.getOperationOrigineList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementAE);
+        operationSessionService.getOperationOrigineList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
+        operationSessionService.getOperationDestinationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutAE);
+        operationSessionService.getOperationDestinationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
+    }
+
+    public String equilibreAE(){
+        String msg = "EQUILIBRE";
+        if(cumulRetranchementAE.subtract(cumulAjoutAE).compareTo(BigDecimal.ZERO) > 0)
+            msg = "[SOLDE DEBITEUR]";
+        if(cumulRetranchementAE.subtract(cumulAjoutAE).compareTo(BigDecimal.ZERO) < 0)
+            msg = "[SOLDE CREDITEUR]";
+        return msg;
+    }
+
+    public String equilibreCP(){
+        String msg = "EQUILIBRE";
+        if(cumulRetranchementCP.subtract(cumulAjoutCP).compareTo(BigDecimal.ZERO) > 0)
+            msg = "[SOLDE DEBITEUR]";
+        if(cumulRetranchementCP.subtract(cumulAjoutCP).compareTo(BigDecimal.ZERO) < 0)
+            msg = "[SOLDE CREDITEUR]";
+        return msg;
+    }
+
+    public boolean displayEnregisterButton(){
+        return (cumulRetranchementAE.subtract(cumulAjoutAE).compareTo(BigDecimal.ZERO) != 0 || cumulRetranchementCP.subtract(cumulAjoutCP).compareTo(BigDecimal.ZERO) != 0);
     }
 }

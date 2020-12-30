@@ -6,7 +6,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:o="http://omnifaces.org/ui"
       xmlns:pe="http://primefaces.org/ui/extensions">
 <h:head>
-    <title style="font-size: larger; font-weight: bold">#{srcFinancementBacking.displayTitleText()}</title>
+    <title style="font-size: larger; font-weight: bold">#{rchSourceFinancementBacking.displayTitleText()}</title>
     <ui:include src="/resources/common/css.xhtml"/>
 </h:head>
 
@@ -17,35 +17,38 @@
         <div class="ui-g">
             <div class="ui-g-12">
                 <p:fieldset id="critereFls"  legend="Critère de recherche">
-                    <p:panelGrid columns="3" layout="grid" columnClasses="ui-g-5 , ui-g-5, ui-g-2">
+                    <p:panelGrid columns="4" layout="grid" columnClasses="ui-g5-3 , ui-g5-3, ui-g5-3, ui-g5-2">
+                        <p:outputLabel value="Section" styleClass="text-bold"/>
                         <p:outputLabel value="Activité" styleClass="text-bold"/>
                         <p:outputLabel value="Nature Economique" styleClass="text-bold"/>
                         <p:outputLabel value=" "/>
 
-                        <p:inputText value="#{srcFinancementBacking.activiteCode}" placeholder="Code de l'activité" styleClass="form-control"/>
-                        <p:inputText value="#{srcFinancementBacking.natureEconomiqueCode}" placeholder="Code de la nature économique" styleClass="form-control"/>
-                        <p:commandButton value="Rechercher" action="#{srcFinancementBacking.rechercher}" styleClass="btn-block" icon="fa fa-search" update="@form"/>
+                        <p:inputText value="#{rchSourceFinancementBacking.sectionCode}" placeholder="Code de la section" styleClass="form-control" disabled="#{rchSourceFinancementBacking.displaySectionField()}"/>
+                        <p:inputText value="#{rchSourceFinancementBacking.activiteCode}" placeholder="Code de l'activité" styleClass="form-control"/>
+                        <p:inputText value="#{rchSourceFinancementBacking.natureEconomiqueCode}" placeholder="Code de la nature économique" styleClass="form-control"/>
+                        <p:commandButton value="Rechercher" action="#{rchSourceFinancementBacking.rechercher}" styleClass="btn-block" icon="fa fa-search" update="@form"/>
                     </p:panelGrid>
                 </p:fieldset>
 
                 <p:fieldset id="oparationFls" legend="Sources de financement">
                     <div class="ui-g">
-                        <div class="ui-g-12"> <strong>Activité : </strong>#{srcFinancementBacking.selectedActivite.code} - #{srcFinancementBacking.selectedActivite.libelleLong} </div>
-                        <div class="ui-g-12"> <strong>Nature Economique : </strong>#{srcFinancementBacking.selectedNatureEconomique.code} - #{srcFinancementBacking.selectedNatureEconomique.libelleLong} </div>
+                        <div class="ui-g-12"> <strong>Activité : </strong>#{rchSourceFinancementBacking.selectedActivite.code} - #{rchSourceFinancementBacking.selectedActivite.libelleLong} </div>
+                        <div class="ui-g-12"> <strong>Nature Economique : </strong>#{rchSourceFinancementBacking.selectedNatureEconomique.code} - #{rchSourceFinancementBacking.selectedNatureEconomique.libelleLong} </div>
                     </div>
-                    <p:dataTable id="oparationDT" value="#{srcFinancementBacking.operationList}" rowIndexVar="index"
+                    <p:dataTable id="oparationDT" value="#{rchSourceFinancementBacking.operationList}" rowIndexVar="index"
                                  var="operation" emptyMessage="#{messages.empty_dataTable_message}">
                         <p:column headerText="#" styleClass="col-w5">#{index + 1}</p:column>
                         <p:column headerText="Source de Financement">#{operation.sourceFinancement}</p:column>
-                        <p:column headerText="Budget AE">#{operation.budgetActuelAE}</p:column>
-                        <p:column headerText="Budget CP">#{operation.budgetActuelCP}</p:column>
+                        <p:column headerText="Nature Eco." rendered="#{rchSourceFinancementBacking.natureEconomiqueCode ne null}">#{operation.natureEconomiqueCode}</p:column>
+                        <p:column headerText="Budget AE">#{amcCreateBacking.displayThousandSeparator(operation.budgetActuelAE)}</p:column>
+                        <p:column headerText="Budget CP">#{amcCreateBacking.displayThousandSeparator(operation.budgetActuelCP)}</p:column>
                         <p:column headerText="Disponible AE"> </p:column>
                         <p:column headerText="Disponible CP"> </p:column>
                         <p:column headerText="Retranchement AE" styleClass="col-w20">
-                            <p:inputNumber value="#{operation.montantOperationAE}" minValue="0" symbol=" FCFA" emptyValue="00" thousandSeparator="." decimalSeparator="," symbolPosition="s"/>
+                            <p:inputNumber value="#{operation.montantOperationAE}" minValue="0" maxValue="#{operation.budgetActuelAE}" symbol=" FCFA" emptyValue="00" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
                         </p:column>
                         <p:column headerText="Retranchement CP"  styleClass="col-w20">
-                            <p:inputNumber value="#{operation.montantOperationCP}" minValue="0" symbol=" FCFA" emptyValue="00" thousandSeparator="." decimalSeparator="," symbolPosition="s"/>
+                            <p:inputNumber value="#{operation.montantOperationCP}" minValue="0" maxValue="#{operation.budgetActuelCP}" symbol=" FCFA" emptyValue="00" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
                         </p:column>
                     </p:dataTable>
                 </p:fieldset>
@@ -54,8 +57,8 @@
 
                 <div class="ui-g">
                     <div class="ui-g-6" style="margin: 0px auto !important;">
-                        <p:commandButton action="#{visaCreateBacking.persist()}"
-                                         value="#{messages.enregistrer}" update="@form" style="width: 100%"/>
+                        <p:commandButton action="#{rchSourceFinancementBacking.ajouter()}"
+                                         value="Ajouter aux imputations" update="@form" style="width: 100%"/>
                     </div>
                 </div>
             </div>

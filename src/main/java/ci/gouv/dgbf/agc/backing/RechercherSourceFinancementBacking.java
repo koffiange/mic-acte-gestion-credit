@@ -9,20 +9,20 @@ import ci.gouv.dgbf.agc.service.*;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
-import org.primefaces.PrimeFaces;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-@Named(value = "srcFinancementBacking")
+@Named(value = "rchSourceFinancementBacking")
 @ViewScoped
-public class SourceFinancementBacking extends BaseBacking {
+public class RechercherSourceFinancementBacking extends BaseBacking {
 
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
@@ -34,6 +34,8 @@ public class SourceFinancementBacking extends BaseBacking {
     LigneDepenseService ligneDepenseService;
     @Inject
     OperationService operationService;
+    @Inject
+    operationSessionService operationSessionService;
 
     /*
     @Getter @Setter
@@ -62,6 +64,7 @@ public class SourceFinancementBacking extends BaseBacking {
     private NatureTransaction natureTransaction;
     @Getter @Setter
     private Map<String, String> params;
+
 
     @PostConstruct
     public void init(){
@@ -94,6 +97,10 @@ public class SourceFinancementBacking extends BaseBacking {
         }
     }
 
+    public boolean displaySectionField(){
+        return (natureTransaction.equals(NatureTransaction.VIREMENT));
+    }
+
     public void rechercher(){
         ligneDepenseList = ligneDepenseService.findByCritere(natureEconomiqueCode, activiteCode, sectionCode);
         operationList = operationService.buildOperationListFromLigneDepenseList(ligneDepenseList);
@@ -102,5 +109,21 @@ public class SourceFinancementBacking extends BaseBacking {
         activiteCode = "";
         natureEconomiqueCode = "";
     }
+
+    public void ajouter(){
+        List<Operation> effeciveOperationList = operationList.stream()
+                .filter(operation -> operation.getMontantOperationAE().compareTo(BigDecimal.ZERO) > 0)
+                .filter(operation -> operation.getMontantOperationCP().compareTo(BigDecimal.ZERO) > 0)
+                .collect(Collectors.toList());
+        LOG.info("Operation Origine : "+effeciveOperationList.size());
+        if (typeImputation.equals("origine")){
+            operationSessionService.getOperationOrigineList().addAll(effeciveOperationList);
+        } else{
+            operationSessionService.getOperationDestinationList().addAll(effeciveOperationList);
+        }
+        closeSuccess();
+    }
+
+
 
 }

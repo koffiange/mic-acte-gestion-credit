@@ -108,21 +108,23 @@
                         </p:panelGrid>
                     </p:fieldset>
 
-                    <p:fieldset legend="Imputations d'origine">
+                    <p:fieldset legend="Opération d'origine">
                         <p:menubar>
                             <f:facet name="options">
-                                <p:commandButton value="Rechercher une source de financement" action="#{amcCreateBacking.openLigneDepenseDialog('origine')}" icon="fa fa-search" />
+                                <p:commandButton value="Rechercher une source de financement" action="#{amcCreateBacking.openLigneDepenseDialog('origine')}" icon="fa fa-search" styleClass="steel-btn">
+                                    <p:ajax event="dialogReturn" listener="#{amcCreateBacking.handleReturn}" update="createForm:origineDT createForm:equilibreDG createForm:enregisterBTN"/>
+                                </p:commandButton>
                             </f:facet>
                         </p:menubar>
 
                         <p:spacer height="5"/>
 
-                        <p:dataTable id="origineDT" var="operation" value="#{amcCreateBacking.operationList}" rowIndexVar="index">
+                        <p:dataTable id="origineDT" var="operation" value="#{amcCreateBacking.operationOrigineList}" rowIndexVar="index">
                             <p:column headerText="#" styleClass="col-w5">
                                 <h:outputText value="#{index + 1}" />
                             </p:column>
 
-                            <p:column headerText="Activité">
+                            <p:column headerText="Activité" styleClass="col-w20">
                                 <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
                             </p:column>
 
@@ -135,33 +137,48 @@
                             </p:column>
 
                             <p:column headerText="Budget actuel">
-                                <h:outputText value="AE : #{operation.budgetActuelAE}" />
+                                <h:outputText value="AE : #{amcCreateBacking.displayThousandSeparator(operation.budgetActuelAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{operation.budgetActuelCP}" />
+                                <h:outputText value="CP : #{amcCreateBacking.displayThousandSeparator(operation.budgetActuelCP)}" />
                             </p:column>
 
                             <p:column headerText="Crédits disponibles">
-                                <h:outputText value="AE : #{operation.budgetActuelAE}" />
+                                <h:outputText value="AE : -" />
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{operation.budgetActuelCP}" />
+                                <h:outputText value="CP : -" />
                             </p:column>
 
                             <p:column headerText="Retranchements">
-                                <h:outputText value="AE : #{operation.montantOperationAE}" />
+                                <h:outputText value="AE : #{amcCreateBacking.displayThousandSeparator(operation.montantOperationAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{operation.montantOperationCP}" />
+                                <h:outputText value="CP : #{amcCreateBacking.displayThousandSeparator(operation.montantOperationCP)}" />
+                            </p:column>
+
+                            <p:column headerText="">
+                                <p:commandButton action="#{amcCreateBacking.deleteOperation('origine', operation)}" value="supprimer"
+                                                 update="createForm:origineDT" styleClass="btn-block" icon="fa fa-trash"/>
                             </p:column>
                         </p:dataTable>
                     </p:fieldset>
 
-                    <p:fieldset legend="Imputations de destination">
-                        <p:dataTable id="cibleDT" var="operation" value="#{amcCreateBacking.operationList}" rowIndexVar="index">
+                    <p:fieldset legend="Opération de destination">
+                        <p:menubar>
+                            <f:facet name="options">
+                                <p:commandButton value="Rechercher une source de financement" action="#{amcCreateBacking.openLigneDepenseDialog('destination')}" icon="fa fa-search" styleClass="steel-btn">
+                                    <p:ajax event="dialogReturn" listener="#{amcCreateBacking.handleReturn}" update="createForm:cibleDT createForm:equilibreDG createForm:enregisterBTN"/>
+                                </p:commandButton>
+                            </f:facet>
+                        </p:menubar>
+
+                        <p:spacer height="5"/>
+
+                        <p:dataTable id="cibleDT" var="operation" value="#{amcCreateBacking.operationDestinationList}" rowIndexVar="index">
 
                             <p:column headerText="#" styleClass="col-w5">
                                 <h:outputText value="#{index + 1}" />
                             </p:column>
 
-                            <p:column headerText="Activité">
+                            <p:column headerText="Activité" styleClass="col-w20">
                                 <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
                             </p:column>
 
@@ -174,32 +191,62 @@
                             </p:column>
 
                             <p:column headerText="Budget actuel">
-                                <h:outputText value="AE : #{operation.budgetActuelAE}" />
+                                <h:outputText value="AE : #{amcCreateBacking.displayThousandSeparator(operation.budgetActuelAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{operation.budgetActuelCP}" />
+                                <h:outputText value="CP : #{amcCreateBacking.displayThousandSeparator(operation.budgetActuelCP)}" />
                             </p:column>
 
                             <p:column headerText="Crédits disponibles">
-                                <h:outputText value="AE : #{operation.budgetActuelAE}" />
+                                <h:outputText value="AE : -" />
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{operation.budgetActuelCP}" />
+                                <h:outputText value="CP : -" />
                             </p:column>
 
                             <p:column headerText="Ajouts">
-                                <h:outputText value="AE : #{operation.montantOperationAE}" />
+                                <h:outputText value="AE : #{amcCreateBacking.displayThousandSeparator(operation.montantOperationAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{operation.montantOperationCP}" />
+                                <h:outputText value="CP : #{amcCreateBacking.displayThousandSeparator(operation.montantOperationCP)}" />
+                            </p:column>
+
+                            <p:column headerText="">
+                                <p:commandButton action="#{amcCreateBacking.deleteOperation('destination', operation)}" value="supprimer"
+                                                 update="createForm:cibleDT" styleClass="btn-block" icon="fa fa-trash"/>
                             </p:column>
                         </p:dataTable>
                     </p:fieldset>
 
+                    <p:fieldset legend="Equilibre des Opérations">
+                        <p:panelGrid columns="3" id="equilibreDG" layout="grid">
+                            <p:outputLabel value=" "/>
+                            <p:outputLabel value="AE"/>
+                            <p:outputLabel value="CP"/>
+
+                            <p:outputLabel value="Cummule des retranchements" styleClass="text-bold"/>
+                            <p:outputLabel value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulRetranchementAE)}"/>
+                            <p:outputLabel value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulRetranchementCP)}"/>
+
+                            <p:outputLabel value="Cummule des ajouts" styleClass="text-bold"/>
+                            <p:outputLabel value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulAjoutAE)}"/>
+                            <p:outputLabel value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulAjoutCP)}"/>
+
+                            <p:outputLabel value="Equilibre des opérations"
+                                           styleClass="text-bold #{amcCreateBacking.cumulRetranchementAE.subtract(amcCreateBacking.cumulAjoutAE) ne 0 ? 'text-danger' : ''}" />
+                            <h:outputText value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulRetranchementAE.subtract(amcCreateBacking.cumulAjoutAE))} #{amcCreateBacking.equilibreAE()}"
+                                           styleClass="text-bold #{amcCreateBacking.cumulRetranchementAE.subtract(amcCreateBacking.cumulAjoutAE) ne 0 ? 'text-danger' : ''}"/>
+                            <h:outputText value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulRetranchementCP.subtract(amcCreateBacking.cumulAjoutCP))} #{amcCreateBacking.equilibreCP()}"
+                                           styleClass="text-bold #{amcCreateBacking.cumulRetranchementAE.subtract(amcCreateBacking.cumulAjoutAE) ne 0 ? 'text-danger' : ''}"/>
+                        </p:panelGrid>
+                    </p:fieldset>
+
                     <p:spacer height="20" width="10"/>
-                    <div class="ui-g">
-                        <div class="ui-g-6" style="margin: 0px auto !important;">
-                            <p:commandButton action="#{visaCreateBacking.persist()}"
-                                             value="#{messages.enregistrer}" update="@form" style="width: 100%"/>
+                    <p:outputPanel id="enregisterBTN">
+                        <div class="ui-g">
+                            <div class="#{amcCreateBacking.displayEnregisterButton() ? 'ui-g-8' : 'ui-g-6'}" style="margin: 0px auto !important;">
+                                <p:commandButton action="#{amcCreateBacking.persist()}" disabled="#{amcCreateBacking.displayEnregisterButton()}" icon="fa fa-save"
+                                                 value="#{amcCreateBacking.displayEnregisterButton() ? 'Vous ne pourez pas enregistrer cet acte tant que l\'équilibre ne sera pas atteint.' : messages.enregistrer}" update="@form" style="width: 100%"/>
+                            </div>
                         </div>
-                    </div>
+                    </p:outputPanel>
                 </div>
             </div>
 
