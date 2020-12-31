@@ -2,12 +2,14 @@ package ci.gouv.dgbf.agc.backing;
 
 import ci.gouv.dgbf.agc.dto.*;
 import ci.gouv.dgbf.agc.service.ActeService;
+import ci.gouv.dgbf.agc.service.ModeleVisaService;
 import ci.gouv.dgbf.agc.service.SectionService;
 import ci.gouv.dgbf.agc.service.operationSessionService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.CloseEvent;
 import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
@@ -17,10 +19,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.logging.Logger;
 
 @Named(value = "amcCreateBacking")
 @ViewScoped
 public class ActeMouvementCreditCreateBacking extends BaseBacking {
+
+    private final Logger LOG = Logger.getLogger(this.getClass().getName());
+
     @Inject
     ActeService acteService;
 
@@ -29,6 +35,9 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
     @Inject
     operationSessionService operationSessionService;
+
+    @Inject
+    ModeleVisaService modeleVisaService;
 
     @Getter @Setter
     List<Signataire> signataireList = new ArrayList<>();
@@ -41,6 +50,9 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
     @Getter @Setter
     List<Section> sectionList;
+
+    @Getter @Setter
+    List<ModeleVisa> modeleVisaList;
 
     @Getter @Setter
     private ActeDto acteDto;
@@ -69,12 +81,16 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     @Getter @Setter
     private BigDecimal cumulAjoutCP = BigDecimal.ZERO;
 
+    @Getter @Setter
+    private String corpus;
+
     @PostConstruct
     public void init(){
         acte = new Acte();
         signataire = new Signataire();
         acteDto = new ActeDto();
         sectionList = sectionService.list();
+        modeleVisaList = modeleVisaService.listAll();
     }
 
     @PreDestroy
@@ -130,6 +146,23 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         PrimeFaces.current().dialog().openDynamic("rechercher-source-financement-dlg", options, params);
     }
 
+    public void openCorpusDialog(){
+        Map<String, List<String>> params = new HashMap<>();
+        Map<String,Object> options = getLevelOneDialogOptions();
+        options.replace("width", "60vw");
+        options.replace("height", "75vh");
+
+        List<String> corpusList = new ArrayList<>();
+        if(acte.getCorpus() == null) {
+            corpusList.add("");
+        } else {
+            corpusList.add(acte.getCorpus());
+        }
+        params.put("corpus", corpusList);
+
+        PrimeFaces.current().dialog().openDynamic("acte-corpus-dlg", options, params);
+    }
+
     public void handleReturn(SelectEvent event){
         operationOrigineList = operationSessionService.getOperationOrigineList();
         operationDestinationList = operationSessionService.getOperationDestinationList();
@@ -137,6 +170,20 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         if (event != null)
             showSuccess();
     }
+
+    public void close(){
+        acte.setCorpus(corpus);
+        LOG.info("Acte corpus: "+acte.getCorpus());
+        closeSuccess();
+    }
+
+    public void corpusHandleReturn(SelectEvent event){
+        acte.setCorpus(event.getObject().toString());
+        LOG.info("Acte corpus output: "+acte.getCorpus());
+    }
+
+
+
 
     public void deleteOperation(String location, Operation operation){
         if (location.equals("origine")){

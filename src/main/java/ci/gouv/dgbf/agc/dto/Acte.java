@@ -36,6 +36,8 @@ public class Acte{
     private LocalDate dateSignature;
     @Getter @Setter
     private Demande demande;
+    @Getter @Setter
+    private ModeleVisa modeleVisa;
 
     public Acte() {
     }

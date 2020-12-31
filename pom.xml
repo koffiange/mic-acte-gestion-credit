@@ -108,6 +108,13 @@
       <artifactId>commons-io</artifactId>
       <version>2.6</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.googlecode.owasp-java-html-sanitizer/owasp-java-html-sanitizer -->
+    <dependency>
+      <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+      <artifactId>owasp-java-html-sanitizer</artifactId>
+      <version>20200713.1</version>
+    </dependency>
+
   </dependencies>
 
   <profiles>
@@ -247,4 +254,11 @@
       </dependencies>
     </profile>
   </profiles>
+
+  <repositories>
+    <repository>
+      <id>owasp-java-html-sanitizer</id>
+      <url>https://mvnrepository.com/artifact/com.googlecode.owasp-java-html-sanitizer/owasp-java-html-sanitizer</url>
+    </repository>
+  </repositories>
 </project>

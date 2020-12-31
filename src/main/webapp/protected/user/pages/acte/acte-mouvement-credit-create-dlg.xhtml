@@ -67,8 +67,25 @@
                                 </p:column>
 
                                 <p:column>
-                                    <h:outputLabel for="dateSignature" value="Date signature" styleClass="text-bold"/><br/>
-                                    <p:datePicker id="dateSignature" value="#{amcCreateBacking.date}"/>
+                                    <h:outputLabel for="modeleVisa" value="Modele de Visa" styleClass="text-bold"/><br/>
+                                    <p:selectOneMenu id="modeleVisa" value="#{amcCreateBacking.acte.modeleVisa}" styleClass="form-control">
+                                        <f:selectItem itemLabel="Choissisez une section budgétaire" itemValue=""/>
+                                        <f:selectItems value="#{amcCreateBacking.modeleVisaList}" var="modeleVisa" itemLabel="#{modeleVisa.code} - #{of:abbreviate(modeleVisa.libelle, 60)} " itemValue="#{modeleVisa}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:row>
+
+                            <p:row>
+                                <p:column colspan="3">
+                                    <h:outputLabel value="Corps de l'acte (parties ou articles)" styleClass="text-bold"/><br/>
+                                    <p:panel header="" toggleable="true" >
+                                        <f:facet name="actions">
+                                            <p:commandButton value="Saisir corpus" action="#{amcCreateBacking.openCorpusDialog()}" styleClass="steel-btn" icon="fa fa-pencil">
+                                                <p:ajax event="dialogReturn" listener="#{amcCreateBacking.corpusHandleReturn}" update="createForm:corpus" />
+                                            </p:commandButton>
+                                        </f:facet>
+                                        <h:outputText value="#{of:abbreviate(amcCreateBacking.acte.corpus, 400)}" id="corpus" escape="false" />
+                                    </p:panel>
                                 </p:column>
                             </p:row>
 
@@ -84,14 +101,14 @@
                                 <p:column>
                                     <p:spacer height="5"/>
                                     <p:commandButton value="Ajouter" action="#{amcCreateBacking.addSignataire}" update="createForm:signataireList  createForm:signataireFonction  createForm:signataireNom"
-                                                     styleClass="btn-block" icon="fa fa-plus"/>
+                                                     styleClass="btn-block steel-btn" icon="fa fa-plus"/>
                                 </p:column>
                             </p:row>
 
                             <p:row>
                                 <p:column colspan="3">
                                     <p:dataTable id="signataireList" value="#{amcCreateBacking.signataireList}" var="signataire" type="ordered" rowIndexVar="index"
-                                        emptyMessage="#{messages.empty_dataTable_message}" styleClass="borderless">
+                                                 emptyMessage="#{messages.empty_dataTable_message}" styleClass="borderless">
                                         <f:facet name="header">
                                             Liste des signataires
                                         </f:facet>
@@ -101,6 +118,13 @@
                                         <p:column headerText="" styleClass="col-w10"><p:commandButton action="#{amcCreateBacking.deleteSignataire(signataire)}"
                                                   value="Retirer" update="createForm:signataireList" icon="fa fa-trash" styleClass="btn-block"/> </p:column>
                                     </p:dataTable>
+                                </p:column>
+                            </p:row>
+
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel for="dateSignature" value="Date signature" styleClass="text-bold"/><br/>
+                                    <p:datePicker id="dateSignature" value="#{amcCreateBacking.date}"/>
                                 </p:column>
                             </p:row>
 
