@@ -23,14 +23,18 @@
                 <h1 style="text-transform: uppercase;">Acte de gestion de credit</h1>
 
                 <h:form id="createBtnForm">
+                    <p:remoteCommand name="rc" action="#{acteBacking.init()}" update="listModeleForm" />
                     <p:toolbar id="viewToolBar">
                         <f:facet name="left">
-                            <p:splitButton value="Acte de mouvement de crédit" action="#{acteBacking.openCreateDialog('acte-mouvement-credit-create-dlg')}" icon="fa fa-exchange">
+                            <p:menuButton value="Nouvel acte de gestion de crédit" menuStyleClass="ui-overlay-butonn-menu">
+                                <p:menuitem value="Acte de mouvement de crédit" action="#{acteBacking.openCreateDialog('acte-mouvement-credit-create-dlg')}" icon="fa fa-exchange">
+                                    <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}" update="listModeleForm"/>
+                                </p:menuitem>
                                 <p:menuitem value="Acte de report de crédit" action="#{acteBacking.openCreateDialog('acte-report-credit-create-dlg')}" icon="fa fa-undo"/>
                                 <p:menuitem value="Acte d'intégration de resource" action="#{acteBacking.openCreateDialog('acte-integration-resource-create-dlg')}" icon="fa fa-plus"/>
                                 <p:menuitem value="Acte portant gèle et dégèle des crédits" action="#{acteBacking.openCreateDialog('acte-gele-credit-create-dlg')}" icon="fa fa-lock"/>
                                 <p:menuitem value="Acte portant annulation de crédit" action="#{acteBacking.openCreateDialog('acte-annulation-credit-create-dlg')}" icon="fa fa-ban"/>
-                            </p:splitButton>
+                            </p:menuButton>
                         </f:facet>
                     </p:toolbar>
                 </h:form>
@@ -42,7 +46,7 @@
 
                         <p:tabView>
                             <p:tab title="Tous les actes">
-                                <p:dataTable id="listActe" value="#{acteBacking.acteList}"
+                                <p:dataTable id="listActeDT" value="#{acteBacking.acteList}"
                                              emptyMessage="#{messages.empty_dataTable_message}"
                                              var="acte"
                                              rowIndexVar="index"
@@ -55,13 +59,13 @@
                                     <p:column headerText="Nature d'acte">#{acte.natureActe.libelle}</p:column>
                                     <p:column headerText="Date signature">#{acte.dateSignature}</p:column>
                                     <p:column headerText="Référence Demande">#{acte.reference}</p:column>
-                                    <p:column headerText="Statut acte"> </p:column>
+                                    <p:column headerText="Statut acte">#{acte.statutActe.libelle} </p:column>
                                     <p:column headerText="Actions" styleClass="col-w10">
                                         <p:commandButton icon="fa fa-caret-down"
                                                          id="actionBtnTout" type="button"
                                                          value="Actions" styleClass="btn-block"/>
                                         <!-- Overlay panel -->
-                                        <p:overlayPanel id="actionPanelTout" for="actionBtn"
+                                        <p:overlayPanel id="actionPanelTout" for="actionBtnTout"
                                                         at="left bottom"
                                                         hideEffect="fade" showCloseIcon="true">
                                             <p:commandLink value="Appliquer"

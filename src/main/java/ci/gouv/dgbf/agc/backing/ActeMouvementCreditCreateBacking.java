@@ -1,6 +1,8 @@
 package ci.gouv.dgbf.agc.backing;
 
 import ci.gouv.dgbf.agc.dto.*;
+import ci.gouv.dgbf.agc.enumeration.CategorieActe;
+import ci.gouv.dgbf.agc.enumeration.StatutActe;
 import ci.gouv.dgbf.agc.service.ActeService;
 import ci.gouv.dgbf.agc.service.ModeleVisaService;
 import ci.gouv.dgbf.agc.service.SectionService;
@@ -49,6 +51,9 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     List<Operation> operationDestinationList = new ArrayList<>();
 
     @Getter @Setter
+    List<Operation> operationList = new ArrayList<>();
+
+    @Getter @Setter
     List<Section> sectionList;
 
     @Getter @Setter
@@ -84,6 +89,9 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     @Getter @Setter
     private String corpus;
 
+    @Getter @Setter
+    private boolean appliquerActe = false;
+
     @PostConstruct
     public void init(){
         acte = new Acte();
@@ -111,12 +119,39 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         signataireList.remove(s);
     }
 
-    private void buildActeDto(){
+    private void buildActe(){
         acte.setDateSignature(convertIntoLocaleDate(date));
+        acte.setCategorieActe(CategorieActe.ACTE_MOUVEMENT);
+        acte.setStatutActe(StatutActe.EN_ATTENTE);
     }
+
+    private void buildActeDto(){
+        this.buildActe();
+        acteDto.setActe(acte);
+        acteDto.setSignataireList(signataireList);
+        operationList.addAll(operationOrigineList);
+        LOG.info("operation size : "+operationList.size());
+        operationList.addAll(operationDestinationList);
+        LOG.info("operation size : "+operationList.size());
+        acteDto.setOperationList(operationList);
+    }
+
+
 
     public void persist(){
         try{
+            this.buildActeDto();
+            acteService.persist(acteDto);
+            closeSuccess();
+        } catch (Exception e){
+            showError(e.getMessage());
+        }
+
+    }
+
+    public void persistAndApply(){
+        try{
+            this.buildActeDto();
             acteService.persist(acteDto);
             closeSuccess();
         } catch (Exception e){

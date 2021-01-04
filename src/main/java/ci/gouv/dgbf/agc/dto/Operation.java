@@ -3,12 +3,10 @@ package ci.gouv.dgbf.agc.dto;
 
 import ci.gouv.dgbf.agc.enumeration.DisponibiliteCreditOperation;
 import ci.gouv.dgbf.agc.enumeration.EffetOperation;
-import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -22,7 +20,7 @@ public class Operation{
     @Getter @Setter
     private String natureEconomiqueCode;
     @Getter @Setter
-    private String natureEconomiqueId;
+    private String natureEconomiqueLibelle;
     @Getter @Setter
     private String exercice;
     @Getter @Setter
@@ -54,7 +52,7 @@ public class Operation{
                 Objects.equals(activiteCode, operation.activiteCode) &&
                 Objects.equals(activiteLibelle, operation.activiteLibelle) &&
                 Objects.equals(natureEconomiqueCode, operation.natureEconomiqueCode) &&
-                Objects.equals(natureEconomiqueId, operation.natureEconomiqueId) &&
+                Objects.equals(natureEconomiqueLibelle, operation.natureEconomiqueLibelle) &&
                 Objects.equals(exercice, operation.exercice) &&
                 Objects.equals(budgetActuelAE, operation.budgetActuelAE) &&
                 Objects.equals(budgetActuelCP, operation.budgetActuelCP) &&
@@ -66,7 +64,7 @@ public class Operation{
 
     @Override
     public int hashCode() {
-        return Objects.hash(ligneDepenseUuid, activiteCode, activiteLibelle, natureEconomiqueCode, natureEconomiqueId, exercice, budgetActuelAE, budgetActuelCP, montantOperationAE, montantOperationCP, effetOperation, disponibiliteCredit);
+        return Objects.hash(ligneDepenseUuid, activiteCode, activiteLibelle, natureEconomiqueCode, natureEconomiqueLibelle, exercice, budgetActuelAE, budgetActuelCP, montantOperationAE, montantOperationCP, effetOperation, disponibiliteCredit);
     }
 
     @Override
@@ -76,7 +74,7 @@ public class Operation{
                 ", activiteCode='" + activiteCode + '\'' +
                 ", activiteLibelle='" + activiteLibelle + '\'' +
                 ", natureEconomiqueCode='" + natureEconomiqueCode + '\'' +
-                ", natureEconomique='" + natureEconomiqueId + '\'' +
+                ", natureEconomique='" + natureEconomiqueLibelle + '\'' +
                 ", exercice='" + exercice + '\'' +
                 ", budgetActuelAE=" + budgetActuelAE +
                 ", budgetActuelCP=" + budgetActuelCP +

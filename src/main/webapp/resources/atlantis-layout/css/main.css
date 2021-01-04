@@ -167,6 +167,10 @@ body .ui-breadcrumb{
     width: 95% !important;
 }
 
+.form-control-block{
+    width: 98% !important;
+}
+
 body .ui-dialog .ui-dialog-titlebar .ui-dialog-title {
     margin: 0;
     float: none;
@@ -395,6 +399,13 @@ div.ui-menu > ul > li > a.ui-menuitem-link.ui-corner-all{
 body .ui-overlaypanel{
     width: 300px;
     left: 75% !important;
+}
+
+
+
+.ui-overlay-butonn-menu{
+    width: 300px;
+    /*left: 75% !important;*/
 }
 
 .overlay-btn{

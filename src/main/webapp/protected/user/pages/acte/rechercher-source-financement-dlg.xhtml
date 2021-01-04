@@ -45,10 +45,10 @@
                         <p:column headerText="Disponible AE"> </p:column>
                         <p:column headerText="Disponible CP"> </p:column>
                         <p:column headerText="Retranchement AE" styleClass="col-w20">
-                            <p:inputNumber value="#{operation.montantOperationAE}" minValue="0" maxValue="#{operation.budgetActuelAE}" symbol=" FCFA" emptyValue="00" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
+                            <p:inputNumber value="#{operation.montantOperationAE}" minValue="0" maxValue="#{rchSourceFinancementBacking.typeImputation eq 'origine' ? operation.budgetActuelAE : rchSourceFinancementBacking.cumuleRettranchementAE}" symbol=" FCFA" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
                         </p:column>
                         <p:column headerText="Retranchement CP"  styleClass="col-w20">
-                            <p:inputNumber value="#{operation.montantOperationCP}" minValue="0" maxValue="#{operation.budgetActuelCP}" symbol=" FCFA" emptyValue="00" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
+                            <p:inputNumber value="#{operation.montantOperationCP}" minValue="0" maxValue="#{rchSourceFinancementBacking.typeImputation eq 'origine' ? operation.budgetActuelCP : rchSourceFinancementBacking.cumuleRettranchementCP}" symbol=" FCFA" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
                         </p:column>
                     </p:dataTable>
                 </p:fieldset>

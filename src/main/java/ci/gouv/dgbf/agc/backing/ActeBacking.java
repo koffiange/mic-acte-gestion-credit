@@ -17,11 +17,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Named
 @ViewScoped
 public class ActeBacking extends BaseBacking {
+
+    private final Logger LOG = Logger.getLogger(this.getClass().getName());
+
     @Inject
     ActeService acteService;
 
@@ -31,6 +35,7 @@ public class ActeBacking extends BaseBacking {
     @PostConstruct
     public void init(){
         acteList = acteService.listAll();
+        LOG.info("Init is done!!");
     }
 
     public List<Acte> findByStatut(StatutActe statut){
@@ -38,6 +43,7 @@ public class ActeBacking extends BaseBacking {
     }
 
     public void handleReturn(SelectEvent event){
+        LOG.info("Handled!");
         acteList = acteService.listAll();
         if (event != null)
             showSuccess();

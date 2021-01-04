@@ -45,6 +45,12 @@
                                 </p:column>
                             </p:row>
                             <p:row>
+                                <p:column colspan="3">
+                                    <h:outputLabel for="libelle" value="Libelle de l'acte" styleClass="text-bold"/><br/>
+                                    <p:inputText id="libelle" value="#{amcCreateBacking.acte.libelle}" styleClass="form-control-block"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
                                 <p:column>
                                     <h:outputLabel for="natureTransaction" value="Nature de la Transaction" styleClass="text-bold"/><br/>
                                     <p:selectOneMenu id="natureTransaction" value="#{amcCreateBacking.acte.natureTransaction}" styleClass="form-control">
@@ -132,6 +138,8 @@
                         </p:panelGrid>
                     </p:fieldset>
 
+                    <p:spacer height="30" width="5"/>
+
                     <p:fieldset legend="Opération d'origine">
                         <p:menubar>
                             <f:facet name="options">
@@ -184,6 +192,8 @@
                             </p:column>
                         </p:dataTable>
                     </p:fieldset>
+
+                    <p:spacer height="30" width="5"/>
 
                     <p:fieldset legend="Opération de destination">
                         <p:menubar>
@@ -239,6 +249,8 @@
                         </p:dataTable>
                     </p:fieldset>
 
+                    <p:spacer height="30" width="5"/>
+
                     <p:fieldset legend="Equilibre des Opérations">
                         <p:panelGrid columns="3" id="equilibreDG" layout="grid">
                             <p:outputLabel value=" "/>
@@ -260,9 +272,18 @@
                             <h:outputText value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulRetranchementCP.subtract(amcCreateBacking.cumulAjoutCP))} #{amcCreateBacking.equilibreCP()}"
                                            styleClass="text-bold #{amcCreateBacking.cumulRetranchementAE.subtract(amcCreateBacking.cumulAjoutAE) ne 0 ? 'text-danger' : ''}"/>
                         </p:panelGrid>
+
+                        <p:spacer height="20" width="10"/>
+
+                        <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                            <p:inputSwitch value="#{amcCreateBacking.appliquerActe}" offLabel="NON" onLabel="OUI"/>
+                            <p:outputLabel value="APPLIQUER L'ACTE APRES ENREGISTREMENT ?" styleClass="text-bold"/>
+                        </h:panelGrid>
+
                     </p:fieldset>
 
                     <p:spacer height="20" width="10"/>
+
                     <p:outputPanel id="enregisterBTN">
                         <div class="ui-g">
                             <div class="#{amcCreateBacking.displayEnregisterButton() ? 'ui-g-8' : 'ui-g-6'}" style="margin: 0px auto !important;">

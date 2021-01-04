@@ -5,6 +5,7 @@ import ci.gouv.dgbf.agc.dto.LigneDepense;
 import ci.gouv.dgbf.agc.dto.NatureEconomique;
 import ci.gouv.dgbf.agc.dto.Operation;
 import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
+import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import ci.gouv.dgbf.agc.service.*;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
@@ -17,6 +18,7 @@ import javax.inject.Named;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -64,6 +66,10 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     private NatureTransaction natureTransaction;
     @Getter @Setter
     private Map<String, String> params;
+    @Getter @Setter
+    private BigDecimal cumuleRettranchementAE = BigDecimal.ZERO;
+    @Getter @Setter
+    private BigDecimal cumuleRettranchementCP = BigDecimal.ZERO;
 
 
     @PostConstruct
@@ -85,6 +91,10 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
         LOG.info("Nature Transaction : "+natureTransaction);
         LOG.info("Type Imputation : "+typeImputation);
 
+        if(!typeImputation.equals("origine")) {
+            operationSessionService.getOperationOrigineList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumuleRettranchementAE);
+            operationSessionService.getOperationOrigineList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumuleRettranchementCP);
+        }
         // activiteList = activiteService.findAll();
         // natureEconomiqueList = natureEconomiqueService.findAll();
     }
@@ -110,12 +120,23 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
         natureEconomiqueCode = "";
     }
 
+    Function<Operation, Operation> typeOperationSetter = operation -> {
+        if (typeImputation.equals("origine")){
+            operation.setTypeOperation(TypeOperation.ORIGINE);
+        } else {
+            operation.setTypeOperation(TypeOperation.DESTINATION);
+        }
+        return operation;
+    };
+
     public void ajouter(){
         List<Operation> effeciveOperationList = operationList.stream()
-                .filter(operation -> operation.getMontantOperationAE().compareTo(BigDecimal.ZERO) > 0)
-                .filter(operation -> operation.getMontantOperationCP().compareTo(BigDecimal.ZERO) > 0)
+                .filter(operation -> operation.getMontantOperationAE() != null && operation.getMontantOperationCP() != null)
+                .map(typeOperationSetter)
+                //.filter(operation -> operation.getMontantOperationAE().compareTo(BigDecimal.ZERO) > 0)
+                //.filter(operation -> operation.getMontantOperationCP().compareTo(BigDecimal.ZERO) > 0)
                 .collect(Collectors.toList());
-        LOG.info("Operation Origine : "+effeciveOperationList.size());
+        LOG.info("Operation "+typeImputation+" : "+effeciveOperationList.size());
         if (typeImputation.equals("origine")){
             operationSessionService.getOperationOrigineList().addAll(effeciveOperationList);
         } else{
@@ -123,7 +144,4 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
         }
         closeSuccess();
     }
-
-
-
 }
