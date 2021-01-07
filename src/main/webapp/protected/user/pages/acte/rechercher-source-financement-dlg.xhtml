@@ -21,12 +21,23 @@
                         <p:outputLabel value="Section" styleClass="text-bold"/>
                         <p:outputLabel value="Activité" styleClass="text-bold"/>
                         <p:outputLabel value="Nature Economique" styleClass="text-bold"/>
-                        <p:outputLabel value=" "/>
+                        <p:outputLabel value="Nature de Dépense" styleClass="text-bold"/>
 
                         <p:inputText value="#{rchSourceFinancementBacking.sectionCode}" placeholder="Code de la section" styleClass="form-control" disabled="#{rchSourceFinancementBacking.displaySectionField()}"/>
                         <p:inputText value="#{rchSourceFinancementBacking.activiteCode}" placeholder="Code de l'activité" styleClass="form-control"/>
                         <p:inputText value="#{rchSourceFinancementBacking.natureEconomiqueCode}" placeholder="Code de la nature économique" styleClass="form-control"/>
                         <p:commandButton value="Rechercher" action="#{rchSourceFinancementBacking.rechercher}" styleClass="btn-block" icon="fa fa-search" update="@form"/>
+
+                        <p:outputLabel value="Programme" styleClass="text-bold"/>
+                        <p:outputLabel value="Action" styleClass="text-bold"/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+
+                        <p:inputText value="#{rchSourceFinancementBacking.programme}" placeholder="Code de la section" styleClass="form-control" disabled="#{rchSourceFinancementBacking.displaySectionField()}"/>
+                        <p:inputText value="#{rchSourceFinancementBacking.action}" placeholder="Code de l'activité" styleClass="form-control"/>
+                        <p:outputLabel value=""/>
+                        <p:outputLabel value=""/>
+
                     </p:panelGrid>
                 </p:fieldset>
 
@@ -35,21 +46,19 @@
                         <div class="ui-g-12"> <strong>Activité : </strong>#{rchSourceFinancementBacking.selectedActivite.code} - #{rchSourceFinancementBacking.selectedActivite.libelleLong} </div>
                         <div class="ui-g-12"> <strong>Nature Economique : </strong>#{rchSourceFinancementBacking.selectedNatureEconomique.code} - #{rchSourceFinancementBacking.selectedNatureEconomique.libelleLong} </div>
                     </div>
-                    <p:dataTable id="oparationDT" value="#{rchSourceFinancementBacking.operationList}" rowIndexVar="index"
-                                 var="operation" emptyMessage="#{messages.empty_dataTable_message}">
+                    <p:dataTable id="oparationDT" value="#{rchSourceFinancementBacking.operationList}"
+                                 var="operation"
+                                 selection="#{rchSourceFinancementBacking.selectedOperationList}"
+                                 rowKey="#{operation.activiteCode}-#{operation.natureEconomiqueCode}-#{index + 1}"
+                                 rowIndexVar="index"
+                                 tableStyle="font-size: 13px;"
+                                 emptyMessage="#{messages.empty_dataTable_message}">
+                        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
                         <p:column headerText="#" styleClass="col-w5">#{index + 1}</p:column>
                         <p:column headerText="Source de Financement">#{operation.sourceFinancement}</p:column>
-                        <p:column headerText="Nature Eco." rendered="#{rchSourceFinancementBacking.natureEconomiqueCode ne null}">#{operation.natureEconomiqueCode}</p:column>
+                        <p:column headerText="Nature Eco." rendered="#{rchSourceFinancementBacking.natureEconomiqueCode ne null}">#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}</p:column>
                         <p:column headerText="Budget AE">#{amcCreateBacking.displayThousandSeparator(operation.budgetActuelAE)}</p:column>
                         <p:column headerText="Budget CP">#{amcCreateBacking.displayThousandSeparator(operation.budgetActuelCP)}</p:column>
-                        <p:column headerText="Disponible AE"> </p:column>
-                        <p:column headerText="Disponible CP"> </p:column>
-                        <p:column headerText="Retranchement AE" styleClass="col-w20">
-                            <p:inputNumber value="#{operation.montantOperationAE}" minValue="0" maxValue="#{rchSourceFinancementBacking.typeImputation eq 'origine' ? operation.budgetActuelAE : rchSourceFinancementBacking.cumuleRettranchementAE}" symbol=" FCFA" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
-                        </p:column>
-                        <p:column headerText="Retranchement CP"  styleClass="col-w20">
-                            <p:inputNumber value="#{operation.montantOperationCP}" minValue="0" maxValue="#{rchSourceFinancementBacking.typeImputation eq 'origine' ? operation.budgetActuelCP : rchSourceFinancementBacking.cumuleRettranchementCP}" symbol=" FCFA" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
-                        </p:column>
                     </p:dataTable>
                 </p:fieldset>
 
@@ -58,7 +67,7 @@
                 <div class="ui-g">
                     <div class="ui-g-6" style="margin: 0px auto !important;">
                         <p:commandButton action="#{rchSourceFinancementBacking.ajouter()}"
-                                         value="Ajouter aux imputations" update="@form" style="width: 100%"/>
+                                         value="Ajouter aux imputations" style="width: 100%"/>
                     </div>
                 </div>
             </div>

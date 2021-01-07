@@ -4,8 +4,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/components/template.xhtml">
-    <ui:define name="title">Acte de gestion de credit</ui:define>
-    <p:importEnum type="ci.gouv.dgbf.agc.enumeration.StatutActe" var="statut" allSuffix="ALL_ENUM_VALUES"/>
+    <ui:define name="title">Application des actes de gestion de credit</ui:define>
 
     <ui:define name="content">
         <h:form id="messageForm">
@@ -14,13 +13,13 @@
         <h:form>
             <p:breadCrumb styleClass="breadcrumb" homeDisplay="false">
                 <p:menuitem value="Accueil" outcome="#{micBacking.accueil}" style="font-weight: bolder"/>
-                <p:menuitem value="Actes" url="#" />
+                <p:menuitem value="Application des actes" url="#" />
             </p:breadCrumb>
         </h:form>
 
         <div class="ui-g">
             <div class="ui-g-12">
-                <h1 style="text-transform: uppercase;">Acte de gestion de credit</h1>
+                <h1 style="text-transform: uppercase;">Application des actes de gestion de credit</h1>
 
                 <h:form id="createBtnForm">
                     <p:remoteCommand name="rc" action="#{acteBacking.init()}" update="listModeleForm" />
@@ -43,86 +42,61 @@
 
                 <p:fieldset legend="Liste des actes de gestion de credit">
                     <h:form id="listModeleForm">
-
                         <p:tabView>
-                            <p:tab title="Tous les actes">
-                                <p:dataTable id="listActeDT" value="#{acteBacking.acteList}"
+                            <p:tab title="Acte en attente d'application" id="attenteTab">
+                                <f:facet name="actions">
+                                    <p:commandButton value="Appliquer les actes sélectionnés" icon="fa fa-check"
+                                                     id="applicationMultipleBtn" actionListener="#{acteBacking.appliquerPlusieur()}"
+                                                     update="@form :messageForm"/>
+                                </f:facet>
+
+                                <p:dataTable id="listActeEnAttenteApplication" value="#{acteBacking.findByStatut('EN_ATTENTE')}"
                                              emptyMessage="#{messages.empty_dataTable_message}"
                                              var="acte"
+                                             selection="#{acteBacking.selectedActeList}"
+                                             rowKey="#{acte.uuid}"
                                              rowIndexVar="index"
                                              tableStyle="font-size: 13px;"
+                                             rowSelectMode="checkbox"
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                              rowsPerPageTemplate="6,12,16"
                                              currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
-                                    <p:column styleClass="col-w5" headerText="#">#{index + 1}</p:column>
+
+                                    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                                    <p:column headerText="#" style="width:20px;text-align:center">#{index + 1}</p:column>
                                     <p:column styleClass="col-w10" headerText="Categorie d'acte">#{acte.categorieActe.libelle}</p:column>
                                     <p:column headerText="Nature d'acte">#{acte.natureActe.libelle}</p:column>
                                     <p:column headerText="Date signature">#{acte.dateSignature}</p:column>
                                     <p:column headerText="Référence Demande">#{acte.reference}</p:column>
-                                    <p:column headerText="Statut acte">#{acte.statutActe.libelle} </p:column>
-                                    <p:column headerText="Actions" styleClass="col-w10">
-                                        <p:commandButton icon="fa fa-caret-down"
-                                                         id="actionBtnTout" type="button"
-                                                         value="Actions" styleClass="btn-block"/>
-                                        <!-- Overlay panel -->
-                                        <p:overlayPanel id="actionPanelTout" for="actionBtnTout"
-                                                        at="left bottom"
-                                                        hideEffect="fade" showCloseIcon="true">
-                                            <p:commandLink value="Appliquer"
-                                                           actionListener="#{acteBacking.openUpdateDialog(acte.uuid)}"
-                                                           styleClass="text-bold">
-                                                <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}"
-                                                        update=":listModeleForm messageForm"/>
-                                            </p:commandLink>
-                                            <hr style="border: dashed 1px #ffffff"/>
-                                            <p:commandLink value="Modifier"
-                                                           actionListener="#{acteBacking.openUpdateDialog(acte.uuid)}"
-                                                           styleClass="text-bold">
-                                                <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}"
-                                                        update=":listModeleForm messageForm"/>
-                                            </p:commandLink>
-                                            <br/>
-                                            <p:commandLink value="Supprimer"
-                                                           actionListener="#{acteBacking.delete(acte.uuid)}"
-                                                           styleClass="text-bold"
-                                                           update="@form">
-                                                <p:confirm header="Confirmation"
-                                                           message="#{acteBacking.getDeleteMessage(acte.libelle)}"
-                                                           icon="ui-icon-alert">
-                                                </p:confirm>
-                                            </p:commandLink>
-                                        </p:overlayPanel>
-                                    </p:column>
-                                </p:dataTable>
-                            </p:tab>
-                            <p:tab title="Acte en attente d'application">
-                                <p:dataTable id="listActeEnAttenteApplication" value="#{acteBacking.findByStatut(statut.EN_ATTENTE)}"
-                                             emptyMessage="#{messages.empty_dataTable_message}"
-                                             var="acte"
-                                             rowIndexVar="index"
-                                             tableStyle="font-size: 13px;"
-                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                             rowsPerPageTemplate="6,12,16"
-                                             currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
-                                    <p:column styleClass="col-w5" headerText="#">#{index + 1}</p:column>
-                                    <p:column styleClass="col-w10" headerText="Categorie d'acte">#{acte.categorieActe.libelle}</p:column>
-                                    <p:column headerText="Nature d'acte">#{acte.natureActe.libelle}</p:column>
-                                    <p:column headerText="Date signature">#{acte.dateSignature}</p:column>
-                                    <p:column headerText="Référence Demande">#{acte.reference}</p:column>
-                                    <p:column headerText="Statut acte"> </p:column>
+                                    <p:column headerText="Statut acte">#{acte.statutActe.libelle}</p:column>
                                     <p:column headerText="Actions" styleClass="col-w10">
                                         <p:commandButton icon="fa fa-caret-down"
                                                          id="actionBtnEnAttente" type="button"
                                                          value="Actions" styleClass="btn-block"/>
                                         <!-- Overlay panel -->
-                                        <p:overlayPanel id="actionPanelEnAttente" for="actionBtn"
+                                        <p:overlayPanel id="actionPanelEnAttente" for="actionBtnEnAttente"
                                                         at="left bottom"
                                                         hideEffect="fade" showCloseIcon="true">
+                                            <p:link value="Consulter" styleClass="text-bold" style="color: #ffffff"
+                                                outcome="/protected/user/pages/acte/consulter-acte-mouvement-credit">
+                                                <f:param name="uuid" value="#{acte.uuid}"/>
+                                            </p:link>
+                                            <br/>
                                             <p:commandLink value="Appliquer"
+                                                           actionListener="#{acteBacking.appliquer(acte.uuid)}"
+                                                           styleClass="text-bold"
+                                                           update="@form messageForm">
+                                                <p:confirm header="Confirmation"
+                                                           message="Êtes-vous sûr de vouloir appliquer l'acte suivant : #{acte.libelle}"
+                                                           icon="ui-icon-alert">
+                                                </p:confirm>
+                                            </p:commandLink>
+                                            <br/>
+                                            <p:commandLink value="Déréserver les crédits"
                                                            actionListener="#{acteBacking.openUpdateDialog(acte.uuid)}"
                                                            styleClass="text-bold">
                                                 <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}"
-                                                        update=":listModeleForm messageForm"/>
+                                                        update="@form messageForm"/>
                                             </p:commandLink>
                                             <hr style="border: dashed 1px #ffffff"/>
                                             <p:commandLink value="Modifier"
@@ -147,7 +121,7 @@
                             </p:tab>
 
                             <p:tab title="Actes appliqués">
-                                <p:dataTable id="listActeApplique" value="#{acteBacking.findByStatut(statut.APPLIQUE)}"
+                                <p:dataTable id="listActeApplique" value="#{acteBacking.findByStatut('APPLIQUE')}"
                                              emptyMessage="#{messages.empty_dataTable_message}"
                                              var="acte"
                                              rowIndexVar="index"
@@ -160,45 +134,18 @@
                                     <p:column headerText="Nature d'acte">#{acte.natureActe.libelle}</p:column>
                                     <p:column headerText="Date signature">#{acte.dateSignature}</p:column>
                                     <p:column headerText="Référence Demande">#{acte.reference}</p:column>
-                                    <p:column headerText="Statut acte"> </p:column>
+                                    <p:column headerText="Statut acte">#{acte.statutActe.libelle}</p:column>
                                     <p:column headerText="Actions" styleClass="col-w10">
-                                        <p:commandButton icon="fa fa-caret-down"
-                                                         id="actionBtnApplique" type="button"
-                                                         value="Actions" styleClass="btn-block"/>
-                                        <!-- Overlay panel -->
-                                        <p:overlayPanel id="actionPanelApplique" for="actionBtn"
-                                                        at="left bottom"
-                                                        hideEffect="fade" showCloseIcon="true">
-                                            <p:commandLink value="Appliquer"
-                                                           actionListener="#{acteBacking.openUpdateDialog(acte.uuid)}"
-                                                           styleClass="text-bold">
-                                                <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}"
-                                                        update=":listModeleForm messageForm"/>
-                                            </p:commandLink>
-                                            <hr style="border: dashed 1px #ffffff"/>
-                                            <p:commandLink value="Modifier"
-                                                           actionListener="#{acteBacking.openUpdateDialog(acte.uuid)}"
-                                                           styleClass="text-bold">
-                                                <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}"
-                                                        update=":listModeleForm messageForm"/>
-                                            </p:commandLink>
-                                            <br/>
-                                            <p:commandLink value="Supprimer"
-                                                           actionListener="#{acteBacking.delete(acte.uuid)}"
-                                                           styleClass="text-bold"
-                                                           update="@form">
-                                                <p:confirm header="Confirmation"
-                                                           message="#{acteBacking.getDeleteMessage(acte.libelle)}"
-                                                           icon="ui-icon-alert">
-                                                </p:confirm>
-                                            </p:commandLink>
-                                        </p:overlayPanel>
+                                        <p:link value="Consulter" styleClass="text-bold" style="color: #ffffff"
+                                                outcome="/protected/user/pages/acte/consulter-acte-mouvement-credit">
+                                            <f:param name="uuid" value="#{acte.uuid}"/>
+                                        </p:link>
                                     </p:column>
                                 </p:dataTable>
                             </p:tab>
 
                             <p:tab title="Actes échoué">
-                                <p:dataTable id="listActeEchoue" value="#{acteBacking.findByStatut(statut.APPLICATION_ECHOUE)}"
+                                <p:dataTable id="listActeEchoue" value="#{acteBacking.findByStatut('APPLICATION_ECHOUE')}"
                                              emptyMessage="#{messages.empty_dataTable_message}"
                                              var="acte"
                                              rowIndexVar="index"
@@ -211,21 +158,19 @@
                                     <p:column headerText="Nature d'acte">#{acte.natureActe.libelle}</p:column>
                                     <p:column headerText="Date signature">#{acte.dateSignature}</p:column>
                                     <p:column headerText="Référence Demande">#{acte.reference}</p:column>
-                                    <p:column headerText="Statut acte"> </p:column>
+                                    <p:column headerText="Statut acte">#{acte.statutActe.libelle}</p:column>
                                     <p:column headerText="Actions" styleClass="col-w10">
                                         <p:commandButton icon="fa fa-caret-down"
                                                          id="actionBtnEchoue" type="button"
                                                          value="Actions" styleClass="btn-block"/>
                                         <!-- Overlay panel -->
-                                        <p:overlayPanel id="actionPanelEchoue" for="actionBtn"
+                                        <p:overlayPanel id="actionPanelEchoue" for="actionBtnEchoue"
                                                         at="left bottom"
                                                         hideEffect="fade" showCloseIcon="true">
-                                            <p:commandLink value="Appliquer"
-                                                           actionListener="#{acteBacking.openUpdateDialog(acte.uuid)}"
-                                                           styleClass="text-bold">
-                                                <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}"
-                                                        update=":listModeleForm messageForm"/>
-                                            </p:commandLink>
+                                            <p:link value="Consulter" styleClass="text-bold" style="color: #ffffff"
+                                                    outcome="/protected/user/pages/acte/consulter-acte-mouvement-credit">
+                                                <f:param name="uuid" value="#{acte.uuid}"/>
+                                            </p:link>
                                             <hr style="border: dashed 1px #ffffff"/>
                                             <p:commandLink value="Modifier"
                                                            actionListener="#{acteBacking.openUpdateDialog(acte.uuid)}"
@@ -248,8 +193,6 @@
                                 </p:dataTable>
                             </p:tab>
                         </p:tabView>
-
-
 
                         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                             <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-check" />

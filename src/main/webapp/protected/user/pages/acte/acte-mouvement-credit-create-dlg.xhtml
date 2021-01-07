@@ -54,15 +54,16 @@
                                 <p:column>
                                     <h:outputLabel for="natureTransaction" value="Nature de la Transaction" styleClass="text-bold"/><br/>
                                     <p:selectOneMenu id="natureTransaction" value="#{amcCreateBacking.acte.natureTransaction}" styleClass="form-control">
-                                        <f:selectItem itemLabel="Choissisez une nature de transaction" itemValue="" />
                                         <f:selectItems value="#{natureTransaction.ALL_VALUES}" var="nt" itemLabel="#{nt.libelle}" itemValue="#{nt}"/>
-                                        <!--
-                                        <f:selectItem itemLabel="#{natureTransaction.VIREMENT.libelle}" itemValue="#{natureTransaction.VIREMENT}"/>
-                                        <f:selectItem itemLabel="#{natureTransaction.TRANSFERT.libelle}" itemValue="#{natureTransaction.TRANSFERT}"/>
-                                        -->
+                                        <p:ajax event="change" listener="#{amcCreateBacking.onNatureTransactionSelected()}" update="@form:addSignataireBtn"/>
                                     </p:selectOneMenu>
                                 </p:column>
+                                <p:column>
+                                    <h:outputLabel for="dateSignature" value="Date signature" styleClass="text-bold form-control"/><br/>
+                                    <p:datePicker id="dateSignature" value="#{amcCreateBacking.date}"/>
+                                </p:column>
 
+                                <!--
                                 <p:column>
                                     <h:outputLabel for="section" value="Section Budgetaire" styleClass="text-bold"/><br/>
                                     <p:selectOneMenu id="section" value="#{amcCreateBacking.selectedSection}"
@@ -79,8 +80,10 @@
                                         <f:selectItems value="#{amcCreateBacking.modeleVisaList}" var="modeleVisa" itemLabel="#{modeleVisa.code} - #{of:abbreviate(modeleVisa.libelle, 60)} " itemValue="#{modeleVisa}"/>
                                     </p:selectOneMenu>
                                 </p:column>
+                                -->
                             </p:row>
 
+                            <!--
                             <p:row>
                                 <p:column colspan="3">
                                     <h:outputLabel value="Corps de l'acte (parties ou articles)" styleClass="text-bold"/><br/>
@@ -94,6 +97,7 @@
                                     </p:panel>
                                 </p:column>
                             </p:row>
+                            -->
 
                             <p:row id="signataire">
                                 <p:column>
@@ -106,7 +110,8 @@
                                 </p:column>
                                 <p:column>
                                     <p:spacer height="5"/>
-                                    <p:commandButton value="Ajouter" action="#{amcCreateBacking.addSignataire}" update="createForm:signataireList  createForm:signataireFonction  createForm:signataireNom"
+                                    <p:commandButton id="addSignataireBtn" value="Ajouter" action="#{amcCreateBacking.addSignataire}" disabled="#{amcCreateBacking.addSignataireLock}"
+                                                     update="createForm:signataireList createForm:signataireFonction createForm:signataireNom @this"
                                                      styleClass="btn-block steel-btn" icon="fa fa-plus"/>
                                 </p:column>
                             </p:row>
@@ -121,19 +126,13 @@
                                         <p:column headerText="#" styleClass="col-w5">#{index + 1}</p:column>
                                         <p:column headerText="Fonction" >#{signataire.fonction}</p:column>
                                         <p:column headerText="Nom du signataire">#{signataire.nom}</p:column>
-                                        <p:column headerText="" styleClass="col-w10"><p:commandButton action="#{amcCreateBacking.deleteSignataire(signataire)}"
-                                                  value="Retirer" update="createForm:signataireList" icon="fa fa-trash" styleClass="btn-block"/> </p:column>
+                                        <p:column headerText="" styleClass="col-w10">
+                                            <p:commandButton action="#{amcCreateBacking.deleteSignataire(signataire)}"
+                                                  value="Retirer" update="createForm:signataireList @form:addSignataireBtn" icon="fa fa-trash"
+                                                  styleClass="btn-block"/> </p:column>
                                     </p:dataTable>
                                 </p:column>
                             </p:row>
-
-                            <p:row>
-                                <p:column>
-                                    <h:outputLabel for="dateSignature" value="Date signature" styleClass="text-bold"/><br/>
-                                    <p:datePicker id="dateSignature" value="#{amcCreateBacking.date}"/>
-                                </p:column>
-                            </p:row>
-
 
                         </p:panelGrid>
                     </p:fieldset>
@@ -143,7 +142,7 @@
                     <p:fieldset legend="Opération d'origine">
                         <p:menubar>
                             <f:facet name="options">
-                                <p:commandButton value="Rechercher une source de financement" action="#{amcCreateBacking.openLigneDepenseDialog('origine')}" icon="fa fa-search" styleClass="steel-btn">
+                                <p:commandButton value="Rechercher une source de financement" action="#{amcCreateBacking.openLigneDepenseDialog('ORIGINE')}" icon="fa fa-search" styleClass="steel-btn">
                                     <p:ajax event="dialogReturn" listener="#{amcCreateBacking.handleReturn}" update="createForm:origineDT createForm:equilibreDG createForm:enregisterBTN"/>
                                 </p:commandButton>
                             </f:facet>
@@ -151,7 +150,7 @@
 
                         <p:spacer height="5"/>
 
-                        <p:dataTable id="origineDT" var="operation" value="#{amcCreateBacking.operationOrigineList}" rowIndexVar="index">
+                        <p:dataTable id="origineDT" var="operation" value="#{amcCreateBacking.operationBagOrigine.operationList}" rowIndexVar="index">
                             <p:column headerText="#" styleClass="col-w5">
                                 <h:outputText value="#{index + 1}" />
                             </p:column>
@@ -160,8 +159,8 @@
                                 <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
                             </p:column>
 
-                            <p:column headerText="Nature Eco.">
-                                <h:outputText value="#{operation.natureEconomiqueCode}" />
+                            <p:column headerText="Nature Economique">
+                                <h:outputText value="#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}" />
                             </p:column>
 
                             <p:column headerText="Src. Financement">
@@ -180,10 +179,12 @@
                                 <h:outputText value="CP : -" />
                             </p:column>
 
-                            <p:column headerText="Retranchements">
-                                <h:outputText value="AE : #{amcCreateBacking.displayThousandSeparator(operation.montantOperationAE)}" />
-                                <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{amcCreateBacking.displayThousandSeparator(operation.montantOperationCP)}" />
+                            <p:column headerText="Prélèvements AE" styleClass="col-w20">
+                                <p:inputNumber value="#{operation.montantOperationAE}" minValue="0" maxValue="#{rchSourceFinancementBacking.typeImputation eq 'origine' ? operation.budgetActuelAE : rchSourceFinancementBacking.cumuleRettranchementAE}" symbol=" FCFA" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
+                            </p:column>
+
+                            <p:column headerText="Prélèvements CP"  styleClass="col-w20">
+                                <p:inputNumber value="#{operation.montantOperationCP}" minValue="0" maxValue="#{rchSourceFinancementBacking.typeImputation eq 'origine' ? operation.budgetActuelCP : rchSourceFinancementBacking.cumuleRettranchementCP}" symbol=" FCFA" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
                             </p:column>
 
                             <p:column headerText="">
@@ -206,7 +207,7 @@
 
                         <p:spacer height="5"/>
 
-                        <p:dataTable id="cibleDT" var="operation" value="#{amcCreateBacking.operationDestinationList}" rowIndexVar="index">
+                        <p:dataTable id="cibleDT" var="operation" value="#{amcCreateBacking.operationBagDestination.operationList}" rowIndexVar="index">
 
                             <p:column headerText="#" styleClass="col-w5">
                                 <h:outputText value="#{index + 1}" />
@@ -217,7 +218,7 @@
                             </p:column>
 
                             <p:column headerText="Nature Eco.">
-                                <h:outputText value="#{operation.natureEconomiqueCode}" />
+                                <h:outputText value="#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}" />
                             </p:column>
 
                             <p:column headerText="Src. Financement">
@@ -236,10 +237,12 @@
                                 <h:outputText value="CP : -" />
                             </p:column>
 
-                            <p:column headerText="Ajouts">
-                                <h:outputText value="AE : #{amcCreateBacking.displayThousandSeparator(operation.montantOperationAE)}" />
-                                <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{amcCreateBacking.displayThousandSeparator(operation.montantOperationCP)}" />
+                            <p:column headerText="Compléments AE" styleClass="col-w20">
+                                <p:inputNumber value="#{operation.montantOperationAE}" minValue="0" maxValue="#{rchSourceFinancementBacking.typeImputation eq 'origine' ? operation.budgetActuelAE : rchSourceFinancementBacking.cumuleRettranchementAE}" symbol=" FCFA" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
+                            </p:column>
+
+                            <p:column headerText="Compléments CP"  styleClass="col-w20">
+                                <p:inputNumber value="#{operation.montantOperationCP}" minValue="0" maxValue="#{rchSourceFinancementBacking.typeImputation eq 'origine' ? operation.budgetActuelCP : rchSourceFinancementBacking.cumuleRettranchementCP}" symbol=" FCFA" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
                             </p:column>
 
                             <p:column headerText="">
@@ -280,7 +283,6 @@
                             <p:inputSwitch value="#{amcCreateBacking.appliquerActe}" offLabel="NON" onLabel="OUI"/>
                             <p:outputLabel value="APPLIQUER L'ACTE APRES ENREGISTREMENT ?" styleClass="text-bold"/>
                         </h:panelGrid>
-
                     </p:fieldset>
 
                     <p:spacer height="20" width="10"/>
@@ -288,8 +290,14 @@
                     <p:outputPanel id="enregisterBTN">
                         <div class="ui-g">
                             <div class="#{amcCreateBacking.displayEnregisterButton() ? 'ui-g-8' : 'ui-g-6'}" style="margin: 0px auto !important;">
-                                <p:commandButton action="#{amcCreateBacking.persist()}" disabled="#{amcCreateBacking.displayEnregisterButton()}" icon="fa fa-save"
-                                                 value="#{amcCreateBacking.displayEnregisterButton() ? 'Vous ne pourez pas enregistrer cet acte tant que l\'équilibre ne sera pas atteint.' : messages.enregistrer}" update="@form" style="width: 100%"/>
+                                <p:commandButton action="#{amcCreateBacking.persist()}"
+                                                 disabled="#{amcCreateBacking.displayEnregisterButton()}" icon="fa fa-save"
+                                                 value="#{amcCreateBacking.displayEnregisterButton() ? messages.equilibre_non_atteint_btn_message : messages.enregistrer}" update="@form" style="width: 100%"/>
+                            </div>
+                            <div class="ui-g-1">
+                                <p:commandButton action="#{amcCreateBacking.close()}"
+                                                 disabled="#{amcCreateBacking.displayEnregisterButton()}" icon="fa fa-ban" styleClass="black-btn"
+                                                 value="#{messages.annuler}" update="@form" style="width: 100%"/>
                             </div>
                         </div>
                     </p:outputPanel>

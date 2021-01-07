@@ -32,13 +32,16 @@ public class ActeBacking extends BaseBacking {
     @Getter @Setter
     private List<Acte> acteList;
 
+    @Getter @Setter
+    private List<Acte> selectedActeList;
+
     @PostConstruct
     public void init(){
         acteList = acteService.listAll();
-        LOG.info("Init is done!!");
     }
 
-    public List<Acte> findByStatut(StatutActe statut){
+    public List<Acte> findByStatut(String s){
+        StatutActe statut = StatutActe.valueOf(s);
         return acteList.stream().filter(acte -> acte.getStatutActe().equals(statut)).collect(Collectors.toList());
     }
 
@@ -49,8 +52,13 @@ public class ActeBacking extends BaseBacking {
             showSuccess();
     }
 
+    public void onRowSelect(SelectEvent<Acte> event){
+        LOG.info("Row selected! Uuid : "+event.getObject().getUuid());
+    }
+
     public void openCreateDialog(String dlg){
         Map<String,Object> options = getLevelOneDialogOptions();
+        options.put("closable", false);
         options.replace("height", "95vh");
         options.replace("width", "95vw");
         PrimeFaces.current().dialog().openDynamic(dlg, options, null);
@@ -75,6 +83,19 @@ public class ActeBacking extends BaseBacking {
         } catch (Exception e){
             showError(e.getMessage());
         }
+    }
+
+    public void appliquer(String uuid){
+        acteService.appliquer(uuid);
+        acteList = acteService.listAll();
+        showSuccess();
+    }
+
+    public void appliquerPlusieur(){
+        List<String> uuidList = selectedActeList.stream().map(Acte::getUuid).collect(Collectors.toList());
+        acteService.appliquerPlusieur(uuidList);
+        acteList = acteService.listAll();
+        showSuccess();
     }
 
 }

@@ -49,13 +49,28 @@ public class ActeService implements ActeClient {
     }
 
     @Override
-    public void persist(ActeDto acteDto) {
-        client.persist(acteDto);
+    public ActeDto findActeDtoById(String uuid) {
+        return client.findActeDtoById(uuid);
+    }
+
+    @Override
+    public void persist(boolean appliquer, ActeDto acteDto) {
+        client.persist(appliquer, acteDto);
     }
 
     @Override
     public void update(Acte acte) {
         client.update(acte);
+    }
+
+    @Override
+    public void appliquer(String uuid) {
+        client.appliquer(uuid);
+    }
+
+    @Override
+    public void appliquerPlusieur(List<String> uuidList) {
+        client.appliquerPlusieur(uuidList);
     }
 
     @Override

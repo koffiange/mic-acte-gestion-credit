@@ -12,6 +12,8 @@ import java.util.Objects;
 
 public class Operation{
     @Getter @Setter
+    private String uuid;
+    @Getter @Setter
     private String ligneDepenseUuid;
     @Getter @Setter
     private String activiteCode;
@@ -30,9 +32,9 @@ public class Operation{
     @Getter @Setter
     private BigDecimal budgetActuelCP;
     @Getter @Setter
-    private BigDecimal montantOperationAE;
+    private BigDecimal montantOperationAE = BigDecimal.ZERO;
     @Getter @Setter
-    private BigDecimal montantOperationCP;
+    private BigDecimal montantOperationCP = BigDecimal.ZERO;
     @Getter @Setter
     private TypeOperation typeOperation;
     @Getter @Setter

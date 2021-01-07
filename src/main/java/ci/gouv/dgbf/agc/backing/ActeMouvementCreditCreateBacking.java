@@ -2,7 +2,9 @@ package ci.gouv.dgbf.agc.backing;
 
 import ci.gouv.dgbf.agc.dto.*;
 import ci.gouv.dgbf.agc.enumeration.CategorieActe;
+import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
 import ci.gouv.dgbf.agc.enumeration.StatutActe;
+import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import ci.gouv.dgbf.agc.service.ActeService;
 import ci.gouv.dgbf.agc.service.ModeleVisaService;
 import ci.gouv.dgbf.agc.service.SectionService;
@@ -11,7 +13,6 @@ import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
-import org.primefaces.event.CloseEvent;
 import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
@@ -30,34 +31,34 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
     @Inject
-    ActeService acteService;
+    private ActeService acteService;
 
     @Inject
-    SectionService sectionService;
+    private SectionService sectionService;
 
     @Inject
-    operationSessionService operationSessionService;
+    private operationSessionService operationSessionService;
 
     @Inject
-    ModeleVisaService modeleVisaService;
+    private ModeleVisaService modeleVisaService;
 
     @Getter @Setter
-    List<Signataire> signataireList = new ArrayList<>();
+    private List<Signataire> signataireList = new ArrayList<>();
 
     @Getter @Setter
-    List<Operation> operationOrigineList = new ArrayList<>();
+    private List<Operation> operationList = new ArrayList<>();
 
     @Getter @Setter
-    List<Operation> operationDestinationList = new ArrayList<>();
+    private OperationBag operationBagOrigine = new OperationBag();
 
     @Getter @Setter
-    List<Operation> operationList = new ArrayList<>();
+    private OperationBag operationBagDestination = new OperationBag();
 
     @Getter @Setter
-    List<Section> sectionList;
+    private List<Section> sectionList;
 
     @Getter @Setter
-    List<ModeleVisa> modeleVisaList;
+    private List<ModeleVisa> modeleVisaList;
 
     @Getter @Setter
     private ActeDto acteDto;
@@ -92,6 +93,9 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     @Getter @Setter
     private boolean appliquerActe = false;
 
+    @Getter @Setter
+    private boolean addSignataireLock = false;
+
     @PostConstruct
     public void init(){
         acte = new Acte();
@@ -109,11 +113,31 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     public void addSignataire(){
         signataireList.add(signataire);
         signataire = new Signataire();
+        this.changeAddBtnSignataireAbility();
     }
 
     public void deleteSignataire(Signataire signataire){
         signataireList.remove(signataire);
+        this.changeAddBtnSignataireAbility();
     }
+
+    public void onNatureTransactionSelected(){
+        this.changeAddBtnSignataireAbility();
+    }
+
+    public void changeAddBtnSignataireAbility(){
+        if (acte.getNatureTransaction()!=null &&
+            acte.getNatureTransaction().equals(NatureTransaction.VIREMENT) &&
+            signataireList.size() >= 1){
+            addSignataireLock = true;
+        } else {
+            addSignataireLock = false;
+        }
+        LOG.info("Nature transaction : "+ acte.getNatureTransaction());
+        LOG.info("addSignataireLock value : "+ addSignataireLock);
+    }
+
+
 
     public void addSignataire(String s){
         signataireList.remove(s);
@@ -129,35 +153,19 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         this.buildActe();
         acteDto.setActe(acte);
         acteDto.setSignataireList(signataireList);
-        operationList.addAll(operationOrigineList);
-        LOG.info("operation size : "+operationList.size());
-        operationList.addAll(operationDestinationList);
-        LOG.info("operation size : "+operationList.size());
+        operationList.addAll(operationBagOrigine.getOperationList());
+        operationList.addAll(operationBagDestination.getOperationList());
         acteDto.setOperationList(operationList);
     }
-
-
 
     public void persist(){
         try{
             this.buildActeDto();
-            acteService.persist(acteDto);
+            acteService.persist(appliquerActe, acteDto);
             closeSuccess();
         } catch (Exception e){
             showError(e.getMessage());
         }
-
-    }
-
-    public void persistAndApply(){
-        try{
-            this.buildActeDto();
-            acteService.persist(acteDto);
-            closeSuccess();
-        } catch (Exception e){
-            showError(e.getMessage());
-        }
-
     }
 
     public void openLigneDepenseDialog(String typeImputation){
@@ -165,11 +173,6 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         options.replace("width", "90vw");
         options.replace("height", "90vh");
         Map<String, List<String>> params = new HashMap<>();
-
-        List<String> sectionList = new ArrayList<>();
-        sectionList.add(selectedSection.getCode());
-        params.put("sectionCode", sectionList);
-
         List<String> natureTransactionList = new ArrayList<>();
         natureTransactionList.add(acte.getNatureTransaction().toString());
         params.put("natureTransaction", natureTransactionList);
@@ -199,11 +202,32 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     }
 
     public void handleReturn(SelectEvent event){
-        operationOrigineList = operationSessionService.getOperationOrigineList();
-        operationDestinationList = operationSessionService.getOperationDestinationList();
+        OperationBag operationBag = (OperationBag) event.getObject();
+        LOG.info("Operation Bag : "+operationBag.toString());
+        this.completeSectionCodeList(operationBag.getTypeOperation(), operationBag.getSectionCodeList());
+        this.completeOperationList(operationBag.getTypeOperation(), operationBag.getOperationList());
         this.cumules();
-        if (event != null)
-            showSuccess();
+        showSuccess();
+    }
+
+    private void completeSectionCodeList(TypeOperation typeOperation, List<String> sectionCodeList){
+        sectionCodeList.forEach(code -> {
+            if (typeOperation.equals(TypeOperation.ORIGINE) && !operationBagOrigine.getSectionCodeList().contains(code))
+                operationBagOrigine.getSectionCodeList().add(code);
+
+            if (typeOperation.equals(TypeOperation.DESTINATION) && !operationBagDestination.getSectionCodeList().contains(code))
+                operationBagDestination.getSectionCodeList().add(code);
+        });
+    }
+
+    private void completeOperationList(TypeOperation typeOperation, List<Operation> operationList){
+        operationList.forEach(operation -> {
+            if (typeOperation.equals(TypeOperation.ORIGINE) && !operationBagOrigine.getOperationList().contains(operation))
+                operationBagOrigine.getOperationList().add(operation);
+
+            if (typeOperation.equals(TypeOperation.DESTINATION) && !operationBagDestination.getOperationList().contains(operation))
+                operationBagDestination.getOperationList().add(operation);
+        });
     }
 
     public void close(){
@@ -221,22 +245,21 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
 
     public void deleteOperation(String location, Operation operation){
-        if (location.equals("origine")){
-            operationSessionService.getOperationOrigineList().remove(operation);
-        } else{
-            operationSessionService.getOperationDestinationList().remove(operation);
-        }
+        TypeOperation typeOperation = TypeOperation.valueOf(location);
 
-        operationOrigineList = operationSessionService.getOperationOrigineList();
-        operationDestinationList = operationSessionService.getOperationDestinationList();
+        if (typeOperation.equals(TypeOperation.ORIGINE)){
+            operationBagOrigine.getOperationList().remove(operation);
+        } else{
+            operationBagDestination.getOperationList().remove(operation);
+        }
         this.cumules();
     }
 
     private void cumules(){
-        operationSessionService.getOperationOrigineList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementAE);
-        operationSessionService.getOperationOrigineList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
-        operationSessionService.getOperationDestinationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutAE);
-        operationSessionService.getOperationDestinationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
+        operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementAE);
+        operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
+        operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutAE);
+        operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
     }
 
     public String equilibreAE(){

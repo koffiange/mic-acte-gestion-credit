@@ -1,15 +1,13 @@
 package ci.gouv.dgbf.agc.backing;
 
-import ci.gouv.dgbf.agc.dto.Activite;
-import ci.gouv.dgbf.agc.dto.LigneDepense;
-import ci.gouv.dgbf.agc.dto.NatureEconomique;
-import ci.gouv.dgbf.agc.dto.Operation;
+import ci.gouv.dgbf.agc.dto.*;
 import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import ci.gouv.dgbf.agc.service.*;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
+import org.primefaces.PrimeFaces;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -20,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Named(value = "rchSourceFinancementBacking")
 @ViewScoped
@@ -51,6 +48,8 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Getter @Setter
     private List<Operation> operationList;
     @Getter @Setter
+    private List<Operation> selectedOperationList;
+    @Getter @Setter
     private Activite selectedActivite;
     @Getter @Setter
     private NatureEconomique selectedNatureEconomique;
@@ -59,7 +58,11 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Getter @Setter
     private String natureEconomiqueCode;
     @Getter @Setter
-    private String typeImputation;
+    private String programme;
+    @Getter @Setter
+    private String action;
+    @Getter @Setter
+    private TypeOperation typeImputation;
     @Getter @Setter
     private String sectionCode;
     @Getter @Setter
@@ -70,10 +73,13 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     private BigDecimal cumuleRettranchementAE = BigDecimal.ZERO;
     @Getter @Setter
     private BigDecimal cumuleRettranchementCP = BigDecimal.ZERO;
+    @Getter @Setter
+    private OperationBag operationBag;
 
 
     @PostConstruct
     public void init(){
+        operationBag = new OperationBag();
         params = getRequestParameterMap();
         if(params.containsKey("sectionCode")){
             sectionCode = params.get("sectionCode");
@@ -84,23 +90,12 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
         }
 
         if(params.containsKey("typeImputation")){
-            typeImputation = params.get("typeImputation");
+            operationBag.setTypeOperation(TypeOperation.valueOf(params.get("typeImputation")));
         }
-
-        LOG.info("Section code : "+sectionCode);
-        LOG.info("Nature Transaction : "+natureTransaction);
-        LOG.info("Type Imputation : "+typeImputation);
-
-        if(!typeImputation.equals("origine")) {
-            operationSessionService.getOperationOrigineList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumuleRettranchementAE);
-            operationSessionService.getOperationOrigineList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumuleRettranchementCP);
-        }
-        // activiteList = activiteService.findAll();
-        // natureEconomiqueList = natureEconomiqueService.findAll();
     }
 
     public String displayTitleText(){
-        if (typeImputation.equals("origine")){
+        if (operationBag.getTypeOperation().equals(TypeOperation.ORIGINE)){
             return "Imputation d'Origine : rechercher des sources de financement de la section "+sectionCode;
         } else {
             return "Imputation de Destinantion : rechercher de source de financement";
@@ -108,7 +103,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     }
 
     public boolean displaySectionField(){
-        return (natureTransaction.equals(NatureTransaction.VIREMENT));
+        return (sectionCode != null);
     }
 
     public void rechercher(){
@@ -116,32 +111,18 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
         operationList = operationService.buildOperationListFromLigneDepenseList(ligneDepenseList);
         selectedActivite = activiteService.findByCode(activiteCode);
         selectedNatureEconomique = natureEconomiqueService.findByCode(natureEconomiqueCode);
+        this.initCritereRecherche();
+    }
+
+    private void initCritereRecherche(){
         activiteCode = "";
         natureEconomiqueCode = "";
     }
 
-    Function<Operation, Operation> typeOperationSetter = operation -> {
-        if (typeImputation.equals("origine")){
-            operation.setTypeOperation(TypeOperation.ORIGINE);
-        } else {
-            operation.setTypeOperation(TypeOperation.DESTINATION);
-        }
-        return operation;
-    };
-
     public void ajouter(){
-        List<Operation> effeciveOperationList = operationList.stream()
-                .filter(operation -> operation.getMontantOperationAE() != null && operation.getMontantOperationCP() != null)
-                .map(typeOperationSetter)
-                //.filter(operation -> operation.getMontantOperationAE().compareTo(BigDecimal.ZERO) > 0)
-                //.filter(operation -> operation.getMontantOperationCP().compareTo(BigDecimal.ZERO) > 0)
-                .collect(Collectors.toList());
-        LOG.info("Operation "+typeImputation+" : "+effeciveOperationList.size());
-        if (typeImputation.equals("origine")){
-            operationSessionService.getOperationOrigineList().addAll(effeciveOperationList);
-        } else{
-            operationSessionService.getOperationDestinationList().addAll(effeciveOperationList);
-        }
-        closeSuccess();
+        LOG.info("Selected Opération : "+selectedOperationList.size());
+        operationBag.getSectionCodeList().add(sectionCode);
+        operationBag.getOperationList().addAll(selectedOperationList);
+        PrimeFaces.current().dialog().closeDynamic(operationBag);
     }
 }

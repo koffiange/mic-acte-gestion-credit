@@ -16,13 +16,25 @@ public interface ActeClient {
     @Path("/acte/{uuid}")
     Acte findById(@PathParam("uuid") String uuid);
 
+    @GET
+    @Path("/acte/dto/{uuid}")
+    ActeDto findActeDtoById(@PathParam("uuid") String uuid);
+
     @POST
     @Path("/acte")
-    void persist(ActeDto acteDto);
+    void persist(@QueryParam("appliquer") boolean appliquer, ActeDto acteDto);
 
     @PUT
     @Path("/acte")
     void update(Acte acte);
+
+    @PUT
+    @Path("/acte/appliquer")
+    void appliquer(String uuid);
+
+    @PUT
+    @Path("/acte/appliquer/plusieurs")
+    void appliquerPlusieur(List<String> uuidList);
 
     @DELETE
     @Path("/acte/{uuid}")
