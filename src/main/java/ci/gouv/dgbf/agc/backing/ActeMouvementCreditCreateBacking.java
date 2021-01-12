@@ -88,6 +88,9 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     private BigDecimal cumulAjoutCP = BigDecimal.ZERO;
 
     @Getter @Setter
+    private final BigDecimal zero = BigDecimal.ZERO;
+
+    @Getter @Setter
     private String corpus;
 
     @Getter @Setter
@@ -133,8 +136,6 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         } else {
             addSignataireLock = false;
         }
-        LOG.info("Nature transaction : "+ acte.getNatureTransaction());
-        LOG.info("addSignataireLock value : "+ addSignataireLock);
     }
 
 
@@ -197,13 +198,11 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
             corpusList.add(acte.getCorpus());
         }
         params.put("corpus", corpusList);
-
         PrimeFaces.current().dialog().openDynamic("acte-corpus-dlg", options, params);
     }
 
     public void handleReturn(SelectEvent event){
         OperationBag operationBag = (OperationBag) event.getObject();
-        LOG.info("Operation Bag : "+operationBag.toString());
         this.completeSectionCodeList(operationBag.getTypeOperation(), operationBag.getSectionCodeList());
         this.completeOperationList(operationBag.getTypeOperation(), operationBag.getOperationList());
         this.cumules();
@@ -232,13 +231,11 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
     public void close(){
         acte.setCorpus(corpus);
-        LOG.info("Acte corpus: "+acte.getCorpus());
         closeSuccess();
     }
 
     public void corpusHandleReturn(SelectEvent event){
         acte.setCorpus(event.getObject().toString());
-        LOG.info("Acte corpus output: "+acte.getCorpus());
     }
 
 
@@ -255,7 +252,7 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         this.cumules();
     }
 
-    private void cumules(){
+    public void cumules(){
         operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementAE);
         operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
         operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutAE);

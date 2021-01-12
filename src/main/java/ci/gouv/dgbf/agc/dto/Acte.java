@@ -35,6 +35,8 @@ public class Acte{
     private Demande demande;
     @Getter @Setter
     private ModeleVisa modeleVisa;
+    @Getter @Setter
+    private LocalDateTime createdDate;
 
     public Acte() {
     }

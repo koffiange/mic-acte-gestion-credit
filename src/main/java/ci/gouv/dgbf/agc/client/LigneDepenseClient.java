@@ -27,7 +27,10 @@ public interface LigneDepenseClient {
 
     @GET
     @Path("/criteres")
-    List<LigneDepense> findByCritere(@QueryParam("nat_code") String nat_code,
-                                     @QueryParam("ads_code") String ads_code,
-                                     @QueryParam("secb_code") String secb_code);
+    List<LigneDepense> findByCritere(@QueryParam("natureEconomiqueCode") String natureEconomiqueCode,
+                                     @QueryParam("activiteCode") String activiteCode,
+                                     @QueryParam("sectionCode") String sectionCode,
+                                     @QueryParam("natureDepense") String natureDepense,
+                                     @QueryParam("programme") String programme,
+                                     @QueryParam("action") String action);
 }

@@ -13,6 +13,7 @@
 <h:body styleClass="main-body">
     <h:form id="createForm">
         <p:growl globalOnly="true" showDetail="true" showSummary="true" severity="info, warn, error" life="15000"/>
+        <p:importEnum type="ci.gouv.dgbf.agc.enumeration.NatureDepense" var="NatureDepense" allSuffix="ALL_ITEM_VALUES"/>
 
         <div class="ui-g">
             <div class="ui-g-12">
@@ -28,14 +29,16 @@
                         <p:inputText value="#{rchSourceFinancementBacking.natureEconomiqueCode}" placeholder="Code de la nature économique" styleClass="form-control"/>
                         <p:commandButton value="Rechercher" action="#{rchSourceFinancementBacking.rechercher}" styleClass="btn-block" icon="fa fa-search" update="@form"/>
 
+                        <p:outputLabel value="Nature de Dépense" styleClass="text-bold"/>
                         <p:outputLabel value="Programme" styleClass="text-bold"/>
                         <p:outputLabel value="Action" styleClass="text-bold"/>
                         <p:outputLabel value=""/>
-                        <p:outputLabel value=""/>
 
-                        <p:inputText value="#{rchSourceFinancementBacking.programme}" placeholder="Code de la section" styleClass="form-control" disabled="#{rchSourceFinancementBacking.displaySectionField()}"/>
+                        <p:selectOneMenu value="#{rchSourceFinancementBacking.natureDepense}">
+                            <f:selectItems var="nd" value="#{NatureDepense.ALL_ITEM_VALUES}" itemLabel="#{nd.libelle}" itemValue="#{nd.libelle}"/>
+                        </p:selectOneMenu>
+                        <p:inputText value="#{rchSourceFinancementBacking.programme}" placeholder="Code de la section" styleClass="form-control"/>
                         <p:inputText value="#{rchSourceFinancementBacking.action}" placeholder="Code de l'activité" styleClass="form-control"/>
-                        <p:outputLabel value=""/>
                         <p:outputLabel value=""/>
 
                     </p:panelGrid>
@@ -43,22 +46,25 @@
 
                 <p:fieldset id="oparationFls" legend="Sources de financement">
                     <div class="ui-g">
-                        <div class="ui-g-12"> <strong>Activité : </strong>#{rchSourceFinancementBacking.selectedActivite.code} - #{rchSourceFinancementBacking.selectedActivite.libelleLong} </div>
-                        <div class="ui-g-12"> <strong>Nature Economique : </strong>#{rchSourceFinancementBacking.selectedNatureEconomique.code} - #{rchSourceFinancementBacking.selectedNatureEconomique.libelleLong} </div>
+                        <div class="ui-g-1"><h:outputText styleClass="text-bold text-align-right" value="Activité : "/></div>
+                        <div class="ui-g-11">#{rchSourceFinancementBacking.selectedActivite.code} - #{rchSourceFinancementBacking.selectedActivite.libelleLong}</div>
                     </div>
                     <p:dataTable id="oparationDT" value="#{rchSourceFinancementBacking.operationList}"
                                  var="operation"
-                                 selection="#{rchSourceFinancementBacking.selectedOperationList}"
-                                 rowKey="#{operation.activiteCode}-#{operation.natureEconomiqueCode}-#{index + 1}"
                                  rowIndexVar="index"
+                                 selection="#{rchSourceFinancementBacking.selectedOperationList}"
+                                 rowKey="#{operation.uuid}"
+                                 rowSelectMode="checkbox"
                                  tableStyle="font-size: 13px;"
                                  emptyMessage="#{messages.empty_dataTable_message}">
                         <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
                         <p:column headerText="#" styleClass="col-w5">#{index + 1}</p:column>
+                        <!--
                         <p:column headerText="Source de Financement">#{operation.sourceFinancement}</p:column>
-                        <p:column headerText="Nature Eco." rendered="#{rchSourceFinancementBacking.natureEconomiqueCode ne null}">#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}</p:column>
-                        <p:column headerText="Budget AE">#{amcCreateBacking.displayThousandSeparator(operation.budgetActuelAE)}</p:column>
-                        <p:column headerText="Budget CP">#{amcCreateBacking.displayThousandSeparator(operation.budgetActuelCP)}</p:column>
+                        -->
+                        <p:column headerText="Nature Eco." styleClass="col-w50" rendered="#{rchSourceFinancementBacking.natureEconomiqueCode ne null}">#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}</p:column>
+                        <p:column headerText="Budget AE">#{rchSourceFinancementBacking.displayThousandSeparator(operation.budgetActuelAE)}</p:column>
+                        <p:column headerText="Budget CP">#{rchSourceFinancementBacking.displayThousandSeparator(operation.budgetActuelCP)}</p:column>
                     </p:dataTable>
                 </p:fieldset>
 

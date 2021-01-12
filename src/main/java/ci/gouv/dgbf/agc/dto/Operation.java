@@ -9,10 +9,11 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Operation{
     @Getter @Setter
-    private String uuid;
+    private String uuid = UUID.randomUUID().toString();
     @Getter @Setter
     private String ligneDepenseUuid;
     @Getter @Setter

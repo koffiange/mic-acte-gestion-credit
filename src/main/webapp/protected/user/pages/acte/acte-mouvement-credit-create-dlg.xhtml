@@ -17,6 +17,7 @@
         <p:importEnum type="ci.gouv.dgbf.agc.enumeration.NatureTransaction" var="natureTransaction" allSuffix="ALL_VALUES"/>
         <h:form id="createForm">
             <p:growl globalOnly="true" showDetail="true" showSummary="true" severity="info, warn, error" life="15000"/>
+            <p:remoteCommand name="cumuleCallBack" action="#{amcCreateBacking.cumules}" update="createForm:cumuleFls createForm:destinationDT createForm:enregisterBTN"/>
 
             <div class="ui-g">
                 <div class="ui-g-12">
@@ -133,7 +134,6 @@
                                     </p:dataTable>
                                 </p:column>
                             </p:row>
-
                         </p:panelGrid>
                     </p:fieldset>
 
@@ -151,44 +151,53 @@
                         <p:spacer height="5"/>
 
                         <p:dataTable id="origineDT" var="operation" value="#{amcCreateBacking.operationBagOrigine.operationList}" rowIndexVar="index">
-                            <p:column headerText="#" styleClass="col-w5">
+                            <p:column headerText="#" style="width:16px;text-align:center">
                                 <h:outputText value="#{index + 1}" />
                             </p:column>
 
                             <p:column headerText="Activité" styleClass="col-w20">
-                                <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
+                                <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" styleClass="text-smaller"/>
                             </p:column>
 
                             <p:column headerText="Nature Economique">
-                                <h:outputText value="#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}" />
+                                <h:outputText value="#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}" styleClass="text-smaller"/>
                             </p:column>
 
+                            <!--
                             <p:column headerText="Src. Financement">
                                 <h:outputText value="#{operation.sourceFinancement}" />
                             </p:column>
+                            -->
 
-                            <p:column headerText="Budget actuel">
+                            <p:column headerText="Budget actuel" styleClass="col-w10">
                                 <h:outputText value="AE : #{amcCreateBacking.displayThousandSeparator(operation.budgetActuelAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
                                 <h:outputText value="CP : #{amcCreateBacking.displayThousandSeparator(operation.budgetActuelCP)}" />
                             </p:column>
 
-                            <p:column headerText="Crédits disponibles">
+                            <p:column headerText="Crédits disponibles" styleClass="col-w10">
                                 <h:outputText value="AE : -" />
                                 <p:separator style="border: dotted 1px #000000"/>
                                 <h:outputText value="CP : -" />
                             </p:column>
 
-                            <p:column headerText="Prélèvements AE" styleClass="col-w20">
-                                <p:inputNumber value="#{operation.montantOperationAE}" minValue="0" maxValue="#{rchSourceFinancementBacking.typeImputation eq 'origine' ? operation.budgetActuelAE : rchSourceFinancementBacking.cumuleRettranchementAE}" symbol=" FCFA" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
+                            <p:column headerText="Prélèvements" styleClass="col-w20">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon">AE</span>
+                                    <p:inputNumber value="#{operation.montantOperationAE}" minValue="0"
+                                                   maxValue="#{operation.budgetActuelAE}" symbol=" FCFA" thousandSeparator=","
+                                                   decimalSeparator="." symbolPosition="s" onchange="cumuleCallBack()"/>
+                                </div>
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon">CP</span>
+                                    <p:inputNumber value="#{operation.montantOperationCP}" minValue="0"
+                                                   maxValue="#{operation.budgetActuelCP}" symbol=" FCFA" thousandSeparator=","
+                                                   decimalSeparator="." symbolPosition="s" onchange="cumuleCallBack()"/>
+                                </div>
                             </p:column>
 
-                            <p:column headerText="Prélèvements CP"  styleClass="col-w20">
-                                <p:inputNumber value="#{operation.montantOperationCP}" minValue="0" maxValue="#{rchSourceFinancementBacking.typeImputation eq 'origine' ? operation.budgetActuelCP : rchSourceFinancementBacking.cumuleRettranchementCP}" symbol=" FCFA" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
-                            </p:column>
-
-                            <p:column headerText="">
-                                <p:commandButton action="#{amcCreateBacking.deleteOperation('origine', operation)}" value="supprimer"
+                            <p:column headerText="" styleClass="col-w10">
+                                <p:commandButton action="#{amcCreateBacking.deleteOperation('ORIGINE', operation)}" value="supprimer"
                                                  update="createForm:origineDT" styleClass="btn-block" icon="fa fa-trash"/>
                             </p:column>
                         </p:dataTable>
@@ -199,81 +208,89 @@
                     <p:fieldset legend="Opération de destination">
                         <p:menubar>
                             <f:facet name="options">
-                                <p:commandButton value="Rechercher une source de financement" action="#{amcCreateBacking.openLigneDepenseDialog('destination')}" icon="fa fa-search" styleClass="steel-btn">
-                                    <p:ajax event="dialogReturn" listener="#{amcCreateBacking.handleReturn}" update="createForm:cibleDT createForm:equilibreDG createForm:enregisterBTN"/>
+                                <p:commandButton value="Rechercher une source de financement" action="#{amcCreateBacking.openLigneDepenseDialog('DESTINATION')}" icon="fa fa-search" styleClass="steel-btn">
+                                    <p:ajax event="dialogReturn" listener="#{amcCreateBacking.handleReturn}" update="createForm:destinationDT createForm:equilibreDG createForm:enregisterBTN"/>
                                 </p:commandButton>
                             </f:facet>
                         </p:menubar>
 
                         <p:spacer height="5"/>
 
-                        <p:dataTable id="cibleDT" var="operation" value="#{amcCreateBacking.operationBagDestination.operationList}" rowIndexVar="index">
-
-                            <p:column headerText="#" styleClass="col-w5">
+                        <p:dataTable id="destinationDT" var="operation" value="#{amcCreateBacking.operationBagDestination.operationList}" rowIndexVar="index">
+                            <p:column headerText="#" style="width:16px;text-align:center">
                                 <h:outputText value="#{index + 1}" />
                             </p:column>
 
                             <p:column headerText="Activité" styleClass="col-w20">
-                                <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
+                                <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" styleClass="text-smaller"/>
                             </p:column>
 
-                            <p:column headerText="Nature Eco.">
-                                <h:outputText value="#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}" />
+                            <p:column headerText="Nature Economique">
+                                <h:outputText value="#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}" styleClass="text-smaller"/>
                             </p:column>
 
+                            <!--
                             <p:column headerText="Src. Financement">
                                 <h:outputText value="#{operation.sourceFinancement}" />
                             </p:column>
+                            -->
 
-                            <p:column headerText="Budget actuel">
+                            <p:column headerText="Budget actuel" styleClass="col-w10">
                                 <h:outputText value="AE : #{amcCreateBacking.displayThousandSeparator(operation.budgetActuelAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
                                 <h:outputText value="CP : #{amcCreateBacking.displayThousandSeparator(operation.budgetActuelCP)}" />
                             </p:column>
 
-                            <p:column headerText="Crédits disponibles">
+                            <p:column headerText="Crédits disponibles" styleClass="col-w10">
                                 <h:outputText value="AE : -" />
                                 <p:separator style="border: dotted 1px #000000"/>
                                 <h:outputText value="CP : -" />
                             </p:column>
 
-                            <p:column headerText="Compléments AE" styleClass="col-w20">
-                                <p:inputNumber value="#{operation.montantOperationAE}" minValue="0" maxValue="#{rchSourceFinancementBacking.typeImputation eq 'origine' ? operation.budgetActuelAE : rchSourceFinancementBacking.cumuleRettranchementAE}" symbol=" FCFA" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
+                            <p:column headerText="Compléments" styleClass="col-w20">
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon">AE</span>
+                                    <p:inputNumber value="#{operation.montantOperationAE}" minValue="0"
+                                                   maxValue="#{amcCreateBacking.cumulRetranchementAE}" symbol=" FCFA" thousandSeparator=","
+                                                   decimalSeparator="." symbolPosition="s" onchange="cumuleCallBack()"/>
+                                </div>
+                                <div class="ui-inputgroup">
+                                    <span class="ui-inputgroup-addon">CP</span>
+                                    <p:inputNumber value="#{operation.montantOperationCP}" minValue="0"
+                                                   maxValue="#{amcCreateBacking.cumulRetranchementCP}" symbol=" FCFA" thousandSeparator=","
+                                                   decimalSeparator="." symbolPosition="s" onchange="cumuleCallBack()"/>
+                                </div>
                             </p:column>
 
-                            <p:column headerText="Compléments CP"  styleClass="col-w20">
-                                <p:inputNumber value="#{operation.montantOperationCP}" minValue="0" maxValue="#{rchSourceFinancementBacking.typeImputation eq 'origine' ? operation.budgetActuelCP : rchSourceFinancementBacking.cumuleRettranchementCP}" symbol=" FCFA" thousandSeparator="," decimalSeparator="." symbolPosition="s"/>
-                            </p:column>
-
-                            <p:column headerText="">
-                                <p:commandButton action="#{amcCreateBacking.deleteOperation('destination', operation)}" value="supprimer"
-                                                 update="createForm:cibleDT" styleClass="btn-block" icon="fa fa-trash"/>
+                            <p:column headerText="" styleClass="col-w10">
+                                <p:commandButton action="#{amcCreateBacking.deleteOperation('DESTINATION', operation)}" value="supprimer"
+                                                 update="createForm:destinationDT" styleClass="btn-block" icon="fa fa-trash"/>
                             </p:column>
                         </p:dataTable>
                     </p:fieldset>
 
                     <p:spacer height="30" width="5"/>
 
-                    <p:fieldset legend="Equilibre des Opérations">
+                    <p:fieldset id="cumuleFls" legend="Equilibre des Opérations">
                         <p:panelGrid columns="3" id="equilibreDG" layout="grid">
                             <p:outputLabel value=" "/>
                             <p:outputLabel value="AE"/>
                             <p:outputLabel value="CP"/>
 
-                            <p:outputLabel value="Cummule des retranchements" styleClass="text-bold"/>
+                            <p:outputLabel value="Cummule des prélèvements" styleClass="text-bold"/>
                             <p:outputLabel value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulRetranchementAE)}"/>
                             <p:outputLabel value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulRetranchementCP)}"/>
 
-                            <p:outputLabel value="Cummule des ajouts" styleClass="text-bold"/>
+                            <p:outputLabel value="Cummule des compléments" styleClass="text-bold"/>
                             <p:outputLabel value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulAjoutAE)}"/>
                             <p:outputLabel value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulAjoutCP)}"/>
 
                             <p:outputLabel value="Equilibre des opérations"
-                                           styleClass="text-bold #{amcCreateBacking.cumulRetranchementAE.subtract(amcCreateBacking.cumulAjoutAE) ne 0 ? 'text-danger' : ''}" />
+                                           styleClass="text-bold" />
                             <h:outputText value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulRetranchementAE.subtract(amcCreateBacking.cumulAjoutAE))} #{amcCreateBacking.equilibreAE()}"
-                                           styleClass="text-bold #{amcCreateBacking.cumulRetranchementAE.subtract(amcCreateBacking.cumulAjoutAE) ne 0 ? 'text-danger' : ''}"/>
+                                           styleClass="text-bold #{amcCreateBacking.cumulRetranchementAE.subtract(amcCreateBacking.cumulAjoutAE) ne amcCreateBacking.zero ? 'text-danger' : 'text-success'}"/>
                             <h:outputText value="#{amcCreateBacking.displayThousandSeparator(amcCreateBacking.cumulRetranchementCP.subtract(amcCreateBacking.cumulAjoutCP))} #{amcCreateBacking.equilibreCP()}"
-                                           styleClass="text-bold #{amcCreateBacking.cumulRetranchementAE.subtract(amcCreateBacking.cumulAjoutAE) ne 0 ? 'text-danger' : ''}"/>
+                                           styleClass="text-bold #{amcCreateBacking.cumulRetranchementCP.subtract(amcCreateBacking.cumulAjoutCP) ne amcCreateBacking.zero ? 'text-danger' : 'text-success'}"/>
                         </p:panelGrid>
 
 
@@ -296,7 +313,7 @@
                             </div>
                             <div class="ui-g-1">
                                 <p:commandButton action="#{amcCreateBacking.close()}"
-                                                 disabled="#{amcCreateBacking.displayEnregisterButton()}" icon="fa fa-ban" styleClass="black-btn"
+                                                 icon="fa fa-ban" styleClass="black-btn"
                                                  value="#{messages.annuler}" update="@form" style="width: 100%"/>
                             </div>
                         </div>

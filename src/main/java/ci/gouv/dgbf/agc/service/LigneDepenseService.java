@@ -59,7 +59,8 @@ public class LigneDepenseService implements LigneDepenseClient {
     }
 
     @Override
-    public List<LigneDepense> findByCritere(String nat_code, String ads_code, String secb_code) {
-        return client.findByCritere(nat_code, ads_code, secb_code);
+    public List<LigneDepense> findByCritere(String natureEconomiqueCode, String activiteCode, String sectionCode,
+                                            String natureDepense, String programme, String action) {
+        return client.findByCritere(natureEconomiqueCode, activiteCode, sectionCode, natureDepense, programme, action);
     }
 }

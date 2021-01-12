@@ -42,9 +42,6 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
         params = getRequestParameterMap();
         if (params.containsKey("uuid")){
             acteDto = acteService.findActeDtoById(params.get("uuid"));
-            if (acteDto.getActe().getModeleVisa() != null) {
-                compositionList = compositionService.findByModele(acteDto.getActe().getModeleVisa().getUuid());
-            }
         }
     }
 

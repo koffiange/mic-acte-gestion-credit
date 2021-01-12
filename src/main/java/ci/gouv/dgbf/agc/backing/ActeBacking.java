@@ -13,10 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -42,7 +39,10 @@ public class ActeBacking extends BaseBacking {
 
     public List<Acte> findByStatut(String s){
         StatutActe statut = StatutActe.valueOf(s);
-        return acteList.stream().filter(acte -> acte.getStatutActe().equals(statut)).collect(Collectors.toList());
+        return acteList.stream()
+                .filter(acte -> acte.getStatutActe().equals(statut))
+                .sorted(Comparator.comparing(Acte::getCreatedDate).reversed())
+                .collect(Collectors.toList());
     }
 
     public void handleReturn(SelectEvent event){

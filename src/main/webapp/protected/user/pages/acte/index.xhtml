@@ -69,6 +69,7 @@
                                     <p:column headerText="Date signature">#{acte.dateSignature}</p:column>
                                     <p:column headerText="Référence Demande">#{acte.reference}</p:column>
                                     <p:column headerText="Statut acte">#{acte.statutActe.libelle}</p:column>
+                                    <p:column headerText="Date Création">#{acteBacking.displayFormatedDateTime(acte.createdDate)}</p:column>
                                     <p:column headerText="Actions" styleClass="col-w10">
                                         <p:commandButton icon="fa fa-caret-down"
                                                          id="actionBtnEnAttente" type="button"
@@ -135,11 +136,12 @@
                                     <p:column headerText="Date signature">#{acte.dateSignature}</p:column>
                                     <p:column headerText="Référence Demande">#{acte.reference}</p:column>
                                     <p:column headerText="Statut acte">#{acte.statutActe.libelle}</p:column>
+                                    <p:column headerText="Date Création">#{acteBacking.displayFormatedDateTime(acte.createdDate)}</p:column>
                                     <p:column headerText="Actions" styleClass="col-w10">
-                                        <p:link value="Consulter" styleClass="text-bold" style="color: #ffffff"
+                                        <p:linkButton value="Consulter" icon="fa fa-eye" styleClass="text-bold btn-block" style="color: #ffffff"
                                                 outcome="/protected/user/pages/acte/consulter-acte-mouvement-credit">
                                             <f:param name="uuid" value="#{acte.uuid}"/>
-                                        </p:link>
+                                        </p:linkButton>
                                     </p:column>
                                 </p:dataTable>
                             </p:tab>
@@ -159,36 +161,12 @@
                                     <p:column headerText="Date signature">#{acte.dateSignature}</p:column>
                                     <p:column headerText="Référence Demande">#{acte.reference}</p:column>
                                     <p:column headerText="Statut acte">#{acte.statutActe.libelle}</p:column>
+                                    <p:column headerText="Date Création">#{acteBacking.displayFormatedDateTime(acte.createdDate)}</p:column>
                                     <p:column headerText="Actions" styleClass="col-w10">
-                                        <p:commandButton icon="fa fa-caret-down"
-                                                         id="actionBtnEchoue" type="button"
-                                                         value="Actions" styleClass="btn-block"/>
-                                        <!-- Overlay panel -->
-                                        <p:overlayPanel id="actionPanelEchoue" for="actionBtnEchoue"
-                                                        at="left bottom"
-                                                        hideEffect="fade" showCloseIcon="true">
-                                            <p:link value="Consulter" styleClass="text-bold" style="color: #ffffff"
-                                                    outcome="/protected/user/pages/acte/consulter-acte-mouvement-credit">
-                                                <f:param name="uuid" value="#{acte.uuid}"/>
-                                            </p:link>
-                                            <hr style="border: dashed 1px #ffffff"/>
-                                            <p:commandLink value="Modifier"
-                                                           actionListener="#{acteBacking.openUpdateDialog(acte.uuid)}"
-                                                           styleClass="text-bold">
-                                                <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}"
-                                                        update=":listModeleForm messageForm"/>
-                                            </p:commandLink>
-                                            <br/>
-                                            <p:commandLink value="Supprimer"
-                                                           actionListener="#{acteBacking.delete(acte.uuid)}"
-                                                           styleClass="text-bold"
-                                                           update="@form">
-                                                <p:confirm header="Confirmation"
-                                                           message="#{acteBacking.getDeleteMessage(acte.libelle)}"
-                                                           icon="ui-icon-alert">
-                                                </p:confirm>
-                                            </p:commandLink>
-                                        </p:overlayPanel>
+                                        <p:linkButton value="Consulter" icon="fa fa-eye" styleClass="text-bold btn-block" style="color: #ffffff"
+                                                      outcome="/protected/user/pages/acte/consulter-acte-mouvement-credit">
+                                            <f:param name="uuid" value="#{acte.uuid}"/>
+                                        </p:linkButton>
                                     </p:column>
                                 </p:dataTable>
                             </p:tab>

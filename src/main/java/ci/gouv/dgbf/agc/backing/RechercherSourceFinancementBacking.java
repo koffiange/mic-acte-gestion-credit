@@ -58,6 +58,8 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Getter @Setter
     private String natureEconomiqueCode;
     @Getter @Setter
+    private String natureDepense;
+    @Getter @Setter
     private String programme;
     @Getter @Setter
     private String action;
@@ -107,10 +109,12 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     }
 
     public void rechercher(){
-        ligneDepenseList = ligneDepenseService.findByCritere(natureEconomiqueCode, activiteCode, sectionCode);
+        ligneDepenseList = ligneDepenseService.findByCritere(natureEconomiqueCode, activiteCode, sectionCode, natureDepense, programme, action);
         operationList = operationService.buildOperationListFromLigneDepenseList(ligneDepenseList);
-        selectedActivite = activiteService.findByCode(activiteCode);
-        selectedNatureEconomique = natureEconomiqueService.findByCode(natureEconomiqueCode);
+        if(activiteCode != null && !activiteCode.equals(""))
+            selectedActivite = activiteService.findByCode(activiteCode);
+        if(natureEconomiqueCode != null && !natureEconomiqueCode.equals(""))
+            selectedNatureEconomique = natureEconomiqueService.findByCode(natureEconomiqueCode);
         this.initCritereRecherche();
     }
 
@@ -122,7 +126,18 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     public void ajouter(){
         LOG.info("Selected Opération : "+selectedOperationList.size());
         operationBag.getSectionCodeList().add(sectionCode);
+        this.typeOperationSetter();
         operationBag.getOperationList().addAll(selectedOperationList);
         PrimeFaces.current().dialog().closeDynamic(operationBag);
+    }
+
+    private void typeOperationSetter(){
+        selectedOperationList.forEach(operation -> {
+            if (operationBag.getTypeOperation().equals(TypeOperation.ORIGINE)){
+                operation.setTypeOperation(TypeOperation.ORIGINE);
+            } else {
+                operation.setTypeOperation(TypeOperation.DESTINATION);
+            }
+        });
     }
 }

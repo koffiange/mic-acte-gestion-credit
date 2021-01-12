@@ -41,195 +41,159 @@
                 <p:spacer height="10"/>
 
                 <h:form id="acteForm">
-                    <p:tabView>
-                        <p:tab title="Information générales de l'acte" id="infoTab">
-                            <p:panelGrid styleClass="col-w100" columnClasses="borderless">
+                    <p:fieldset legend="Information générales et opérations de l'acte">
+                        <p:panelGrid styleClass="col-w100" columnClasses="borderless">
 
-                                <p:row>
-                                    <p:column colspan="3">
-                                        <h1 class="text-large text-centered text-uppercase"><h:outputText id="libelle" value="#{cmcBacking.acteDto.acte.libelle}"/></h1>
-                                        <p:spacer height="10" width="5"/>
-                                    </p:column>
-                                </p:row>
-
-                                <p:row>
-                                    <p:column>
-                                        <h:outputLabel for="reference" value="Référence de l'acte" styleClass="text-bold"/>
-                                        <h:outputText id="reference" value="#{cmcBacking.acteDto.acte.reference}"/>
-                                    </p:column>
-                                    <p:column>
-                                        <h:outputLabel for="natureActe" value="Nature d'acte" styleClass="text-bold"/><br/>
-                                        <h:outputText id="natureActe" value="#{cmcBacking.acteDto.acte.natureActe.libelle}"/>
-                                    </p:column>
-                                    <p:column>
-                                        <h:outputLabel for="categorieActe" value="Categorie d'acte" styleClass="text-bold"/><br/>
-                                        <h:outputText id="categorieActe" value="#{cmcBacking.acteDto.acte.categorieActe.libelle}"/>
-                                    </p:column>
-                                </p:row>
-
-                                <p:row>
-                                    <p:column>
-                                        <h:outputLabel for="natureTransaction" value="Nature de la Transaction" styleClass="text-bold"/><br/>
-                                        <h:outputText id="natureTransaction" value="#{cmcBacking.acteDto.acte.natureTransaction.libelle}"/>
-                                    </p:column>
-                                    <p:column colspan="2">
-                                        <h:outputLabel for="dateSignature" value="Date signature" styleClass="text-bold"/><br/>
-                                        <h:outputText id="dateSignature" value="#{cmcBacking.displayFormatedDate(cmcBacking.acteDto.acte.dateSignature)}"/>
-                                    </p:column>
-                                </p:row>
-
-                                <p:row>
-                                    <p:column colspan="3">
-                                        <p:spacer height="20" width="5"/>
-                                        <h:outputLabel value="Liste des signataires" styleClass="text-bold"/><br/>
-                                        <p:panel header="" >
-                                            <p:dataTable id="signataireList" value="#{cmcBacking.acteDto.signataireList}" var="signataire" type="ordered" rowIndexVar="index"
-                                                         emptyMessage="#{messages.empty_dataTable_message}" styleClass="borderless">
-                                                <f:facet name="header"> </f:facet>
-                                                <p:column headerText="#" styleClass="col-w5">#{index + 1}</p:column>
-                                                <p:column headerText="Fonction" >#{signataire.fonction}</p:column>
-                                                <p:column headerText="Nom du signataire">#{signataire.nom}</p:column>
-                                            </p:dataTable>
-                                        </p:panel>
-
-                                    </p:column>
-                                </p:row>
-
-                                <p:row>
-                                    <p:column colspan="3">
-                                        <p:spacer height="20" width="5"/>
-                                        <h:outputLabel for="visas" value="Visas" styleClass="text-bold"/><br/>
-                                        <p:panel header="" >
-                                            <p:dataTable id="visas" value="#{cmcBacking.compositionList}"
-                                                         emptyMessage="#{messages.empty_dataTable_message}"
-                                                         var="acte"
-                                                         rowIndexVar="index"
-                                                         styleClass="borderless"
-                                                         tableStyle="font-size: 13px;"
-                                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                                         rowsPerPageTemplate="6,12,16"
-                                                         currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
-                                                <f:facet name="header"> </f:facet>
-                                                <p:column styleClass="col-w5" headerText="#">#{index + 1}</p:column>
-                                                <p:column styleClass="col-w10" headerText="Code">#{acte.visa.code}</p:column>
-                                                <p:column headerText="Libelle">#{acte.visa.intitule}</p:column>
-                                            </p:dataTable>
-                                        </p:panel>
-                                    </p:column>
-                                </p:row>
-
-                                <p:row>
-                                    <p:column colspan="3">
-                                        <p:spacer height="20" width="5"/>
-                                        <h:outputLabel value="Corps de l'acte (parties et articles)" styleClass="text-bold"/><br/>
-                                        <p:panel header="" toggleable="true" >
-                                            <h:outputText value="#{cmcBacking.acteDto.acte.corpus}" id="corpus" escape="false" />
-                                        </p:panel>
-                                    </p:column>
-                                </p:row>
-
-
-                            </p:panelGrid>
-                        </p:tab>
-
-                        <p:tab title="Opérations">
-                            <p:dataTable id="operationOrigineDT" value="#{cmcBacking.findByTypeOperation('ORIGINE')}"
-                                         emptyMessage="#{messages.empty_dataTable_message}"
-                                         var="operation"
-                                         rowIndexVar="index"
-                                         tableStyle="font-size: 13px;"
-                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         rowsPerPageTemplate="6,12,16"
-                                         currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
-                                <f:facet name="header">
-                                    Liste des opérations d'origine
-                                </f:facet>
-
-                                <p:column headerText="#" styleClass="col-w5">
-                                    <h:outputText value="#{index + 1}" />
+                            <p:row>
+                                <p:column colspan="3">
+                                    <h1 class="text-large text-centered text-uppercase"><h:outputText id="libelle" value="#{cmcBacking.acteDto.acte.libelle}"/></h1>
+                                    <p:spacer height="10" width="5"/>
                                 </p:column>
+                            </p:row>
 
-                                <p:column headerText="Activité" styleClass="col-w20">
-                                    <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel for="reference" value="Référence de l'acte" styleClass="text-bold"/>
+                                    <h:outputText id="reference" value="#{cmcBacking.acteDto.acte.reference}"/>
                                 </p:column>
-
-                                <p:column headerText="Nature Eco.">
-                                    <h:outputText value="#{operation.natureEconomiqueCode}" />
+                                <p:column>
+                                    <h:outputLabel for="natureActe" value="Nature d'acte" styleClass="text-bold"/><br/>
+                                    <h:outputText id="natureActe" value="#{cmcBacking.acteDto.acte.natureActe.libelle}"/>
                                 </p:column>
-
-                                <p:column headerText="Src. Financement">
-                                    <h:outputText value="#{operation.sourceFinancement}" />
+                                <p:column>
+                                    <h:outputLabel for="categorieActe" value="Categorie d'acte" styleClass="text-bold"/><br/>
+                                    <h:outputText id="categorieActe" value="#{cmcBacking.acteDto.acte.categorieActe.libelle}"/>
                                 </p:column>
+                            </p:row>
 
-                                <p:column headerText="Budget actuel">
-                                    <h:outputText value="AE : #{cmcBacking.displayThousandSeparator(operation.budgetActuelAE)}" />
-                                    <p:separator style="border: dotted 1px #000000"/>
-                                    <h:outputText value="CP : #{cmcBacking.displayThousandSeparator(operation.budgetActuelCP)}" />
+                            <p:row>
+                                <p:column>
+                                    <h:outputLabel for="natureTransaction" value="Nature de la Transaction" styleClass="text-bold"/><br/>
+                                    <h:outputText id="natureTransaction" value="#{cmcBacking.acteDto.acte.natureTransaction.libelle}"/>
                                 </p:column>
-
-                                <p:column headerText="Crédits disponibles">
-                                    <h:outputText value="AE : -" />
-                                    <p:separator style="border: dotted 1px #000000"/>
-                                    <h:outputText value="CP : -" />
+                                <p:column colspan="2">
+                                    <h:outputLabel for="dateSignature" value="Date signature" styleClass="text-bold"/><br/>
+                                    <h:outputText id="dateSignature" value="#{cmcBacking.displayFormatedDate(cmcBacking.acteDto.acte.dateSignature)}"/>
                                 </p:column>
+                            </p:row>
 
-                                <p:column headerText="Retranchements">
-                                    <h:outputText value="AE : #{cmcBacking.displayThousandSeparator(operation.montantOperationAE)}" />
-                                    <p:separator style="border: dotted 1px #000000"/>
-                                    <h:outputText value="CP : #{cmcBacking.displayThousandSeparator(operation.montantOperationCP)}" />
+                            <p:row>
+                                <p:column colspan="3">
+                                    <p:spacer height="20" width="5"/>
+                                    <h:outputLabel value="Liste des signataires" styleClass="text-bold"/><br/>
+                                    <p:panel header="" >
+                                        <p:dataTable id="signataireList" value="#{cmcBacking.acteDto.signataireList}" var="signataire" type="ordered" rowIndexVar="index"
+                                                     emptyMessage="#{messages.empty_dataTable_message}" styleClass="borderless">
+                                            <f:facet name="header"> </f:facet>
+                                            <p:column headerText="#" styleClass="col-w5">#{index + 1}</p:column>
+                                            <p:column headerText="Fonction" >#{signataire.fonction}</p:column>
+                                            <p:column headerText="Nom du signataire">#{signataire.nom}</p:column>
+                                        </p:dataTable>
+                                    </p:panel>
+
                                 </p:column>
-                            </p:dataTable>
+                            </p:row>
+                        </p:panelGrid>
 
-                            <p:spacer height="30" width="5"/>
+                        <p:spacer height="30" width="5"/>
 
-                            <p:dataTable id="operationDestinantionDT" value="#{cmcBacking.findByTypeOperation('ORIGINE')}"
-                                         emptyMessage="#{messages.empty_dataTable_message}"
-                                         var="operation"
-                                         rowIndexVar="index"
-                                         tableStyle="font-size: 13px;"
-                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         rowsPerPageTemplate="6,12,16"
-                                         currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
-                                <f:facet name="header">
-                                    Liste des opérations d'origine
-                                </f:facet>
+                        <p:dataTable id="operationOrigineDT" value="#{cmcBacking.findByTypeOperation('ORIGINE')}"
+                                     emptyMessage="#{messages.empty_dataTable_message}"
+                                     var="operation"
+                                     rowIndexVar="index"
+                                     tableStyle="font-size: 13px;"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="6,12,16"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
+                            <f:facet name="header">
+                                Liste des opérations d'origine
+                            </f:facet>
 
-                                <p:column headerText="#" styleClass="col-w5">
-                                    <h:outputText value="#{index + 1}" />
-                                </p:column>
+                            <p:column headerText="#" styleClass="col-w5">
+                                <h:outputText value="#{index + 1}" />
+                            </p:column>
 
-                                <p:column headerText="Activité" styleClass="col-w20">
-                                    <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
-                                </p:column>
+                            <p:column headerText="Activité" styleClass="col-w20">
+                                <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
+                            </p:column>
 
-                                <p:column headerText="Nature Eco.">
-                                    <h:outputText value="#{operation.natureEconomiqueCode}" />
-                                </p:column>
+                            <p:column headerText="Nature Eco.">
+                                <h:outputText value="#{operation.natureEconomiqueCode}" />
+                            </p:column>
 
-                                <p:column headerText="Src. Financement">
-                                    <h:outputText value="#{operation.sourceFinancement}" />
-                                </p:column>
+                            <p:column headerText="Src. Financement">
+                                <h:outputText value="#{operation.sourceFinancement}" />
+                            </p:column>
 
-                                <p:column headerText="Budget actuel">
-                                    <h:outputText value="AE : #{cmcBacking.displayThousandSeparator(operation.budgetActuelAE)}" />
-                                    <p:separator style="border: dotted 1px #000000"/>
-                                    <h:outputText value="CP : #{cmcBacking.displayThousandSeparator(operation.budgetActuelCP)}" />
-                                </p:column>
+                            <p:column headerText="Budget actuel">
+                                <h:outputText value="AE : #{cmcBacking.displayThousandSeparator(operation.budgetActuelAE)}" />
+                                <p:separator style="border: dotted 1px #000000"/>
+                                <h:outputText value="CP : #{cmcBacking.displayThousandSeparator(operation.budgetActuelCP)}" />
+                            </p:column>
 
-                                <p:column headerText="Crédits disponibles">
-                                    <h:outputText value="AE : -" />
-                                    <p:separator style="border: dotted 1px #000000"/>
-                                    <h:outputText value="CP : -" />
-                                </p:column>
+                            <p:column headerText="Crédits disponibles">
+                                <h:outputText value="AE : -" />
+                                <p:separator style="border: dotted 1px #000000"/>
+                                <h:outputText value="CP : -" />
+                            </p:column>
 
-                                <p:column headerText="Ajouts">
-                                    <h:outputText value="AE : #{cmcBacking.displayThousandSeparator(operation.montantOperationAE)}" />
-                                    <p:separator style="border: dotted 1px #000000"/>
-                                    <h:outputText value="CP : #{cmcBacking.displayThousandSeparator(operation.montantOperationCP)}" />
-                                </p:column>
-                            </p:dataTable>
-                        </p:tab>
-                    </p:tabView>
+                            <p:column headerText="Retranchements">
+                                <h:outputText value="AE : #{cmcBacking.displayThousandSeparator(operation.montantOperationAE)}" />
+                                <p:separator style="border: dotted 1px #000000"/>
+                                <h:outputText value="CP : #{cmcBacking.displayThousandSeparator(operation.montantOperationCP)}" />
+                            </p:column>
+                        </p:dataTable>
+
+                        <p:spacer height="30" width="5"/>
+
+                        <p:dataTable id="operationDestinantionDT" value="#{cmcBacking.findByTypeOperation('DESTINATION')}"
+                                     emptyMessage="#{messages.empty_dataTable_message}"
+                                     var="operation"
+                                     rowIndexVar="index"
+                                     tableStyle="font-size: 13px;"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="6,12,16"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
+                            <f:facet name="header">
+                                Liste des opérations de destination
+                            </f:facet>
+
+                            <p:column headerText="#" styleClass="col-w5">
+                                <h:outputText value="#{index + 1}" />
+                            </p:column>
+
+                            <p:column headerText="Activité" styleClass="col-w20">
+                                <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
+                            </p:column>
+
+                            <p:column headerText="Nature Eco.">
+                                <h:outputText value="#{operation.natureEconomiqueCode}" />
+                            </p:column>
+
+                            <p:column headerText="Src. Financement">
+                                <h:outputText value="#{operation.sourceFinancement}" />
+                            </p:column>
+
+                            <p:column headerText="Budget actuel">
+                                <h:outputText value="AE : #{cmcBacking.displayThousandSeparator(operation.budgetActuelAE)}" />
+                                <p:separator style="border: dotted 1px #000000"/>
+                                <h:outputText value="CP : #{cmcBacking.displayThousandSeparator(operation.budgetActuelCP)}" />
+                            </p:column>
+
+                            <p:column headerText="Crédits disponibles">
+                                <h:outputText value="AE : -" />
+                                <p:separator style="border: dotted 1px #000000"/>
+                                <h:outputText value="CP : -" />
+                            </p:column>
+
+                            <p:column headerText="Ajouts">
+                                <h:outputText value="AE : #{cmcBacking.displayThousandSeparator(operation.montantOperationAE)}" />
+                                <p:separator style="border: dotted 1px #000000"/>
+                                <h:outputText value="CP : #{cmcBacking.displayThousandSeparator(operation.montantOperationCP)}" />
+                            </p:column>
+                        </p:dataTable>
+                    </p:fieldset>
+
                 </h:form>
 
             </div>

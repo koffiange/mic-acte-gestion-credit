@@ -324,6 +324,10 @@ div.ui-menu > ul > li > a.ui-menuitem-link.ui-corner-all{
 .text-danger{
     color: #d97c3e !important;
 }
+
+.text-success{
+    color: #35ae47 !important;
+}
 .text-to-left{
     text-align: left !important;
 }

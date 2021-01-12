@@ -80,7 +80,7 @@ public class OperationService implements OperationClient {
         operation.setBudgetActuelCP(ligneDepense.getMontantCp());
         operation.setExercice(ligneDepense.getExercice());
         operation.setLigneDepenseUuid(ligneDepense.getLigneDepenseId());
-        operation.setNatureEconomiqueLibelle(ligneDepense.getNatureEconomiqueId());
+        operation.setNatureEconomiqueLibelle(ligneDepense.getNatureEconomiqueLibelle());
         operation.setNatureEconomiqueCode(ligneDepense.getNatureEconomiqueCode());
 
         return operation;
