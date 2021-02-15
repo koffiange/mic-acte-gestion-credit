@@ -20,8 +20,8 @@
         </resource-bundle>
 
         <locale-config>
-            <default-locale>fr</default-locale>
-            <supported-locale>en</supported-locale>
+            <default-locale>fr_FR</default-locale>
+            <supported-locale>en_US</supported-locale>
         </locale-config>
     </application>
 </faces-config>

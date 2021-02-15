@@ -31,7 +31,7 @@
                                 <p:column>
                                     <h:outputLabel for="natureActe" value="Nature d'acte" styleClass="text-bold"/><br/>
                                     <p:selectOneMenu id="natureActe" value="#{amcCreateBacking.acte.natureActe}" styleClass="form-control">
-                                        <f:selectItem itemLabel="Choissisez une nature d'acte" itemValue="" />
+                                        <f:selectItem itemLabel="Choissisez une nature d'acte" itemValue=""/>
                                         <f:selectItem itemLabel="#{natureActe.ARRETE.libelle}" itemValue="#{natureActe.ARRETE}"/>
                                         <f:selectItem itemLabel="#{natureActe.ARRETE_INTERMINISTERIEL.libelle}" itemValue="#{natureActe.ARRETE_INTERMINISTERIEL}"/>
                                         <f:selectItem itemLabel="#{natureActe.DECISION.libelle}" itemValue="#{natureActe.DECISION}"/>
@@ -186,14 +186,14 @@
                                 <div class="ui-inputgroup">
                                     <span class="ui-inputgroup-addon">AE</span>
                                     <p:inputNumber value="#{operation.montantOperationAE}" minValue="0"
-                                                   maxValue="#{amcCreateBacking.handleMaxValue(operation.montantDisponibleAE)}" symbol=" FCFA" thousandSeparator=","
-                                                   decimalSeparator="." symbolPosition="s" onchange="cumuleCallBack()"/>
+                                                   maxValue="#{amcCreateBacking.handleMaxValue(operation.montantDisponibleAE)}" symbol=" FCFA" thousandSeparator="."
+                                                   decimalSeparator="," symbolPosition="s" decimalPlaces="0" onchange="cumuleCallBack()"/>
                                 </div>
                                 <div class="ui-inputgroup">
                                     <span class="ui-inputgroup-addon">CP</span>
                                     <p:inputNumber value="#{operation.montantOperationCP}" minValue="0"
-                                                   maxValue="#{amcCreateBacking.handleMaxValue(operation.montantDisponibleCP)}" symbol=" FCFA" thousandSeparator=","
-                                                   decimalSeparator="." symbolPosition="s" onchange="cumuleCallBack()"/>
+                                                   maxValue="#{amcCreateBacking.handleMaxValue(operation.montantDisponibleCP)}" symbol=" FCFA" thousandSeparator="."
+                                                   decimalSeparator="," symbolPosition="s" decimalPlaces="0" onchange="cumuleCallBack()"/>
                                 </div>
                             </p:column>
 
@@ -253,14 +253,14 @@
                                 <div class="ui-inputgroup">
                                     <span class="ui-inputgroup-addon">AE</span>
                                     <p:inputNumber value="#{operation.montantOperationAE}" minValue="0"
-                                                   maxValue="#{amcCreateBacking.handleMaxValue(amcCreateBacking.cumulRetranchementAE)}" symbol=" FCFA" thousandSeparator=","
-                                                   decimalSeparator="." symbolPosition="s" onchange="cumuleCallBack()"/>
+                                                   maxValue="#{amcCreateBacking.handleMaxValue(amcCreateBacking.cumulRetranchementAE)}" symbol=" FCFA" thousandSeparator="."
+                                                   decimalSeparator="," symbolPosition="s" decimalPlaces="0" onchange="cumuleCallBack()"/>
                                 </div>
                                 <div class="ui-inputgroup">
                                     <span class="ui-inputgroup-addon">CP</span>
                                     <p:inputNumber value="#{operation.montantOperationCP}" minValue="0"
-                                                   maxValue="#{amcCreateBacking.handleMaxValue(amcCreateBacking.cumulRetranchementCP)}" symbol=" FCFA" thousandSeparator=","
-                                                   decimalSeparator="." symbolPosition="s" onchange="cumuleCallBack()"/>
+                                                   maxValue="#{amcCreateBacking.handleMaxValue(amcCreateBacking.cumulRetranchementCP)}" symbol=" FCFA" thousandSeparator="."
+                                                   decimalSeparator="," symbolPosition="s" decimalPlaces="0" onchange="cumuleCallBack()"/>
                                 </div>
                             </p:column>
 

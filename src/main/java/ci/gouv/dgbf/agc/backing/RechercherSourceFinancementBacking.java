@@ -28,6 +28,8 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
     @Inject
+    SectionService sectionService;
+    @Inject
     ActiviteService activiteService;
     @Inject
     NatureEconomiqueService natureEconomiqueService;
@@ -37,13 +39,15 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     OperationService operationService;
     @Inject
     OperationSessionService operationSessionService;
-
+    @Getter @Setter
+    private List<Section> sectionList;
+    @Getter @Setter
+    private List<NatureEconomique> natureEconomiqueList;
     /*
     @Getter @Setter
     private List<Activite> activiteList;
-    @Getter @Setter
-    private List<NatureEconomique> natureEconomiqueList;
      */
+
 
     @Getter @Setter
     private List<LigneDepense> ligneDepenseList;
@@ -54,11 +58,11 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Getter @Setter
     private List<Operation> selectedOperationList;
     @Getter @Setter
-    private Section selectedSection;
+    private Section selectedSection = new Section();
     @Getter @Setter
-    private Activite selectedActivite;
+    private Activite selectedActivite = new Activite();
     @Getter @Setter
-    private NatureEconomique selectedNatureEconomique;
+    private NatureEconomique selectedNatureEconomique = new NatureEconomique();
     @Getter @Setter
     private String activiteCode;
     @Getter @Setter
@@ -96,9 +100,11 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
         exercice = String.valueOf(LocalDate.now().getYear());
         operationBag = new OperationBag();
         params = getRequestParameterMap();
+        sectionList = sectionService.list();
+        natureEconomiqueList = natureEconomiqueService.findAll();
 
-        if(params.containsKey("sectionCode")){
-            sectionCode = params.get("sectionCode");
+        if(params.containsKey("sectionCode") && !sectionList.isEmpty()){
+            sectionList.stream().filter(section -> section.getCode().equals(params.get("sectionCode"))).findFirst().ifPresent(this::setSelectedSection);
         }
 
         if(params.containsKey("natureTransaction")){
@@ -158,11 +164,10 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
 
     private void initCritereRecherche(){
         activiteCode = "";
-        natureEconomiqueCode = "";
+        selectedNatureEconomique = null;
     }
 
     public void ajouter(){
-        LOG.info("Selected Opération : "+selectedOperationList.size());
         operationBag.getSectionCodeList().add(sectionCode);
         this.typeOperationSetter();
         operationBag.getOperationList().addAll(selectedOperationList);
@@ -177,5 +182,28 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
                 operation.setTypeOperation(TypeOperation.DESTINATION);
             }
         });
+    }
+
+    public String concateCodeLibelle(Object object){
+        String strConcate = "";
+        if (object instanceof Section){
+            Section section = (Section) object;
+            strConcate = section.getCode()+" - "+section.getLibelle();
+        }
+
+        if (object instanceof Activite){
+            Activite activite = (Activite) object;
+            strConcate = activite.getCode()+" - "+activite.getLibelleLong();
+        }
+
+        if (object instanceof NatureEconomique){
+            NatureEconomique natureEconomique = (NatureEconomique) object;
+            strConcate = natureEconomique.getCode()+" - "+natureEconomique.getLibelleLong();
+        }
+        return strConcate;
+    }
+
+    public void onSelect(){
+        LOG.info("Nature economique selected :"+selectedNatureEconomique.getCode() );
     }
 }
