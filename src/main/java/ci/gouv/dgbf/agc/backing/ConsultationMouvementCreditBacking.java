@@ -15,6 +15,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.plaf.ButtonUI;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -34,6 +35,10 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
     private ActeDto acteDto;
     @Getter @Setter
     private List<Composition> compositionList;
+    @Getter @Setter
+    private BigDecimal cumulAE;
+    @Getter @Setter
+    private BigDecimal cumulCP;
 
     private Map<String, String> params;
 
@@ -42,6 +47,7 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
         params = getRequestParameterMap();
         if (params.containsKey("uuid")){
             acteDto = acteService.findActeDtoById(params.get("uuid"));
+            this.computeCumule();
         }
     }
 
@@ -50,6 +56,13 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
         return acteDto.getOperationList().stream()
                 .filter(operation -> operation.getTypeOperation().equals(typeOperation))
                 .collect(Collectors.toList());
+    }
+
+    private void computeCumule(){
+        acteDto.getOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
+                .map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAE);
+        acteDto.getOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
+                .map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulCP);
     }
 
     public String goBack(){

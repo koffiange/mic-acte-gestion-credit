@@ -198,7 +198,7 @@ public class BaseBacking implements Serializable {
    }
 
    public String getDeleteMessage(String code) {
-        return Messages.getString("Messages", "confirm_delete_message", new Object[]{code});
+        return Messages.getString("messages", "confirm_delete_message", new Object[]{code});
    }
    public void closeSuccess(String message){
         PrimeFaces.current().dialog().closeDynamic(message);
@@ -233,7 +233,6 @@ public class BaseBacking implements Serializable {
 
 
    // DATE UTIL
-
     public String displayFormatedDate(Date date){
         LocalDate ld = convertIntoLocaleDate(date);
         String pattern = "dd-MM-yyyy HH:mm:ss";
@@ -259,6 +258,10 @@ public class BaseBacking implements Serializable {
        return zonedDateTime.toLocalDate();
    }
 
+    public Date convertIntoDate(LocalDate localDate){
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
     public Date convertStringIntoDate(String date) throws ParseException {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         Date d = format.parse(date.replace('/', '-'));
@@ -268,13 +271,15 @@ public class BaseBacking implements Serializable {
 
 
     // MONNEY UTIL
-    public static String displayThousandSeparator(BigDecimal value){
-        String pattern = "###,###.###";
+    public static String displayBigDecimalThousandSeparator(BigDecimal value){
+        /*
+        String pattern = "###  ###.###";
         DecimalFormat myFormatter = new DecimalFormat(pattern);
         return myFormatter.format(value);
-    }
+         */
+        if (value == null)
+            return "";
 
-    public static String displayThousandSeparator(Long value){
         DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.FRENCH);
         DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 
@@ -283,4 +288,18 @@ public class BaseBacking implements Serializable {
         return formatter.format(value);
     }
 
+    public String handleMaxValue(BigDecimal montant){
+        return montant.toString();
+    }
+
+    public static String displayLongThousandSeparator(Long value){
+        if (value == null)
+            return "";
+        DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.FRENCH);
+        DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+
+        symbols.setGroupingSeparator(' ');
+        formatter.setDecimalFormatSymbols(symbols);
+        return formatter.format(value);
+    }
 }

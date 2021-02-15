@@ -20,6 +20,11 @@ public class OperationBag {
     public OperationBag() {
     }
 
+    public OperationBag(TypeOperation typeOperation, List<Operation> operationList) {
+        this.typeOperation = typeOperation;
+        this.operationList = operationList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

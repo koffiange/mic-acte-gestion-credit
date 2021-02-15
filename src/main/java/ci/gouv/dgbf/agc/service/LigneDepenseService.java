@@ -3,6 +3,7 @@ package ci.gouv.dgbf.agc.service;
 import ci.gouv.dgbf.agc.client.ActiviteClient;
 import ci.gouv.dgbf.agc.client.LigneDepenseClient;
 import ci.gouv.dgbf.agc.dto.LigneDepense;
+import ci.gouv.dgbf.agc.dto.Operation;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
@@ -59,8 +60,14 @@ public class LigneDepenseService implements LigneDepenseClient {
     }
 
     @Override
-    public List<LigneDepense> findByCritere(String natureEconomiqueCode, String activiteCode, String sectionCode,
+    public List<LigneDepense> findByCritere(String exercice, String sourceFinancement, String natureEconomiqueCode, String activiteCode,
+                                            String bailleur, String sectionCode,
                                             String natureDepense, String programme, String action) {
-        return client.findByCritere(natureEconomiqueCode, activiteCode, sectionCode, natureDepense, programme, action);
+        return client.findByCritere(exercice, sourceFinancement, natureEconomiqueCode, activiteCode, bailleur, sectionCode, natureDepense, programme, action);
+    }
+
+    @Override
+    public List<LigneDepense> findByOperation(List<Operation> operationList) {
+        return client.findByOperation(operationList);
     }
 }

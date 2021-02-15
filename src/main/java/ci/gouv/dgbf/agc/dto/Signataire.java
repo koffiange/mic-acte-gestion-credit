@@ -13,17 +13,9 @@ public class Signataire{
     @Getter @Setter
     private String nom;
     @Getter @Setter
-    public Acte acte;
+    private Acte acte;
 
     public Signataire() {
-    }
-
-    public String getFonction() {
-        return fonction;
-    }
-
-    public void setFonction(String fonction) {
-        this.fonction = fonction;
     }
 
     @Override

@@ -5,6 +5,12 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/components/template.xhtml">
     <ui:define name="title">Application des actes de gestion de credit</ui:define>
+    <style type="text/css">
+        .ui-filter-column .ui-column-customfilter .custom-filter {
+            width: 90% !important;
+            box-sizing: border-box !important;
+        }
+    </style>
 
     <ui:define name="content">
         <h:form id="messageForm">
@@ -23,6 +29,8 @@
 
                 <h:form id="createBtnForm">
                     <p:remoteCommand name="rc" action="#{acteBacking.init()}" update="listModeleForm" />
+                    <p:importEnum type="ci.gouv.dgbf.agc.enumeration.CategorieActe" var="CategorieActe" allSuffix="ALL_ITEM_VALUE"/>
+                    <p:importEnum type="ci.gouv.dgbf.agc.enumeration.NatureActe" var="NatureActe" allSuffix="ALL_ITEM_VALUE"/>
                     <p:toolbar id="viewToolBar">
                         <f:facet name="left">
                             <p:menuButton value="Nouvel acte de gestion de crédit" menuStyleClass="ui-overlay-butonn-menu">
@@ -42,18 +50,24 @@
 
                 <p:fieldset legend="Liste des actes de gestion de credit">
                     <h:form id="listModeleForm">
-                        <p:tabView>
+                        <p:tabView id="tabview">
                             <p:tab title="Acte en attente d'application" id="attenteTab">
+
                                 <f:facet name="actions">
-                                    <p:commandButton value="Appliquer les actes sélectionnés" icon="fa fa-check"
-                                                     id="applicationMultipleBtn" actionListener="#{acteBacking.appliquerPlusieur()}"
-                                                     update="@form :messageForm"/>
+                                    <p:outputPanel id="applicationMultipleBtn">
+                                        <p:commandButton value="Appliquer les actes sélectionnés" icon="fa fa-check"
+                                                          actionListener="#{acteBacking.appliquerPlusieur()}" disabled="#{acteBacking.displayApplicationMultipleBtn}"
+                                                         update="@form :messageForm"/>
+                                    </p:outputPanel>
                                 </f:facet>
+
 
                                 <p:dataTable id="listActeEnAttenteApplication" value="#{acteBacking.findByStatut('EN_ATTENTE')}"
                                              emptyMessage="#{messages.empty_dataTable_message}"
                                              var="acte"
+                                             widgetVar="acteDT"
                                              selection="#{acteBacking.selectedActeList}"
+                                             filteredValue="#{acteBacking.filteredActeList}"
                                              rowKey="#{acte.uuid}"
                                              rowIndexVar="index"
                                              tableStyle="font-size: 13px;"
@@ -61,15 +75,35 @@
                                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                              rowsPerPageTemplate="6,12,16"
                                              currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
-
+                                    <p:ajax event="rowSelectCheckbox" update="@form:tabview:applicationMultipleBtn" listener="#{acteBacking.onRowSelect}" />
+                                    <p:ajax event="rowUnselectCheckbox" update="@form:tabview:applicationMultipleBtn" listener="#{acteBacking.onRowUnSelect}" />
                                     <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
                                     <p:column headerText="#" style="width:20px;text-align:center">#{index + 1}</p:column>
-                                    <p:column styleClass="col-w10" headerText="Categorie d'acte">#{acte.categorieActe.libelle}</p:column>
-                                    <p:column headerText="Nature d'acte">#{acte.natureActe.libelle}</p:column>
+                                    <p:column headerText="Référence" filterMatchMode="contains" filterBy="#{acte.reference}">#{acte.reference}</p:column>
+                                    <p:column headerText="Categorie d'acte" styleClass="col-w30"  filterMatchMode="exact" filterBy="#{acte.categorieActe}">
+                                        <f:facet name="filter">
+                                            <p:selectOneMenu onchange="PF('acteDT').filter()" styleClass="custom-filter">
+                                                <f:selectItem itemLabel="Tout" itemValue="#{null}" noSelectionOption="true"/>
+                                                <f:selectItems value="#{CategorieActe.ALL_ITEM_VALUE}" var="cat" itemLabel="#{cat.libelle}"  itemValue="#{cat}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                        #{acte.categorieActe.libelle}
+                                    </p:column>
+                                    <p:column headerText="Nature d'acte" filterMatchMode="exact" filterBy="#{acte.natureActe}"  styleClass="custom-filter">
+                                        <f:facet name="filter">
+                                            <p:selectOneMenu onchange="PF('acteDT').filter()" styleClass="custom-filter">
+                                                <f:selectItem itemLabel="Tout" itemValue="#{null}" noSelectionOption="true"/>
+                                                <f:selectItems value="#{NatureActe.ALL_ITEM_VALUE}" var="nat" itemLabel="#{nat.libelle}"  itemValue="#{nat}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                        #{acte.natureActe.libelle}
+                                    </p:column>
                                     <p:column headerText="Date signature">#{acte.dateSignature}</p:column>
-                                    <p:column headerText="Référence Demande">#{acte.reference}</p:column>
+                                    <!--
                                     <p:column headerText="Statut acte">#{acte.statutActe.libelle}</p:column>
+
                                     <p:column headerText="Date Création">#{acteBacking.displayFormatedDateTime(acte.createdDate)}</p:column>
+                                    -->
                                     <p:column headerText="Actions" styleClass="col-w10">
                                         <p:commandButton icon="fa fa-caret-down"
                                                          id="actionBtnEnAttente" type="button"
@@ -94,14 +128,14 @@
                                             </p:commandLink>
                                             <br/>
                                             <p:commandLink value="Déréserver les crédits"
-                                                           actionListener="#{acteBacking.openUpdateDialog(acte.uuid)}"
+                                                           actionListener="#{acteBacking.fictiveAction}"
                                                            styleClass="text-bold">
                                                 <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}"
                                                         update="@form messageForm"/>
                                             </p:commandLink>
                                             <hr style="border: dashed 1px #ffffff"/>
                                             <p:commandLink value="Modifier"
-                                                           actionListener="#{acteBacking.openUpdateDialog(acte.uuid)}"
+                                                           actionListener="#{acteBacking.openUpdateDialog(acte)}"
                                                            styleClass="text-bold">
                                                 <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}"
                                                         update=":listModeleForm messageForm"/>

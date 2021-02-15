@@ -2,7 +2,7 @@ package ci.gouv.dgbf.agc.enumeration;
 
 public enum DisponibiliteCreditOperation {
     CREDIT_DISPONIBLES("Crédits disponibles"),
-    CREDIT_INSUFFICANTS("Crédits insuffisants");
+    CREDIT_INSUFFISANTS("Crédits insuffisants");
 
     public String libelle;
 

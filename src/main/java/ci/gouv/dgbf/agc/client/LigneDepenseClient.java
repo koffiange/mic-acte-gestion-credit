@@ -1,11 +1,9 @@
 package ci.gouv.dgbf.agc.client;
 
 import ci.gouv.dgbf.agc.dto.LigneDepense;
+import ci.gouv.dgbf.agc.dto.Operation;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import java.util.List;
 
 @Path("/v1/lignes-depenses")
@@ -27,10 +25,17 @@ public interface LigneDepenseClient {
 
     @GET
     @Path("/criteres")
-    List<LigneDepense> findByCritere(@QueryParam("natureEconomiqueCode") String natureEconomiqueCode,
+    List<LigneDepense> findByCritere(@QueryParam("exercice") String exercice,
+                                     @QueryParam("sourceFinancement") String sourceFinancement,
+                                     @QueryParam("natureEconomiqueCode") String natureEconomiqueCode,
                                      @QueryParam("activiteCode") String activiteCode,
+                                     @QueryParam("bailleur") String bailleur,
                                      @QueryParam("sectionCode") String sectionCode,
                                      @QueryParam("natureDepense") String natureDepense,
                                      @QueryParam("programme") String programme,
                                      @QueryParam("action") String action);
+
+    @POST
+    @Path("/criteres/operations")
+    List<LigneDepense> findByOperation(List<Operation> operationList);
 }

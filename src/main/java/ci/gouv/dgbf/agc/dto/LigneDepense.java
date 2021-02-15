@@ -23,7 +23,11 @@ public class LigneDepense {
     @Getter @Setter
     private String activiteLibelle;
     @Getter @Setter
-    private String sourceFinancement;
+    private String sourceFinancementId;
+    @Getter @Setter
+    private String sourceFinancementCode;
+    @Getter @Setter
+    private String sourceFinancementLibelle;
     @Getter @Setter
     private String usbId;
     @Getter @Setter
@@ -40,6 +44,11 @@ public class LigneDepense {
     private BigDecimal montantAe;
     @Getter @Setter
     private BigDecimal montantCp;
+    @Getter @Setter
+    private BigDecimal montantDisponibleAE;
+    @Getter @Setter
+    private BigDecimal montantDisponibleCP;
+
 
     public LigneDepense() {
     }
@@ -47,7 +56,7 @@ public class LigneDepense {
     public LigneDepense(String ligneDepenseId, String exercice, String activiteId,
                         String natureEconomiqueId, String natureEconomiqueCode,
                         String natureEconomiqueLibelle, String activiteCode,
-                        String activiteLibelle, String sourceFinancement, String usbId, String sectionId,
+                        String activiteLibelle, String sourceFinancementId, String usbId, String sectionId,
                         String sectionLibelle, String sectionCode, String uaId,
                         String secbId, String financementId, BigDecimal montantAe,
                         BigDecimal montantCp) {
@@ -59,7 +68,7 @@ public class LigneDepense {
         this.natureEconomiqueLibelle = natureEconomiqueLibelle;
         this.activiteCode = activiteCode;
         this.activiteLibelle = activiteLibelle;
-        this.sourceFinancement = sourceFinancement;
+        this.sourceFinancementId = sourceFinancementId;
         this.usbId = usbId;
         this.sectionId = sectionId;
         this.sectionLibelle = sectionLibelle;

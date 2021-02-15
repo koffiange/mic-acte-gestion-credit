@@ -14,9 +14,11 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.logging.Logger;
 
 @Named(value = "rchSourceFinancementBacking")
@@ -34,7 +36,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Inject
     OperationService operationService;
     @Inject
-    operationSessionService operationSessionService;
+    OperationSessionService operationSessionService;
 
     /*
     @Getter @Setter
@@ -48,7 +50,11 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Getter @Setter
     private List<Operation> operationList;
     @Getter @Setter
+    private List<Operation> filteredOperationList;
+    @Getter @Setter
     private List<Operation> selectedOperationList;
+    @Getter @Setter
+    private Section selectedSection;
     @Getter @Setter
     private Activite selectedActivite;
     @Getter @Setter
@@ -60,9 +66,15 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Getter @Setter
     private String natureDepense;
     @Getter @Setter
+    private String exercice;
+    @Getter @Setter
+    private String sourceFinancement;
+    @Getter @Setter
     private String programme;
     @Getter @Setter
     private String action;
+    @Getter @Setter
+    private String bailleur;
     @Getter @Setter
     private TypeOperation typeImputation;
     @Getter @Setter
@@ -81,8 +93,10 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
 
     @PostConstruct
     public void init(){
+        exercice = String.valueOf(LocalDate.now().getYear());
         operationBag = new OperationBag();
         params = getRequestParameterMap();
+
         if(params.containsKey("sectionCode")){
             sectionCode = params.get("sectionCode");
         }
@@ -98,23 +112,47 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
 
     public String displayTitleText(){
         if (operationBag.getTypeOperation().equals(TypeOperation.ORIGINE)){
-            return "Imputation d'Origine : rechercher des sources de financement de la section "+sectionCode;
+            return "Imputation d'Origine : rechercher des sources de financement.";
         } else {
-            return "Imputation de Destinantion : rechercher de source de financement";
+            return "Imputation de Destinantion : rechercher de source de financement.";
         }
     }
 
-    public boolean displaySectionField(){
-        return (sectionCode != null);
+    public boolean disableSectionField(){
+        return natureTransaction.equals(NatureTransaction.VIREMENT);
+    }
+
+    public boolean filterBudget(Object value, Object filter, Locale locale) {
+        String filterText = (filter == null) ? null : filter.toString().trim();
+        if (filterText == null || filterText.equals("")) {
+            return true;
+        }
+
+        if (value == null) {
+            return false;
+        }
+
+        final boolean b = ((Comparable) value).compareTo(BigDecimal.valueOf(Long.parseLong(filterText))) >= 0;
+        return b;
+    }
+
+    public boolean filterDisponible(Object value, Object filter, Locale locale) {
+        String filterText = (filter == null) ? null : filter.toString().trim();
+        if (filterText == null || filterText.equals("")) {
+            return true;
+        }
+
+        if (value == null) {
+            return false;
+        }
+
+        final boolean b = ((Comparable) value).compareTo(BigDecimal.valueOf(Long.parseLong(filterText))) >= 0;
+        return b;
     }
 
     public void rechercher(){
-        ligneDepenseList = ligneDepenseService.findByCritere(natureEconomiqueCode, activiteCode, sectionCode, natureDepense, programme, action);
+        ligneDepenseList = ligneDepenseService.findByCritere(exercice, sourceFinancement, natureEconomiqueCode, activiteCode, bailleur, sectionCode, natureDepense, programme, action);
         operationList = operationService.buildOperationListFromLigneDepenseList(ligneDepenseList);
-        if(activiteCode != null && !activiteCode.equals(""))
-            selectedActivite = activiteService.findByCode(activiteCode);
-        if(natureEconomiqueCode != null && !natureEconomiqueCode.equals(""))
-            selectedNatureEconomique = natureEconomiqueService.findByCode(natureEconomiqueCode);
         this.initCritereRecherche();
     }
 

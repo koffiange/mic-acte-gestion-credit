@@ -13,59 +13,80 @@
 <h:body styleClass="main-body">
     <h:form id="createForm">
         <p:growl globalOnly="true" showDetail="true" showSummary="true" severity="info, warn, error" life="15000"/>
-        <p:importEnum type="ci.gouv.dgbf.agc.enumeration.NatureDepense" var="NatureDepense" allSuffix="ALL_ITEM_VALUES"/>
+        <p:importEnum type="ci.gouv.dgbf.agc.enumeration.NatureDepense" var="NatureDepense" allSuffix="ALL_ITEM_VALUE"/>
+        <p:importEnum type="ci.gouv.dgbf.agc.enumeration.SourceFinancement" var="SourceFinancement" allSuffix="ALL_ITEM_VALUE"/>
 
         <div class="ui-g">
             <div class="ui-g-12">
                 <p:fieldset id="critereFls"  legend="Critère de recherche">
                     <p:panelGrid columns="4" layout="grid" columnClasses="ui-g5-3 , ui-g5-3, ui-g5-3, ui-g5-2">
                         <p:outputLabel value="Section" styleClass="text-bold"/>
-                        <p:outputLabel value="Activité" styleClass="text-bold"/>
-                        <p:outputLabel value="Nature Economique" styleClass="text-bold"/>
-                        <p:outputLabel value="Nature de Dépense" styleClass="text-bold"/>
-
-                        <p:inputText value="#{rchSourceFinancementBacking.sectionCode}" placeholder="Code de la section" styleClass="form-control" disabled="#{rchSourceFinancementBacking.displaySectionField()}"/>
-                        <p:inputText value="#{rchSourceFinancementBacking.activiteCode}" placeholder="Code de l'activité" styleClass="form-control"/>
-                        <p:inputText value="#{rchSourceFinancementBacking.natureEconomiqueCode}" placeholder="Code de la nature économique" styleClass="form-control"/>
-                        <p:commandButton value="Rechercher" action="#{rchSourceFinancementBacking.rechercher}" styleClass="btn-block" icon="fa fa-search" update="@form"/>
-
-                        <p:outputLabel value="Nature de Dépense" styleClass="text-bold"/>
                         <p:outputLabel value="Programme" styleClass="text-bold"/>
                         <p:outputLabel value="Action" styleClass="text-bold"/>
-                        <p:outputLabel value=""/>
+                        <p:outputLabel value="Nature de Dépense" styleClass="text-bold"/>
 
-                        <p:selectOneMenu value="#{rchSourceFinancementBacking.natureDepense}">
-                            <f:selectItems var="nd" value="#{NatureDepense.ALL_ITEM_VALUES}" itemLabel="#{nd.libelle}" itemValue="#{nd.libelle}"/>
-                        </p:selectOneMenu>
+
+
+                        <p:inputText value="#{rchSourceFinancementBacking.sectionCode}" placeholder="Code de la section" styleClass="form-control" disabled="#{rchSourceFinancementBacking.disableSectionField()}"/>
                         <p:inputText value="#{rchSourceFinancementBacking.programme}" placeholder="Code de la section" styleClass="form-control"/>
                         <p:inputText value="#{rchSourceFinancementBacking.action}" placeholder="Code de l'activité" styleClass="form-control"/>
+                        <p:selectOneMenu value="#{rchSourceFinancementBacking.natureDepense}">
+                            <f:selectItem itemLabel="-- Nature de dépense --" noSelectionOption="true"/>
+                            <f:selectItems var="nd" value="#{NatureDepense.ALL_ITEM_VALUE}" itemLabel="#{nd.libelle}" itemValue="#{nd.libelle}"/>
+                        </p:selectOneMenu>
+
+
+                        <p:outputLabel value="Activité" styleClass="text-bold"/>
+                        <p:outputLabel value="Nature Economique" styleClass="text-bold"/>
+                        <p:outputLabel value="Exercice" styleClass="text-bold"/>
+                        <p:outputLabel value=""/>
+
+                        <p:inputText value="#{rchSourceFinancementBacking.activiteCode}" placeholder="Code de l'activité" styleClass="form-control"/>
+                        <p:inputText value="#{rchSourceFinancementBacking.natureEconomiqueCode}" placeholder="Code de la nature économique" styleClass="form-control"/>
+                        <p:inputText value="#{rchSourceFinancementBacking.exercice}" placeholder="Année de l'exercice" styleClass="form-control"/>
+                        <p:commandButton value="Rechercher" action="#{rchSourceFinancementBacking.rechercher}" styleClass="btn-block" icon="fa fa-search" update="@form"/>
                         <p:outputLabel value=""/>
 
                     </p:panelGrid>
                 </p:fieldset>
 
-                <p:fieldset id="oparationFls" legend="Sources de financement">
-                    <div class="ui-g">
-                        <div class="ui-g-1"><h:outputText styleClass="text-bold text-align-right" value="Activité : "/></div>
-                        <div class="ui-g-11">#{rchSourceFinancementBacking.selectedActivite.code} - #{rchSourceFinancementBacking.selectedActivite.libelleLong}</div>
-                    </div>
+                <p:fieldset id="oparationFls" legend="Ligne de financement">
                     <p:dataTable id="oparationDT" value="#{rchSourceFinancementBacking.operationList}"
                                  var="operation"
+                                 widgetVar="oparationDT"
                                  rowIndexVar="index"
                                  selection="#{rchSourceFinancementBacking.selectedOperationList}"
                                  rowKey="#{operation.uuid}"
                                  rowSelectMode="checkbox"
-                                 tableStyle="font-size: 13px;"
-                                 emptyMessage="#{messages.empty_dataTable_message}">
+                                 emptyMessage="#{messages.empty_dataTable_message}"
+                                 tableStyle="font-size: 11px;"
+                                 filteredValue="#{rchSourceFinancementBacking.filteredOperationList}"
+                                 rows="60"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="40,60,80"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
                         <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
                         <p:column headerText="#" styleClass="col-w5">#{index + 1}</p:column>
                         <!--
                         <p:column headerText="Source de Financement">#{operation.sourceFinancement}</p:column>
                         -->
-                        <p:column headerText="Nature Eco." styleClass="col-w50" rendered="#{rchSourceFinancementBacking.natureEconomiqueCode ne null}">#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}</p:column>
-                        <p:column headerText="Budget AE">#{rchSourceFinancementBacking.displayThousandSeparator(operation.budgetActuelAE)}</p:column>
-                        <p:column headerText="Budget CP">#{rchSourceFinancementBacking.displayThousandSeparator(operation.budgetActuelCP)}</p:column>
-                    </p:dataTable>
+                        <p:column headerText="Activité" styleClass="col-w20" filterBy="#{operation.activiteCode} - #{operation.activiteLibelle}"  filterMatchMode="contains">#{operation.activiteCode} - #{operation.activiteLibelle}</p:column>
+                        <p:column headerText="Nature Eco." styleClass="col-w20" filterBy="#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}" filterMatchMode="contains">#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}</p:column>
+                        <p:column headerText="Source Fin." styleClass="col-w20" filterBy="#{operation.sourceFinancementLibelle}" filterMatchMode="exact">
+                            <f:facet name="filter">
+                                <p:selectOneMenu onchange="PF('oparationDT').filter()" styleClass="custom-filter">
+                                    <f:selectItem itemLabel="Tout" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItems value="#{SourceFinancement.ALL_ITEM_VALUE}" var="sFin" itemLabel="#{sFin.libelle}"  itemValue="#{sFin.libelle}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                            #{operation.sourceFinancementLibelle}
+                        </p:column>
+                        <p:column headerText="Budget AE" styleClass="col-w10 text-align-right" filterBy="#{operation.budgetActuelAE}" filterFunction="#{rchSourceFinancementBacking.filterBudget}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(operation.budgetActuelAE)}" /></p:column>
+                        <p:column headerText="Budget CP" styleClass="col-w10 text-align-right" filterBy="#{operation.budgetActuelCP}" filterFunction="#{rchSourceFinancementBacking.filterBudget}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(operation.budgetActuelCP)}" /></p:column>
+                        <p:column headerText="Disponible AE" styleClass="col-w10 text-align-right" filterBy="#{operation.montantDisponibleAE}" filterFunction="#{rchSourceFinancementBacking.filterDisponible}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(operation.budgetActuelAE)}" /></p:column>
+                        <p:column headerText="Disponible CP" styleClass="col-w10 text-align-right" filterBy="#{operation.montantDisponibleCP}" filterFunction="#{rchSourceFinancementBacking.filterDisponible}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(operation.budgetActuelAE)}" /></p:column>
+                        </p:dataTable>
                 </p:fieldset>
 
                 <p:spacer height="20" width="10"/>

@@ -12,9 +12,7 @@ import java.time.*;
 import java.util.Date;
 import java.util.Objects;
 
-public class Acte{
-    @Getter @Setter
-    private String uuid;
+public class Acte extends BaseDto{
     @Getter @Setter
     private String libelle;
     @Getter @Setter
@@ -46,7 +44,7 @@ public class Acte{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Acte acte = (Acte) o;
-        return Objects.equals(uuid, acte.uuid) &&
+        return Objects.equals(super.getUuid(), acte.getUuid()) &&
                 Objects.equals(libelle, acte.libelle) &&
                 Objects.equals(corpus, acte.corpus) &&
                 categorieActe == acte.categorieActe &&
@@ -59,13 +57,13 @@ public class Acte{
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, libelle, corpus, categorieActe, natureActe, statutActe, reference, dateSignature, demande);
+        return Objects.hash(super.getUuid(), libelle, corpus, categorieActe, natureActe, statutActe, reference, dateSignature, demande);
     }
 
     @Override
     public String toString() {
         return "Acte{" +
-                "uuid='" + uuid + '\'' +
+                "uuid='" + super.getUuid() + '\'' +
                 ", libelle='" + libelle + '\'' +
                 ", corpus='" + corpus + '\'' +
                 ", categorieActe=" + categorieActe +

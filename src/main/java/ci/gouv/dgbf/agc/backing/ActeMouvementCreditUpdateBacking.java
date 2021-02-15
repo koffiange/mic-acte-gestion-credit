@@ -5,11 +5,13 @@ import ci.gouv.dgbf.agc.enumeration.CategorieActe;
 import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
 import ci.gouv.dgbf.agc.enumeration.StatutActe;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
-import ci.gouv.dgbf.agc.exception.CreditInsuffisantException;
-import ci.gouv.dgbf.agc.service.*;
+import ci.gouv.dgbf.agc.service.ActeService;
+import ci.gouv.dgbf.agc.service.OperationSessionService;
+import ci.gouv.dgbf.agc.service.SectionService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
+import org.omnifaces.el.functions.Dates;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 
@@ -19,13 +21,15 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-@Named(value = "amcCreateBacking")
+@Named(value = "amcUpdateBacking")
 @ViewScoped
-public class ActeMouvementCreditCreateBacking extends BaseBacking {
-
+public class ActeMouvementCreditUpdateBacking extends BaseBacking {
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
     @Inject
@@ -37,12 +41,6 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     @Inject
     private OperationSessionService operationSessionService;
 
-    @Inject
-    private OperationService operationService;
-
-    @Inject
-    private ModeleVisaService modeleVisaService;
-
     @Getter @Setter
     private List<Signataire> signataireList = new ArrayList<>();
 
@@ -50,16 +48,13 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     private List<Operation> operationList = new ArrayList<>();
 
     @Getter @Setter
-    private OperationBag operationBagOrigine = new OperationBag();
+    private OperationBag operationBagOrigine ;
 
     @Getter @Setter
-    private OperationBag operationBagDestination = new OperationBag();
+    private OperationBag operationBagDestination ;
 
     @Getter @Setter
     private List<Section> sectionList;
-
-    @Getter @Setter
-    private List<ModeleVisa> modeleVisaList;
 
     @Getter @Setter
     private ActeDto acteDto;
@@ -92,21 +87,37 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     private final BigDecimal zero = BigDecimal.ZERO;
 
     @Getter @Setter
-    private String corpus;
-
-    @Getter @Setter
     private boolean appliquerActe = false;
 
     @Getter @Setter
     private boolean addSignataireLock = false;
 
+    private Map<String, String> params;
+
     @PostConstruct
     public void init(){
-        acte = new Acte();
-        signataire = new Signataire();
-        acteDto = new ActeDto();
-        sectionList = sectionService.list();
-        modeleVisaList = modeleVisaService.listAll();
+        params = getRequestParameterMap();
+        if (params.containsKey("uuid")){
+            acteDto = acteService.findActeDtoById(params.get("uuid"));
+
+            acte = acteDto.getActe();
+            date = convertIntoDate(acte.getDateSignature());
+            signataire = new Signataire();
+            signataireList = acteDto.getSignataireList();
+
+            // Construction des Bags
+            List<Operation> operationOrigine = acteDto.getOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE)).collect(Collectors.toList());
+            List<Operation> operationDestination = acteDto.getOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.DESTINATION)).collect(Collectors.toList());
+
+            operationBagOrigine = new OperationBag(TypeOperation.ORIGINE,operationOrigine);
+            operationBagDestination = new OperationBag(TypeOperation.ORIGINE,operationDestination);
+
+            operationSessionService.setOperationDestinationList(operationOrigine);
+            operationSessionService.setOperationDestinationList(operationDestination);
+
+            // Comule
+            this.cumules();
+        }
     }
 
     @PreDestroy
@@ -131,15 +142,13 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
     public void changeAddBtnSignataireAbility(){
         if (acte.getNatureTransaction()!=null &&
-            acte.getNatureTransaction().equals(NatureTransaction.VIREMENT) &&
-            signataireList.size() >= 1){
+                acte.getNatureTransaction().equals(NatureTransaction.VIREMENT) &&
+                signataireList.size() >= 1){
             addSignataireLock = true;
         } else {
             addSignataireLock = false;
         }
     }
-
-
 
     public void addSignataire(String s){
         signataireList.remove(s);
@@ -160,40 +169,14 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         acteDto.setOperationList(operationList);
     }
 
-    public void persist(){
+    public void update(){
         try{
-            this.majOperationAvantVerification();
-            this.verifierDisponibilite();
             this.buildActeDto();
-            acteService.persist(appliquerActe, acteDto);
+            acteService.update(appliquerActe, acteDto);
             closeSuccess();
         } catch (Exception e){
             showError(e.getMessage());
         }
-    }
-
-    private void majOperationAvantVerification(){
-        operationBagOrigine.setOperationList(operationService.operationListDisponibiliteSetter(operationBagOrigine.getOperationList()));
-        // this.truncateDisponible();
-    }
-
-    private void truncateDisponible(){
-        operationBagOrigine.getOperationList().forEach(operation -> operation.setMontantDisponibleAE(BigDecimal.TEN));
-        operationBagOrigine.getOperationList().forEach(operation -> operation.setMontantDisponibleCP(BigDecimal.TEN));
-    }
-
-    private void verifierDisponibilite() throws CreditInsuffisantException {
-        StringBuilder msg = new StringBuilder("Crédits insufisants sur les lignes :");
-        boolean hasCreditInsuffisant = false;
-        for (int i = 0; i < operationBagOrigine.getOperationList().size(); i ++){
-            Operation operation = operationBagOrigine.getOperationList().get(i);
-            if (operation.getMontantDisponibleAE().compareTo(operation.getMontantOperationAE()) < 0){
-                msg.append(" #").append(i+1);
-                hasCreditInsuffisant = true;
-            }
-        }
-        if (hasCreditInsuffisant)
-            throw new CreditInsuffisantException(msg.toString());
     }
 
     public void openLigneDepenseDialog(String typeImputation){
@@ -216,20 +199,11 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         PrimeFaces.current().dialog().openDynamic("rechercher-source-financement-dlg", options, params);
     }
 
-    public void openCorpusDialog(){
-        Map<String, List<String>> params = new HashMap<>();
-        Map<String,Object> options = getLevelOneDialogOptions();
-        options.replace("width", "60vw");
-        options.replace("height", "75vh");
-
-        List<String> corpusList = new ArrayList<>();
-        if(acte.getCorpus() == null) {
-            corpusList.add("");
-        } else {
-            corpusList.add(acte.getCorpus());
-        }
-        params.put("corpus", corpusList);
-        PrimeFaces.current().dialog().openDynamic("acte-corpus-dlg", options, params);
+    public void cumules(){
+        operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementAE);
+        operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
+        operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutAE);
+        operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
     }
 
     public void handleReturn(SelectEvent event){
@@ -261,14 +235,8 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     }
 
     public void close(){
-        acte.setCorpus(corpus);
-        closeSuccess();
+        closeCancel();
     }
-
-    public void corpusHandleReturn(SelectEvent event){
-        acte.setCorpus(event.getObject().toString());
-    }
-
 
     public void deleteOperation(String location, Operation operation){
         TypeOperation typeOperation = TypeOperation.valueOf(location);
@@ -279,13 +247,6 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
             operationBagDestination.getOperationList().remove(operation);
         }
         this.cumules();
-    }
-
-    public void cumules(){
-        operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementAE);
-        operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
-        operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutAE);
-        operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
     }
 
     public String equilibreAE(){

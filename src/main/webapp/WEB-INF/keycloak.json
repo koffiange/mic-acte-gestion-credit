@@ -4,7 +4,7 @@
   "ssl-required": "external",
   "resource": "mic-acte-gestion-credit",
   "credentials": {
-    "secret": "b3b2a76b-7768-4e4a-857f-dd092be79259"
+    "secret": "bffe77c0-23dd-4451-929a-8a2392fb2073"
   },
   "confidential-port": 0
 }

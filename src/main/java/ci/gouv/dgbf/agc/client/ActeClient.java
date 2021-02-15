@@ -25,8 +25,8 @@ public interface ActeClient {
     void persist(@QueryParam("appliquer") boolean appliquer, ActeDto acteDto);
 
     @PUT
-    @Path("/acte")
-    void update(Acte acte);
+    @Path("/acte/dto/")
+    void update(@QueryParam("appliquer") boolean appliquer, ActeDto acteDto);
 
     @PUT
     @Path("/acte/appliquer")
