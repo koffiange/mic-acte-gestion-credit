@@ -39,4 +39,8 @@ public interface ActeClient {
     @DELETE
     @Path("/acte/{uuid}")
     void delete(@PathParam("uuid") String uuid);
+
+    @GET
+    @Path("/acte/check-reference-already-exist")
+    boolean checkReferenceAlreadyExist(@QueryParam("reference") String reference);
 }

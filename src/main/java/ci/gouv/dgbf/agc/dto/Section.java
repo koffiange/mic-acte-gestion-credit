@@ -18,6 +18,13 @@ public class Section {
     public Section() {
     }
 
+    public Section(String uuid, String code, String sigle, String libelle) {
+        this.uuid = uuid;
+        this.code = code;
+        this.sigle = sigle;
+        this.libelle = libelle;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

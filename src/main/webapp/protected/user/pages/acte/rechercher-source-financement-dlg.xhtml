@@ -31,10 +31,12 @@
                         <!--
                         <p:inputText value="#{rchSourceFinancementBacking.sectionCode}" styleClass="form-control" disabled="#{rchSourceFinancementBacking.disableSectionField()}"/>
                         -->
-                        <p:selectOneMenu value="#{rchSourceFinancementBacking.sectionCode}" filter="true" filterMatchMode="contains"
-                                         style="width: 20vw !important;" styleClass="ui-selectonemenu-filter-container" converter="omnifaces.SelectItemsConverter">
+                        <p:selectOneMenu value="#{rchSourceFinancementBacking.selectedSection}" filter="true" filterMatchMode="contains"
+                                         style="width: 20vw !important;" styleClass="ui-selectonemenu-filter-container"
+                                         converter="omnifaces.SelectItemsConverter" disabled="#{rchSourceFinancementBacking.disableSectionField()}">
                             <f:selectItem itemLabel="-- Selectionneez une section --" noSelectionOption="true" />
-                            <f:selectItems var="section" value="#{rchSourceFinancementBacking.sectionList}" itemLabel="#{of:abbreviate(rchSourceFinancementBacking.concateCodeLibelle(section), 60)}" itemValue="#{section.code}"/>
+                            <f:selectItems var="section" value="#{rchSourceFinancementBacking.sectionList}" itemLabel="#{of:abbreviate(rchSourceFinancementBacking.concateCodeLibelle(section), 60)}" itemValue="#{section}"/>
+                            <p:ajax event="change" listener="#{rchSourceFinancementBacking.onSectionSelect()}"/>
                         </p:selectOneMenu>
                         <p:inputText value="#{rchSourceFinancementBacking.programme}" placeholder="Code de la section" styleClass="form-control"/>
                         <p:inputText value="#{rchSourceFinancementBacking.action}" placeholder="Code de l'activité" styleClass="form-control"/>
@@ -43,29 +45,26 @@
                             <f:selectItems var="nd" value="#{NatureDepense.ALL_ITEM_VALUE}" itemLabel="#{nd.libelle}" itemValue="#{nd.libelle}"/>
                         </p:selectOneMenu>
 
-
                         <p:outputLabel value="Activité" styleClass="text-bold"/>
                         <p:outputLabel value="Nature Economique" styleClass="text-bold"/>
                         <p:outputLabel value="Exercice" styleClass="text-bold"/>
                         <p:outputLabel value=""/>
 
                         <p:inputText value="#{rchSourceFinancementBacking.activiteCode}" placeholder="Code de l'activité" styleClass="form-control"/>
-                        <!--
-                        <p:inputText value="#{rchSourceFinancementBacking.natureEconomiqueCode}" placeholder="Code de la nature économique" styleClass="form-control"/>
-                        -->
-                        <p:selectOneMenu value="#{rchSourceFinancementBacking.natureEconomiqueCode}" filter="true" filterMatchMode="contains"
-                                         style="width: 20vw !important;" styleClass="ui-selectonemenu-filter-container" converter="omnifaces.SelectItemsConverter">
+                        <p:selectOneMenu value="#{rchSourceFinancementBacking.selectedNatureEconomique}" filter="true" filterMatchMode="contains"
+                                         style="width: 20vw !important;" styleClass="ui-selectonemenu-filter-container"
+                                         converter="omnifaces.SelectItemsConverter" >
                             <f:selectItem itemLabel="-- Sélectionner une nature économique --" noSelectionOption="true"/>
-                            <f:selectItems var="nec" value="#{rchSourceFinancementBacking.natureEconomiqueList}" itemLabel="#{of:abbreviate(rchSourceFinancementBacking.concateCodeLibelle(nec), 60)}" itemValue="#{nec.code}"/>
-                            <p:ajax event="change" listener="#{rchSourceFinancementBacking.onSelect()}"/>
+                            <f:selectItems var="nec" value="#{rchSourceFinancementBacking.natureEconomiqueList}" itemLabel="#{of:abbreviate(rchSourceFinancementBacking.concateCodeLibelle(nec), 60)}" itemValue="#{nec}"/>
+                            <p:ajax event="change" listener="#{rchSourceFinancementBacking.onNatureEconomiqueSelect()}"/>
                         </p:selectOneMenu>
-                        <p:inputText value="#{rchSourceFinancementBacking.exercice}" placeholder="Année de l'exercice" styleClass="form-control"/>
+                        <p:inputText value="#{rchSourceFinancementBacking.exercice}" placeholder="Année de l'exercice" styleClass="form-control" rendered="true" requiredMessage="#{messages.required_field_message}"/>
                         <p:commandButton value="Rechercher" action="#{rchSourceFinancementBacking.rechercher}" styleClass="btn-block" icon="fa fa-search" update="@form"/>
                         <p:outputLabel value=""/>
                     </p:panelGrid>
                 </p:fieldset>
 
-                <p:fieldset id="oparationFls" legend="Ligne de financement">
+                <p:fieldset id="oparationFls" legend="Liste des imputations correspondants aux critères de recherche">
                     <p:dataTable id="oparationDT" value="#{rchSourceFinancementBacking.operationList}"
                                  var="operation"
                                  widgetVar="oparationDT"
@@ -103,6 +102,29 @@
                         <p:column headerText="Disponible CP" styleClass="col-w10 text-align-right" filterBy="#{operation.montantDisponibleCP}" filterFunction="#{rchSourceFinancementBacking.filterDisponible}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(operation.budgetActuelAE)}" /></p:column>
                         </p:dataTable>
                 </p:fieldset>
+
+                <!--
+                <p:fieldset id="nouvelleImputationFls" legend="Liste des imputations correspondants aux critères de recherche">
+                    <p:panelGrid columns="4" layout="grid" columnClasses="ui-g5-3 , ui-g5-3, ui-g5-3, ui-g5-2">
+                        <p:outputLabel value="Nature Economique" styleClass="text-bold"/>
+                        <p:outputLabel value="Activité" styleClass="text-bold"/>
+                        <p:outputLabel value="Exercice" styleClass="text-bold"/>
+                        <p:outputLabel value=""/>
+
+                        <p:selectOneMenu value="#{rchSourceFinancementBacking.selectedNatureEconomique}" filter="true" filterMatchMode="contains"
+                                         style="width: 20vw !important;" styleClass="ui-selectonemenu-filter-container"
+                                         converter="omnifaces.SelectItemsConverter" >
+                            <f:selectItem itemLabel="- Sélectionner une nature économique -" noSelectionOption="true"/>
+                            <f:selectItems var="nec" value="#{rchSourceFinancementBacking.natureEconomiqueList}" itemLabel="#{of:abbreviate(rchSourceFinancementBacking.concateCodeLibelle(nec), 60)}" itemValue="#{nec}"/>
+                            <p:ajax event="change" listener="#{rchSourceFinancementBacking.onNatureEconomiqueSelect()}"/>
+                        </p:selectOneMenu>
+                        <p:inputText value="#{rchSourceFinancementBacking.activiteCode}" placeholder="Activité" styleClass="form-control"/>
+                        <p:inputText value="#{rchSourceFinancementBacking.exercice}" placeholder="Année de l'exercice" styleClass="form-control"/>
+                        <p:commandButton value="Rechercher" action="#{rchSourceFinancementBacking.rechercher}" styleClass="btn-block" icon="fa fa-search" update="@form"/>
+                        <p:outputLabel value=""/>
+                    </p:panelGrid>
+                </p:fieldset>
+                -->
 
                 <p:spacer height="20" width="10"/>
 

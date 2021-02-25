@@ -77,4 +77,9 @@ public class ActeService implements ActeClient {
     public void delete(String uuid) {
         client.delete(uuid);
     }
+
+    @Override
+    public boolean checkReferenceAlreadyExist(String reference) {
+        return client.checkReferenceAlreadyExist(reference);
+    }
 }

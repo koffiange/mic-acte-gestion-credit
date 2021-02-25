@@ -6,6 +6,7 @@ import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
 import ci.gouv.dgbf.agc.enumeration.StatutActe;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import ci.gouv.dgbf.agc.exception.CreditInsuffisantException;
+import ci.gouv.dgbf.agc.exception.ReferenceAlreadyExistException;
 import ci.gouv.dgbf.agc.service.*;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
@@ -15,9 +16,14 @@ import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.ValidationException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.logging.Logger;
@@ -115,6 +121,7 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     }
 
     public void addSignataire(){
+        LOG.info("added!!");
         signataireList.add(signataire);
         signataire = new Signataire();
         this.changeAddBtnSignataireAbility();
@@ -139,11 +146,11 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         }
     }
 
-
-
+    /*
     public void addSignataire(String s){
         signataireList.remove(s);
     }
+     */
 
     private void buildActe(){
         acte.setDateSignature(convertIntoLocaleDate(date));
@@ -164,6 +171,7 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         try{
             this.majOperationAvantVerification();
             this.verifierDisponibilite();
+            this.verifierReference(acte.getReference());
             this.buildActeDto();
             acteService.persist(appliquerActe, acteDto);
             closeSuccess();
@@ -194,6 +202,20 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         }
         if (hasCreditInsuffisant)
             throw new CreditInsuffisantException(msg.toString());
+    }
+
+
+    public void verifierReference(FacesContext facesContext, UIComponent uiComponent, Object o) {
+        LOG.info("Verifier reference");
+        String reference = (String) o;
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erreur de saisie", "La reférence "+reference+" est déjà associée à un acte existant");
+        if (acteService.checkReferenceAlreadyExist(reference))
+            throw new ValidatorException(message);
+    }
+
+    public void verifierReference(String reference) throws ReferenceAlreadyExistException{
+        if (acteService.checkReferenceAlreadyExist(reference))
+            throw new ReferenceAlreadyExistException("La reférence "+reference+" est déjà associée à un acte existant");
     }
 
     public void openLigneDepenseDialog(String typeImputation){

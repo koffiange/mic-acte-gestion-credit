@@ -185,6 +185,8 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
         options.replace("height", "90vh");
         Map<String, List<String>> params = new HashMap<>();
 
+        LOG.info("section : "+operationBagOrigine.getSectionCodeList().size());
+
         if (TypeOperation.valueOf(typeImputation).equals(TypeOperation.DESTINATION))
             params.put("sectionCode", operationBagOrigine.getSectionCodeList());
 

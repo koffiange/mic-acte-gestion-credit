@@ -58,11 +58,11 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Getter @Setter
     private List<Operation> selectedOperationList;
     @Getter @Setter
-    private Section selectedSection = new Section();
+    private Section selectedSection;
     @Getter @Setter
     private Activite selectedActivite = new Activite();
     @Getter @Setter
-    private NatureEconomique selectedNatureEconomique = new NatureEconomique();
+    private NatureEconomique selectedNatureEconomique;
     @Getter @Setter
     private String activiteCode;
     @Getter @Setter
@@ -102,9 +102,12 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
         params = getRequestParameterMap();
         sectionList = sectionService.list();
         natureEconomiqueList = natureEconomiqueService.findAll();
+        selectedNatureEconomique = new NatureEconomique("", "", "");
 
         if(params.containsKey("sectionCode") && !sectionList.isEmpty()){
             sectionList.stream().filter(section -> section.getCode().equals(params.get("sectionCode"))).findFirst().ifPresent(this::setSelectedSection);
+        } else {
+            selectedSection = new Section("", "", "", "");
         }
 
         if(params.containsKey("natureTransaction")){
@@ -125,7 +128,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     }
 
     public boolean disableSectionField(){
-        return natureTransaction.equals(NatureTransaction.VIREMENT);
+        return natureTransaction.equals(NatureTransaction.VIREMENT) && operationBag.getTypeOperation().equals(TypeOperation.DESTINATION);
     }
 
     public boolean filterBudget(Object value, Object filter, Locale locale) {
@@ -157,18 +160,30 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     }
 
     public void rechercher(){
+        /*
+        LOG.info("Exercice : "+exercice);
+        LOG.info("Source de Financement : "+sourceFinancement);
+        LOG.info("NatureEconomiqueCode : "+natureEconomiqueCode);
+        LOG.info("bailleur : "+bailleur);
+        LOG.info("sectionCode : "+sectionCode);
+        LOG.info("natureDepense : "+natureDepense);
+        LOG.info("programme : "+programme);
+        LOG.info("action : "+action);
+
+         */
         ligneDepenseList = ligneDepenseService.findByCritere(exercice, sourceFinancement, natureEconomiqueCode, activiteCode, bailleur, sectionCode, natureDepense, programme, action);
         operationList = operationService.buildOperationListFromLigneDepenseList(ligneDepenseList);
         this.initCritereRecherche();
     }
 
     private void initCritereRecherche(){
-        activiteCode = "";
-        selectedNatureEconomique = null;
+        activiteCode = null;
+        natureEconomiqueCode = null;
+        selectedNatureEconomique = new NatureEconomique("", "", "");
     }
 
     public void ajouter(){
-        operationBag.getSectionCodeList().add(sectionCode);
+        operationBag.getSectionCodeList().add(selectedSection.getCode());
         this.typeOperationSetter();
         operationBag.getOperationList().addAll(selectedOperationList);
         PrimeFaces.current().dialog().closeDynamic(operationBag);
@@ -203,7 +218,21 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
         return strConcate;
     }
 
-    public void onSelect(){
-        LOG.info("Nature economique selected :"+selectedNatureEconomique.getCode() );
+    public void onSectionSelect(){
+        /*
+        natureEconomiqueList.stream()
+                .filter(natureEconomique -> natureEconomique.getCode().equals(natureEconomiqueCode))
+                .findFirst().ifPresent(this::setSelectedNatureEconomique);
+         */
+        sectionCode = selectedSection.getCode();
+    }
+
+    public void onNatureEconomiqueSelect(){
+        /*
+        natureEconomiqueList.stream()
+                .filter(natureEconomique -> natureEconomique.getCode().equals(natureEconomiqueCode))
+                .findFirst().ifPresent(this::setSelectedNatureEconomique);
+         */
+        natureEconomiqueCode = selectedNatureEconomique.getCode();
     }
 }

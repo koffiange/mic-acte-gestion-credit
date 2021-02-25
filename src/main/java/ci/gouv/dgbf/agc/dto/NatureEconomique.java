@@ -16,6 +16,12 @@ public class NatureEconomique {
     public NatureEconomique() {
     }
 
+    public NatureEconomique(String code, String libelleLong, String sensComptable) {
+        this.code = code;
+        this.libelleLong = libelleLong;
+        this.sensComptable = sensComptable;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

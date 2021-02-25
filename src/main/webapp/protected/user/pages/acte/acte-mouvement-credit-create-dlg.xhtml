@@ -26,7 +26,9 @@
                             <p:row>
                                 <p:column>
                                     <h:outputLabel for="reference" value="Référence de l'acte" styleClass="text-bold"/><br/>
-                                    <p:inputText id="reference" value="#{amcCreateBacking.acte.reference}" styleClass="form-control"/>
+                                    <p:inputText id="reference" value="#{amcCreateBacking.acte.reference}"  styleClass="form-control"
+                                                 required="true" requiredMessage="#{messages.required_field_message}"/>
+                                    <p:message for="reference" />
                                 </p:column>
                                 <p:column>
                                     <h:outputLabel for="natureActe" value="Nature d'acte" styleClass="text-bold"/><br/>
@@ -111,7 +113,7 @@
                                 </p:column>
                                 <p:column>
                                     <p:spacer height="5"/>
-                                    <p:commandButton id="addSignataireBtn" value="Ajouter" action="#{amcCreateBacking.addSignataire}" disabled="#{amcCreateBacking.addSignataireLock}"
+                                    <p:commandButton id="addSignataireBtn" value="Ajouter" action="#{amcCreateBacking.addSignataire()}" disabled="#{amcCreateBacking.addSignataireLock}"
                                                      update="createForm:signataireList createForm:signataireFonction createForm:signataireNom @this"
                                                      styleClass="btn-block steel-btn" icon="fa fa-plus"/>
                                 </p:column>
@@ -316,7 +318,7 @@
                             <div class="ui-g-1">
                                 <p:commandButton action="#{amcCreateBacking.close()}"
                                                  icon="fa fa-ban" styleClass="black-btn"
-                                                 value="#{messages.annuler}" update="@form" style="width: 100%"/>
+                                                 value="#{messages.annuler}" style="width: 100%"/>
                             </div>
                         </div>
                     </p:outputPanel>
