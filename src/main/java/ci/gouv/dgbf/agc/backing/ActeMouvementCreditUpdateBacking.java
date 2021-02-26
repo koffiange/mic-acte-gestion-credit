@@ -5,7 +5,10 @@ import ci.gouv.dgbf.agc.enumeration.CategorieActe;
 import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
 import ci.gouv.dgbf.agc.enumeration.StatutActe;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
+import ci.gouv.dgbf.agc.exception.CreditInsuffisantException;
+import ci.gouv.dgbf.agc.exception.ReferenceAlreadyExistException;
 import ci.gouv.dgbf.agc.service.ActeService;
+import ci.gouv.dgbf.agc.service.OperationService;
 import ci.gouv.dgbf.agc.service.OperationSessionService;
 import ci.gouv.dgbf.agc.service.SectionService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
@@ -40,6 +43,9 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
 
     @Inject
     private OperationSessionService operationSessionService;
+
+    @Inject
+    private OperationService operationService;
 
     @Getter @Setter
     private List<Signataire> signataireList = new ArrayList<>();
@@ -106,11 +112,14 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
             signataireList = acteDto.getSignataireList();
 
             // Construction des Bags
-            List<Operation> operationOrigine = acteDto.getOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE)).collect(Collectors.toList());
+            List<Operation> operationOrigine = acteDto.getOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
+                                                      .peek(operation -> operation.setMontantOperationAE(operation.getMontantOperationAE().negate())).collect(Collectors.toList());
             List<Operation> operationDestination = acteDto.getOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.DESTINATION)).collect(Collectors.toList());
 
             operationBagOrigine = new OperationBag(TypeOperation.ORIGINE,operationOrigine);
-            operationBagDestination = new OperationBag(TypeOperation.ORIGINE,operationDestination);
+            operationBagDestination = new OperationBag(TypeOperation.DESTINATION,operationDestination);
+            operationBagOrigine.setOperationList(operationService.operationListDisponibiliteSetter(operationBagOrigine.getOperationList()));
+            operationBagDestination.setOperationList(operationService.operationListDisponibiliteSetter(operationBagDestination.getOperationList()));
 
             operationSessionService.setOperationDestinationList(operationOrigine);
             operationSessionService.setOperationDestinationList(operationDestination);
@@ -119,6 +128,8 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
             this.cumules();
         }
     }
+
+
 
     @PreDestroy
     public void destroy(){
@@ -171,7 +182,16 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
 
     public void update(){
         try{
+            this.majOperationAvantVerification();
+            this.verifierDisponibilite();
+            LOG.info("Verification de la disponibilité des crédits [ok]");
+            // this.verifierReference(acte.getReference());
+            // LOG.info("Verification de la reférence [ok]");
+            this.treatOperationBagBeforePersisting(operationBagOrigine);
+            this.treatOperationBagBeforePersisting(operationBagDestination);
+            LOG.info("Traitement des opérations avant persist [ok]");
             this.buildActeDto();
+            LOG.info("Construction de ACTEDTO [ok]");
             acteService.update(appliquerActe, acteDto);
             closeSuccess();
         } catch (Exception e){
@@ -203,9 +223,9 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
 
     public void cumules(){
         operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementAE);
-        operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
+        // operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
         operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutAE);
-        operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
+        // operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
     }
 
     public void handleReturn(SelectEvent event){
@@ -271,5 +291,43 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
 
     public boolean displayEnregisterButton(){
         return (cumulRetranchementAE.subtract(cumulAjoutAE).compareTo(BigDecimal.ZERO) != 0 || cumulRetranchementCP.subtract(cumulAjoutCP).compareTo(BigDecimal.ZERO) != 0);
+    }
+
+    private void majOperationAvantVerification(){
+        operationBagOrigine.setOperationList(operationService.operationListDisponibiliteSetter(operationBagOrigine.getOperationList()));
+        // this.truncateDisponible();
+    }
+
+    private void verifierDisponibilite() throws CreditInsuffisantException {
+        StringBuilder msg = new StringBuilder("Crédits insufisants sur les lignes :");
+        boolean hasCreditInsuffisant = false;
+        for (int i = 0; i < operationBagOrigine.getOperationList().size(); i ++){
+            Operation operation = operationBagOrigine.getOperationList().get(i);
+            if (operation.getMontantDisponibleAE().compareTo(operation.getMontantOperationAE()) < 0){
+                msg.append(" #").append(i+1);
+                hasCreditInsuffisant = true;
+            }
+        }
+        if (hasCreditInsuffisant)
+            throw new CreditInsuffisantException(msg.toString());
+    }
+
+    public void verifierReference(String reference) throws ReferenceAlreadyExistException {
+        if (acteService.checkReferenceAlreadyExist(reference))
+            throw new ReferenceAlreadyExistException("La reférence "+reference+" est déjà associée à un acte existant");
+    }
+
+    private void treatOperationBagBeforePersisting(OperationBag operationBag){
+        LOG.info("=> OperationBag : "+operationBag.toString());
+        // Négation des montans prélevé
+        operationBag.getOperationList().forEach(operation -> {
+            if(operation.getTypeOperation().equals(TypeOperation.ORIGINE))
+                operation.setMontantOperationAE(operation.getMontantOperationAE().negate());
+        });
+        LOG.info("=> Négation des montans prélevé [ok]");
+        // Montant AE egal Montant CP
+        operationBag.getOperationList().forEach(operation -> operation.setMontantOperationCP(operation.getMontantOperationAE()));
+        LOG.info("=> Montant AE egal Montant CP [ok]");
+
     }
 }

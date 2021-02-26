@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Operation extends BaseDto{
+public class Operation{
     @Getter @Setter
     private String uuid = UUID.randomUUID().toString();
     @Getter @Setter
@@ -50,6 +50,10 @@ public class Operation extends BaseDto{
     private EffetOperation effetOperation;
     @Getter @Setter
     private DisponibiliteCreditOperation disponibiliteCredit;
+    @Getter @Setter
+    private String sectionCode;
+    @Getter @Setter
+    private String sectionLibelle;
 
     public Operation() {
     }

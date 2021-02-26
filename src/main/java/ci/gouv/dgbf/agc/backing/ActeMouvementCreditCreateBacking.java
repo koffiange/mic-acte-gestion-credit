@@ -161,19 +161,40 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     private void buildActeDto(){
         this.buildActe();
         acteDto.setActe(acte);
-        acteDto.setSignataireList(signataireList);
+        // acteDto.setSignataireList(signataireList);
         operationList.addAll(operationBagOrigine.getOperationList());
         operationList.addAll(operationBagDestination.getOperationList());
         acteDto.setOperationList(operationList);
+    }
+
+    private void treatOperationBagBeforePersisting(OperationBag operationBag){
+        LOG.info("=> OperationBag : "+operationBag.toString());
+        // Négation des montans prélevé
+        operationBag.getOperationList().forEach(operation -> {
+            if(operation.getTypeOperation().equals(TypeOperation.ORIGINE))
+            operation.setMontantOperationAE(operation.getMontantOperationAE().negate());
+        });
+        LOG.info("=> Négation des montans prélevé [ok]");
+        // Montant AE egal Montant CP
+        operationBag.getOperationList().forEach(operation -> operation.setMontantOperationCP(operation.getMontantOperationAE()));
+        LOG.info("=> Montant AE egal Montant CP [ok]");
+
     }
 
     public void persist(){
         try{
             this.majOperationAvantVerification();
             this.verifierDisponibilite();
+            LOG.info("Verification de la disponibilité des crédits [ok]");
             this.verifierReference(acte.getReference());
+            LOG.info("Verification de la reférence [ok]");
+            this.treatOperationBagBeforePersisting(operationBagOrigine);
+            this.treatOperationBagBeforePersisting(operationBagDestination);
+            LOG.info("Traitement des opérations avant persist [ok]");
             this.buildActeDto();
+            LOG.info("Construction de ACTEDTO [ok]");
             acteService.persist(appliquerActe, acteDto);
+            LOG.info("Sauvegarde [ok]");
             closeSuccess();
         } catch (Exception e){
             showError(e.getMessage());
@@ -183,6 +204,7 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     private void majOperationAvantVerification(){
         operationBagOrigine.setOperationList(operationService.operationListDisponibiliteSetter(operationBagOrigine.getOperationList()));
         // this.truncateDisponible();
+        LOG.info("Mise a jour des opération avant verification");
     }
 
     private void truncateDisponible(){
@@ -204,7 +226,7 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
             throw new CreditInsuffisantException(msg.toString());
     }
 
-
+    /*
     public void verifierReference(FacesContext facesContext, UIComponent uiComponent, Object o) {
         LOG.info("Verifier reference");
         String reference = (String) o;
@@ -212,6 +234,8 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         if (acteService.checkReferenceAlreadyExist(reference))
             throw new ValidatorException(message);
     }
+
+     */
 
     public void verifierReference(String reference) throws ReferenceAlreadyExistException{
         if (acteService.checkReferenceAlreadyExist(reference))
@@ -274,8 +298,10 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
     private void completeOperationList(TypeOperation typeOperation, List<Operation> operationList){
         operationList.forEach(operation -> {
-            if (typeOperation.equals(TypeOperation.ORIGINE) && !operationBagOrigine.getOperationList().contains(operation))
+            if (typeOperation.equals(TypeOperation.ORIGINE) && !operationBagOrigine.getOperationList().contains(operation)) {
+                // operation.setSectionCode(operationBagOrigine.getSectionCodeList().get(1));
                 operationBagOrigine.getOperationList().add(operation);
+            }
 
             if (typeOperation.equals(TypeOperation.DESTINATION) && !operationBagDestination.getOperationList().contains(operation))
                 operationBagDestination.getOperationList().add(operation);
@@ -283,7 +309,6 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     }
 
     public void close(){
-        acte.setCorpus(corpus);
         closeSuccess();
     }
 
@@ -305,9 +330,9 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
     public void cumules(){
         operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementAE);
-        operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
+        // operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
         operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutAE);
-        operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
+        // operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
     }
 
     public String equilibreAE(){

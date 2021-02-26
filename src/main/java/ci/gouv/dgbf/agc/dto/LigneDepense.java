@@ -33,9 +33,9 @@ public class LigneDepense {
     @Getter @Setter
     private String sectionId;
     @Getter @Setter
-    private String sectionLibelle;
-    @Getter @Setter
     private String sectionCode;
+    @Getter @Setter
+    private String sectionLibelle;
     @Getter @Setter
     private String uaId;
     @Getter @Setter

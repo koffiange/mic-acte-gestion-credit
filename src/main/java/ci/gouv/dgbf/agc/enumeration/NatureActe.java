@@ -8,7 +8,6 @@ public enum NatureActe {
     ORDONNANCE("2", "Ordonnance", "Acte Règlementaire (AR)"),
     DECRET("3", "Décret","Acte Législatif (AL)"),
     ARRETE("4", "Arrêté", "Acte Règlementaire (AR)"),
-    ARRETE_INTERMINISTERIEL("4", "Arrêté Interministériel", "Acte Règlementaire (AR)"),
     DECISION("5", "Décision","Acte Règlementaire (AR)");
 
     @Getter @Setter

@@ -91,6 +91,9 @@ public class OperationService implements OperationClient {
         operation.setSourceFinancementLibelle(ligneDepense.getSourceFinancementLibelle());
         operation.setNatureEconomiqueLibelle(ligneDepense.getNatureEconomiqueLibelle());
         operation.setNatureEconomiqueCode(ligneDepense.getNatureEconomiqueCode());
+        operation.setSectionCode(ligneDepense.getSectionCode());
+        operation.setSectionLibelle(ligneDepense.getSectionLibelle());
+
         return operation;
     }
 

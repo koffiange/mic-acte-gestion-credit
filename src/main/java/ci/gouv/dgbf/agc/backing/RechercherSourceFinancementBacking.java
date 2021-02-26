@@ -15,10 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Named(value = "rchSourceFinancementBacking")
@@ -42,7 +39,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Getter @Setter
     private List<Section> sectionList;
     @Getter @Setter
-    private List<NatureEconomique> natureEconomiqueList;
+    private List<NatureEconomique> natureEconomiqueList = new ArrayList<>();
     /*
     @Getter @Setter
     private List<Activite> activiteList;
@@ -106,6 +103,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
 
         if(params.containsKey("sectionCode") && !sectionList.isEmpty()){
             sectionList.stream().filter(section -> section.getCode().equals(params.get("sectionCode"))).findFirst().ifPresent(this::setSelectedSection);
+            sectionCode = params.get("sectionCode");
         } else {
             selectedSection = new Section("", "", "", "");
         }
@@ -160,17 +158,6 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     }
 
     public void rechercher(){
-        /*
-        LOG.info("Exercice : "+exercice);
-        LOG.info("Source de Financement : "+sourceFinancement);
-        LOG.info("NatureEconomiqueCode : "+natureEconomiqueCode);
-        LOG.info("bailleur : "+bailleur);
-        LOG.info("sectionCode : "+sectionCode);
-        LOG.info("natureDepense : "+natureDepense);
-        LOG.info("programme : "+programme);
-        LOG.info("action : "+action);
-
-         */
         ligneDepenseList = ligneDepenseService.findByCritere(exercice, sourceFinancement, natureEconomiqueCode, activiteCode, bailleur, sectionCode, natureDepense, programme, action);
         operationList = operationService.buildOperationListFromLigneDepenseList(ligneDepenseList);
         this.initCritereRecherche();
