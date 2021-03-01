@@ -22,15 +22,15 @@ public interface ActeClient {
 
     @POST
     @Path("/acte")
-    void persist(@QueryParam("appliquer") boolean appliquer, ActeDto acteDto);
+    Acte persist(ActeDto acteDto);
 
     @PUT
     @Path("/acte/dto/")
     void update(@QueryParam("appliquer") boolean appliquer, ActeDto acteDto);
 
     @PUT
-    @Path("/acte/appliquer")
-    void appliquer(String uuid);
+    @Path("/acte/appliquer/{uuid}")
+    void appliquer(@PathParam("uuid") String uuid);
 
     @PUT
     @Path("/acte/appliquer/plusieurs")

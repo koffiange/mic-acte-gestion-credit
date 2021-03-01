@@ -23,6 +23,10 @@ public class LigneDepense {
     @Getter @Setter
     private String activiteLibelle;
     @Getter @Setter
+    private String bailleurId;
+    @Getter @Setter
+    private String bailleurLibelle;
+    @Getter @Setter
     private String sourceFinancementId;
     @Getter @Setter
     private String sourceFinancementCode;

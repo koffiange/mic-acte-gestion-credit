@@ -112,9 +112,13 @@ public class ActeBacking extends BaseBacking {
     }
 
     public void appliquer(String uuid){
-        acteService.appliquer(uuid);
-        acteList = acteService.listAll();
-        showSuccess();
+        try {
+            acteService.appliquer(uuid);
+            acteList = acteService.listAll();
+            showSuccess();
+        } catch (Exception e){
+            showError(e.getMessage());
+        }
     }
 
     public void appliquerPlusieur(){

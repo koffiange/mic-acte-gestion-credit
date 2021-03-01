@@ -54,8 +54,8 @@ public class ActeService implements ActeClient {
     }
 
     @Override
-    public void persist(boolean appliquer, ActeDto acteDto) {
-        client.persist(appliquer, acteDto);
+    public Acte persist(ActeDto acteDto) {
+        return client.persist(acteDto);
     }
 
     @Override

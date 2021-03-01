@@ -89,6 +89,8 @@ public class OperationService implements OperationClient {
         operation.setLigneDepenseUuid(ligneDepense.getLigneDepenseId());
         operation.setSourceFinancementCode(ligneDepense.getSourceFinancementCode());
         operation.setSourceFinancementLibelle(ligneDepense.getSourceFinancementLibelle());
+        operation.setBailleurId(ligneDepense.getBailleurId());
+        operation.setBailleurLibelle(ligneDepense.getBailleurLibelle());
         operation.setNatureEconomiqueLibelle(ligneDepense.getNatureEconomiqueLibelle());
         operation.setNatureEconomiqueCode(ligneDepense.getNatureEconomiqueCode());
         operation.setSectionCode(ligneDepense.getSectionCode());

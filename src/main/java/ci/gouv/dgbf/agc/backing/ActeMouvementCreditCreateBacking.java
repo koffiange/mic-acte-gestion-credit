@@ -193,8 +193,11 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
             LOG.info("Traitement des opérations avant persist [ok]");
             this.buildActeDto();
             LOG.info("Construction de ACTEDTO [ok]");
-            acteService.persist(appliquerActe, acteDto);
+            Acte actePersisted = acteService.persist(acteDto);
             LOG.info("Sauvegarde [ok]");
+            if (appliquerActe)
+                acteService.appliquer(actePersisted.getUuid());
+            LOG.info("Application [ok]");
             closeSuccess();
         } catch (Exception e){
             showError(e.getMessage());

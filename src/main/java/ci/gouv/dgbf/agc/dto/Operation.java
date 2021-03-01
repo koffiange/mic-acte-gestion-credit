@@ -54,6 +54,10 @@ public class Operation{
     private String sectionCode;
     @Getter @Setter
     private String sectionLibelle;
+    @Getter @Setter
+    private String bailleurId;
+    @Getter @Setter
+    private String bailleurLibelle;
 
     public Operation() {
     }

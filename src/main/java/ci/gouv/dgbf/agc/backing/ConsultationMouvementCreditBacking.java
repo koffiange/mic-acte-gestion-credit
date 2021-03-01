@@ -60,9 +60,9 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
 
     private void computeCumule(){
         acteDto.getOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
-                .map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAE);
+                .map(Operation::getMontantOperationAE).map(BigDecimal::negate).reduce(BigDecimal::add).ifPresent(this::setCumulAE);
         acteDto.getOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
-                .map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulCP);
+                .map(Operation::getMontantOperationCP).map(BigDecimal::negate).reduce(BigDecimal::add).ifPresent(this::setCumulCP);
     }
 
     public String goBack(){
