@@ -333,12 +333,21 @@
 
                     <p:outputPanel id="enregisterBTN">
                         <div class="ui-g">
-                            <div class="#{amcUpdateBacking.displayEnregisterButton() ? 'ui-g-8' : 'ui-g-6'}" style="margin: 0px auto !important;">
-                                <p:commandButton action="#{amcUpdateBacking.update()}"
+                            <div class="ui-g-4" style="margin: 0px auto !important;">
+                                <p:commandButton action="#{amcUpdateBacking.update(true)}"
                                                  disabled="#{amcUpdateBacking.displayEnregisterButton()}" icon="fa fa-save"
-                                                 value="#{amcUpdateBacking.displayEnregisterButton() ? messages.equilibre_non_atteint_btn_message : messages.enregistrer}" update="@form" style="width: 100%"/>
+                                                 value="#{amcUpdateBacking.displayEnregisterButton() ? messages.equilibre_non_atteint_btn_message : messages.enregistrer_appliquer}"
+                                                 update="@form" style="width: 100%" styleClass="green-btn"/>
                             </div>
-                            <div class="ui-g-1">
+
+                            <div class="ui-g-4" style="margin: 0px auto !important;">
+                                <p:commandButton action="#{amcUpdateBacking.update(false)}"
+                                                 disabled="#{amcUpdateBacking.displayEnregisterButton()}" icon="fa fa-save"
+                                                 value="#{amcUpdateBacking.displayEnregisterButton() ? messages.equilibre_non_atteint_btn_message : messages.enregistrer}"
+                                                 update="@form" style="width: 100%" styleClass="orange-btn"/>
+                            </div>
+
+                            <div class="ui-g-4">
                                 <p:commandButton action="#{amcUpdateBacking.close()}"
                                                  icon="fa fa-ban" styleClass="black-btn"
                                                  value="#{messages.annuler}" style="width: 100%"/>

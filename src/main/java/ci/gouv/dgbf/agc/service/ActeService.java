@@ -59,8 +59,8 @@ public class ActeService implements ActeClient {
     }
 
     @Override
-    public void update(boolean appliquer, ActeDto acteDto) {
-        client.update(appliquer, acteDto);
+    public Acte update(boolean appliquer, ActeDto acteDto) {
+        return client.update(appliquer, acteDto);
     }
 
     @Override

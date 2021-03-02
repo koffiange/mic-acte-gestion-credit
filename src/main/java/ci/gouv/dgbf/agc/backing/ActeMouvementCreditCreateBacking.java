@@ -168,20 +168,23 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     }
 
     private void treatOperationBagBeforePersisting(OperationBag operationBag){
-        LOG.info("=> OperationBag : "+operationBag.toString());
-        // Négation des montans prélevé
-        operationBag.getOperationList().forEach(operation -> {
-            if(operation.getTypeOperation().equals(TypeOperation.ORIGINE))
-            operation.setMontantOperationAE(operation.getMontantOperationAE().negate());
-        });
-        LOG.info("=> Négation des montans prélevé [ok]");
-        // Montant AE egal Montant CP
-        operationBag.getOperationList().forEach(operation -> operation.setMontantOperationCP(operation.getMontantOperationAE()));
-        LOG.info("=> Montant AE egal Montant CP [ok]");
-
+        try {
+            LOG.info("=> OperationBag : "+operationBag.toString());
+            // Négation des montans prélevé
+            operationBag.getOperationList().forEach(operation -> {
+                if(operation.getTypeOperation().equals(TypeOperation.ORIGINE))
+                    operation.setMontantOperationAE(operation.getMontantOperationAE().negate());
+            });
+            LOG.info("=> Négation des montans prélevé [ok]");
+            // Montant AE egal Montant CP
+            operationBag.getOperationList().forEach(operation -> operation.setMontantOperationCP(operation.getMontantOperationAE()));
+            LOG.info("=> Montant AE egal Montant CP [ok]");
+        } catch (Exception exception){
+            LOG.info(exception.getMessage());
+        }
     }
 
-    public void persist(){
+    public void persist(boolean appliquerActe){
         try{
             this.majOperationAvantVerification();
             this.verifierDisponibilite();

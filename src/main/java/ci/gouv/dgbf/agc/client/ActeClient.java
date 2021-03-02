@@ -26,7 +26,7 @@ public interface ActeClient {
 
     @PUT
     @Path("/acte/dto/")
-    void update(@QueryParam("appliquer") boolean appliquer, ActeDto acteDto);
+    Acte update(@QueryParam("appliquer") boolean appliquer, ActeDto acteDto);
 
     @PUT
     @Path("/acte/appliquer/{uuid}")

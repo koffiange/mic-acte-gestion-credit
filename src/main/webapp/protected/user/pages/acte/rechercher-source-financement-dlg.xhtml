@@ -27,10 +27,6 @@
                         <p:outputLabel value="Action" styleClass="text-bold"/>
                         <p:outputLabel value="Nature de Dépense" styleClass="text-bold"/>
 
-
-                        <!--
-                        <p:inputText value="#{rchSourceFinancementBacking.sectionCode}" styleClass="form-control" disabled="#{rchSourceFinancementBacking.disableSectionField()}"/>
-                        -->
                         <p:selectOneMenu value="#{rchSourceFinancementBacking.selectedSection}" filter="true" filterMatchMode="contains"
                                          style="width: 20vw !important;" styleClass="ui-selectonemenu-filter-container"
                                          converter="omnifaces.SelectItemsConverter" disabled="#{rchSourceFinancementBacking.disableSectionField()}">

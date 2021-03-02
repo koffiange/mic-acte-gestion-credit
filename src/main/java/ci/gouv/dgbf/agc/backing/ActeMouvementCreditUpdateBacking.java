@@ -180,7 +180,7 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
         acteDto.setOperationList(operationList);
     }
 
-    public void update(){
+    public void update(boolean appliquerActe){
         try{
             this.majOperationAvantVerification();
             this.verifierDisponibilite();
@@ -192,7 +192,10 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
             LOG.info("Traitement des opérations avant persist [ok]");
             this.buildActeDto();
             LOG.info("Construction de ACTEDTO [ok]");
-            acteService.update(appliquerActe, acteDto);
+            Acte actePersisted = acteService.update(appliquerActe, acteDto);
+            LOG.info("Mise a jour [ok]");
+            if (appliquerActe)
+                acteService.appliquer(actePersisted.getUuid());
             closeSuccess();
         } catch (Exception e){
             showError(e.getMessage());
