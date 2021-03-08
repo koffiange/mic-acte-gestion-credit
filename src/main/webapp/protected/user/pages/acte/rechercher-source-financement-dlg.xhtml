@@ -34,9 +34,9 @@
                             <f:selectItems var="section" value="#{rchSourceFinancementBacking.sectionList}" itemLabel="#{of:abbreviate(rchSourceFinancementBacking.concateCodeLibelle(section), 60)}" itemValue="#{section}"/>
                             <p:ajax event="change" listener="#{rchSourceFinancementBacking.onSectionSelect()}"/>
                         </p:selectOneMenu>
-                        <p:inputText value="#{rchSourceFinancementBacking.programme}" placeholder="Code de la section" styleClass="form-control"/>
-                        <p:inputText value="#{rchSourceFinancementBacking.action}" placeholder="Code de l'activité" styleClass="form-control"/>
-                        <p:selectOneMenu value="#{rchSourceFinancementBacking.natureDepense}">
+                        <p:inputText value="#{rchSourceFinancementBacking.programme}" placeholder="Code de la section" styleClass="form-control" disabled="true"/>
+                        <p:inputText value="#{rchSourceFinancementBacking.action}" placeholder="Code de l'action" styleClass="form-control" disabled="true"/>
+                        <p:selectOneMenu value="#{rchSourceFinancementBacking.natureDepense}" disabled="true">
                             <f:selectItem itemLabel="-- Nature de dépense --" noSelectionOption="true"/>
                             <f:selectItems var="nd" value="#{NatureDepense.ALL_ITEM_VALUE}" itemLabel="#{nd.libelle}" itemValue="#{nd.libelle}"/>
                         </p:selectOneMenu>

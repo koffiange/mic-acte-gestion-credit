@@ -7,7 +7,7 @@
       xmlns:of="http://omnifaces.org/functions"
       xmlns:o="http://omnifaces.org/ui">
     <h:head>
-        <title style="font-size: larger; font-weight: bold">Enregistrement d'un acte portant mouvemant de crédit</title>
+        <title style="font-size: larger; font-weight: bold">ENREGISTREMENT D'UN ACTE PORTANT MOUVEMENT DE CREDIT</title>
         <ui:include src="/resources/common/css.xhtml"/>
     </h:head>
 
@@ -15,6 +15,7 @@
         <p:importEnum type="ci.gouv.dgbf.agc.enumeration.NatureActe" var="natureActe" allSuffix="ALL_VALUES"/>
         <p:importEnum type="ci.gouv.dgbf.agc.enumeration.CategorieActe" var="categorieActe" allSuffix="ALL_VALUES"/>
         <p:importEnum type="ci.gouv.dgbf.agc.enumeration.NatureTransaction" var="natureTransaction" allSuffix="ALL_VALUES"/>
+        <p:importEnum type="ci.gouv.dgbf.agc.enumeration.OrigineImputation" var="origineImputation" allSuffix="ALL_VALUES"/>
         <h:form id="createForm">
             <p:growl globalOnly="true" showDetail="true" showSummary="true" severity="info, warn, error" life="15000"/>
             <p:remoteCommand name="cumuleCallBack" action="#{amcCreateBacking.cumules}" update="createForm:cumuleFls createForm:origineDT createForm:destinationDT createForm:enregisterBTN"/>
@@ -22,120 +23,42 @@
             <div class="ui-g">
                 <div class="ui-g-12">
                     <p:fieldset legend="Informations générales de l'acte">
-                        <p:panelGrid styleClass="col-w100" columnClasses="borderless">
-                            <p:row>
-                                <p:column>
-                                    <h:outputLabel for="reference" value="Référence de l'acte" styleClass="text-bold"/><br/>
-                                    <p:inputText id="reference" value="#{amcCreateBacking.acte.reference}"  styleClass="form-control"/>
-                                    <p:message for="reference" />
-                                </p:column>
-                                <p:column>
-                                    <h:outputLabel for="natureActe" value="Nature d'acte" styleClass="text-bold"/><br/>
-                                    <p:selectOneMenu id="natureActe" value="#{amcCreateBacking.acte.natureActe}" styleClass="form-control">
-                                        <f:selectItem itemLabel="Choissisez une nature d'acte" itemValue=""/>
-                                        <f:selectItem itemLabel="#{natureActe.ARRETE.libelle}" itemValue="#{natureActe.ARRETE}"/>
-                                        <f:selectItem itemLabel="#{natureActe.DECISION.libelle}" itemValue="#{natureActe.DECISION}"/>
-                                        <f:selectItem itemLabel="#{natureActe.DECRET.libelle}" itemValue="#{natureActe.DECRET}"/>
-                                    </p:selectOneMenu>
-                                </p:column>
-                                <p:column>
-                                    <h:outputLabel for="categorieActe" value="Categorie d'acte" styleClass="text-bold"/><br/>
-                                    <p:selectOneMenu id="categorieActe" value="#{amcCreateBacking.acte.categorieActe}" styleClass="form-control" disabled="true">
-                                        <f:selectItem itemLabel="#{categorieActe.ACTE_MOUVEMENT.libelle}" itemValue="#{categorieActe.ACTE_MOUVEMENT}"/>
-                                    </p:selectOneMenu>
-                                </p:column>
-                            </p:row>
-                            <p:row>
-                                <p:column colspan="3">
-                                    <h:outputLabel for="libelle" value="Libelle de l'acte" styleClass="text-bold"/><br/>
-                                    <p:inputText id="libelle" value="#{amcCreateBacking.acte.libelle}" styleClass="form-control-block"/>
-                                </p:column>
-                            </p:row>
-                            <p:row>
-                                <p:column>
-                                    <h:outputLabel for="natureTransaction" value="Nature de mouvement" styleClass="text-bold"/><br/>
-                                    <p:selectOneMenu id="natureTransaction" value="#{amcCreateBacking.acte.natureTransaction}" styleClass="form-control">
-                                        <f:selectItems value="#{natureTransaction.ALL_VALUES}" var="nt" itemLabel="#{nt.libelle}" itemValue="#{nt}"/>
-                                        <p:ajax event="change" listener="#{amcCreateBacking.onNatureTransactionSelected()}"/>
-                                    </p:selectOneMenu>
-                                </p:column>
-                                <p:column>
-                                    <h:outputLabel for="dateSignature" value="Date signature" styleClass="text-bold form-control"/><br/>
-                                    <p:datePicker id="dateSignature" value="#{amcCreateBacking.date}"/>
-                                </p:column>
+                        <div class="ui-g">
+                            <div class="ui-g-6">
+                                <h:outputLabel for="reference" value="Référence de l'acte" styleClass="text-bold"/><br/>
+                                <p:inputText id="reference" value="#{amcCreateBacking.acte.reference}"  styleClass="form-control-block"/>
+                                <p:message for="reference" />
+                            </div>
+                            <div class="ui-g-6">
+                                <h:outputLabel for="natureActe" value="Nature d'acte" styleClass="text-bold"/><br/>
+                                <p:selectOneMenu id="natureActe" value="#{amcCreateBacking.acte.natureActe}" styleClass="form-control">
+                                    <f:selectItem itemLabel="Choissisez une nature d'acte" itemValue=""/>
+                                    <f:selectItem itemLabel="#{natureActe.ARRETE.libelle}" itemValue="#{natureActe.ARRETE}"/>
+                                    <f:selectItem itemLabel="#{natureActe.DECISION.libelle}" itemValue="#{natureActe.DECISION}"/>
+                                    <f:selectItem itemLabel="#{natureActe.DECRET.libelle}" itemValue="#{natureActe.DECRET}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
 
-                                <!--
-                                <p:column>
-                                    <h:outputLabel for="section" value="Section Budgetaire" styleClass="text-bold"/><br/>
-                                    <p:selectOneMenu id="section" value="#{amcCreateBacking.selectedSection}"
-                                                     converter="omnifaces.SelectItemsConverter" filter="true" filterMatchMode="contains"  styleClass="form-control">
-                                        <f:selectItem itemLabel="Choissisez une section budgétaire" itemValue=""/>
-                                        <f:selectItems value="#{amcCreateBacking.sectionList}" var="section" itemLabel="#{section.code} - #{of:abbreviate(section.libelle, 60)} " itemValue="#{section}"/>
-                                    </p:selectOneMenu>
-                                </p:column>
-
-                                <p:column>
-                                    <h:outputLabel for="modeleVisa" value="Modele de Visa" styleClass="text-bold"/><br/>
-                                    <p:selectOneMenu id="modeleVisa" value="#{amcCreateBacking.acte.modeleVisa}" styleClass="form-control">
-                                        <f:selectItem itemLabel="Choissisez une section budgétaire" itemValue=""/>
-                                        <f:selectItems value="#{amcCreateBacking.modeleVisaList}" var="modeleVisa" itemLabel="#{modeleVisa.code} - #{of:abbreviate(modeleVisa.libelle, 60)} " itemValue="#{modeleVisa}"/>
-                                    </p:selectOneMenu>
-                                </p:column>
-                                -->
-                            </p:row>
-
-                            <!--
-                            <p:row>
-                                <p:column colspan="3">
-                                    <h:outputLabel value="Corps de l'acte (parties ou articles)" styleClass="text-bold"/><br/>
-                                    <p:panel header="" toggleable="true" >
-                                        <f:facet name="actions">
-                                            <p:commandButton value="Saisir corpus" action="#{amcCreateBacking.openCorpusDialog()}" styleClass="steel-btn" icon="fa fa-pencil">
-                                                <p:ajax event="dialogReturn" listener="#{amcCreateBacking.corpusHandleReturn}" update="createForm:corpus" />
-                                            </p:commandButton>
-                                        </f:facet>
-                                        <h:outputText value="#{of:abbreviate(amcCreateBacking.acte.corpus, 400)}" id="corpus" escape="false" />
-                                    </p:panel>
-                                </p:column>
-                            </p:row>
-
-
-                            <p:row id="signataire">
-                                <p:column>
-                                    <h:outputLabel for="signataireFonction" value="Signataire Fonction" styleClass="text-bold"/><br/>
-                                    <p:inputText id="signataireFonction" value="#{amcCreateBacking.signataire.fonction}" styleClass="form-control"/>
-                                </p:column>
-                                <p:column>
-                                    <h:outputLabel for="signataireNom" value="Nom signataire" styleClass="text-bold"/><br/>
-                                    <p:inputText id="signataireNom" value="#{amcCreateBacking.signataire.nom}" styleClass="form-control"/>
-                                </p:column>
-                                <p:column>
-                                    <p:spacer height="5"/>
-                                    <p:commandButton id="addSignataireBtn" value="Ajouter" action="#{amcCreateBacking.addSignataire()}" disabled="#{amcCreateBacking.addSignataireLock}"
-                                                     update="createForm:signataireList createForm:signataireFonction createForm:signataireNom @this"
-                                                     styleClass="btn-block steel-btn" icon="fa fa-plus"/>
-                                </p:column>
-                            </p:row>
-
-                            <p:row>
-                                <p:column colspan="3">
-                                    <p:dataTable id="signataireList" value="#{amcCreateBacking.signataireList}" var="signataire" type="ordered" rowIndexVar="index"
-                                                 emptyMessage="#{messages.empty_dataTable_message}" styleClass="borderless">
-                                        <f:facet name="header">
-                                            Liste des signataires
-                                        </f:facet>
-                                        <p:column headerText="#" styleClass="col-w5">#{index + 1}</p:column>
-                                        <p:column headerText="Fonction" >#{signataire.fonction}</p:column>
-                                        <p:column headerText="Nom du signataire">#{signataire.nom}</p:column>
-                                        <p:column headerText="" styleClass="col-w10">
-                                            <p:commandButton action="#{amcCreateBacking.deleteSignataire(signataire)}"
-                                                  value="Retirer" update="createForm:signataireList @form:addSignataireBtn" icon="fa fa-trash"
-                                                  styleClass="btn-block"/> </p:column>
-                                    </p:dataTable>
-                                </p:column>
-                            </p:row>
-                            -->
-                        </p:panelGrid>
+                        <div class="ui-g">
+                            <div class="ui-g-6">
+                                <h:outputLabel for="libelle" value="Libelle de l'acte" styleClass="text-bold"/><br/>
+                                <p:inputText id="libelle" value="#{amcCreateBacking.acte.libelle}" styleClass="form-control-block"/>
+                            </div>
+                            <div class="ui-g-6">
+                                <h:outputLabel for="natureTransaction" value="Nature de mouvement" styleClass="text-bold"/><br/>
+                                <p:selectOneMenu id="natureTransaction" value="#{amcCreateBacking.acte.natureTransaction}" styleClass="form-control">
+                                    <f:selectItems value="#{natureTransaction.ALL_VALUES}" var="nt" itemLabel="#{nt.libelle}" itemValue="#{nt}"/>
+                                    <p:ajax event="change" listener="#{amcCreateBacking.onNatureTransactionSelected()}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <div class="ui-g">
+                            <div class="ui-g-4">
+                                <h:outputLabel for="dateSignature" value="Date signature" styleClass="text-bold form-control"/><br/>
+                                <p:datePicker id="dateSignature" value="#{amcCreateBacking.date}" showButtonBar="true"/>
+                            </div>
+                        </div>
                     </p:fieldset>
 
                     <p:spacer height="30" width="5"/>
@@ -144,7 +67,8 @@
                         <p:menubar>
                             <f:facet name="options">
                                 <p:commandButton value="Rechercher une ligne" action="#{amcCreateBacking.openLigneDepenseDialog('ORIGINE')}" icon="fa fa-search" styleClass="steel-btn">
-                                    <p:ajax event="dialogReturn" listener="#{amcCreateBacking.handleReturn}" update="createForm:origineDT createForm:equilibreDG createForm:enregisterBTN"/>
+                                    <p:ajax event="dialogReturn" listener="#{amcCreateBacking.handleReturn}"
+                                            update="createForm:origineDT createForm:equilibreDG createForm:enregisterBTN @form:destinationFls"/>
                                 </p:commandButton>
                             </f:facet>
                         </p:menubar>
@@ -221,17 +145,22 @@
 
                             <p:column headerText="" styleClass="col-w10">
                                 <p:commandButton action="#{amcCreateBacking.deleteOperation('ORIGINE', operation)}" value="supprimer"
-                                                 update="createForm:origineDT createForm:equilibreDG createForm:enregisterBTN" styleClass="btn-block" icon="fa fa-trash"/>
+                                                 update="createForm:origineDT createForm:equilibreDG createForm:enregisterBTN @form:destinationFls" styleClass="btn-block" icon="fa fa-trash"/>
                             </p:column>
                         </p:dataTable>
                     </p:fieldset>
 
                     <p:spacer height="30" width="5"/>
 
-                    <p:fieldset legend="Opération de destination">
+                    <p:fieldset legend="Destination" id="destinationFls">
                         <p:menubar>
                             <f:facet name="options">
-                                <p:commandButton value="Rechercher une ligne" action="#{amcCreateBacking.openLigneDepenseDialog('DESTINATION')}" icon="fa fa-search" styleClass="steel-btn">
+                                <p:commandButton value="Rechercher une imputation" action="#{amcCreateBacking.openLigneDepenseDialog('DESTINATION')}"
+                                                 icon="fa fa-search" styleClass="steel-btn" disabled="#{amcCreateBacking.destinationBtnStatus}">
+                                    <p:ajax event="dialogReturn" listener="#{amcCreateBacking.handleReturn}" update="createForm:destinationDT createForm:equilibreDG createForm:enregisterBTN"/>
+                                </p:commandButton>
+                                <p:commandButton value="Créer une nouvelle imputation" action="#{amcCreateBacking.openNouvelleLigneDialog('DESTINATION')}"
+                                                 icon="fa fa-plus" styleClass="steel-btn" disabled="#{amcCreateBacking.destinationBtnStatus}">
                                     <p:ajax event="dialogReturn" listener="#{amcCreateBacking.handleReturn}" update="createForm:destinationDT createForm:equilibreDG createForm:enregisterBTN"/>
                                 </p:commandButton>
                             </f:facet>
@@ -243,6 +172,9 @@
                                      rowIndexVar="index" emptyMessage="#{messages.empty_dataTable_message}">
                             <p:column headerText="#" style="width:16px;text-align:center">
                                 <h:outputText value="#{index + 1}" />
+                                <p:outputPanel rendered="#{operation.origineImputation.equals(origineImputation.NOUVELLE_LIGNE)}">
+                                    <i class="fa fa-plus-square"></i>
+                                </p:outputPanel>
                             </p:column>
 
                             <p:column headerText="Section" styleClass="col-w10">
@@ -360,13 +292,20 @@
                                                  value="#{amcCreateBacking.displayEnregisterButton() ? messages.equilibre_non_atteint_btn_message : messages.enregistrer_appliquer}"
                                                  update="@form" style="width: 100%" styleClass="green-btn"/>
                             </div>
-
+                            <div class="ui-g-4" style="margin: 0px auto !important;">
+                                <p:commandButton action="#{amcCreateBacking.persist(false)}"
+                                                 icon="fa fa-save"
+                                                 value="#{messages.enregistrer}"
+                                                 update="@form" style="width: 100%" styleClass="orange-btn"/>
+                            </div>
+                            <!--
                             <div class="ui-g-4" style="margin: 0px auto !important;">
                                 <p:commandButton action="#{amcCreateBacking.persist(false)}"
                                                  disabled="#{amcCreateBacking.displayEnregisterButton()}" icon="fa fa-save"
                                                  value="#{amcCreateBacking.displayEnregisterButton() ? messages.equilibre_non_atteint_btn_message : messages.enregistrer}"
                                                  update="@form" style="width: 100%" styleClass="orange-btn"/>
                             </div>
+                            -->
 
                             <div class="ui-g-4">
                                 <p:commandButton action="#{amcCreateBacking.close()}"

@@ -3,6 +3,7 @@ package ci.gouv.dgbf.agc.dto;
 
 import ci.gouv.dgbf.agc.enumeration.DisponibiliteCreditOperation;
 import ci.gouv.dgbf.agc.enumeration.EffetOperation;
+import ci.gouv.dgbf.agc.enumeration.OrigineImputation;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import lombok.Getter;
 import lombok.Setter;
@@ -58,6 +59,8 @@ public class Operation{
     private String bailleurId;
     @Getter @Setter
     private String bailleurLibelle;
+    @Getter @Setter
+    private OrigineImputation origineImputation;
 
     public Operation() {
     }

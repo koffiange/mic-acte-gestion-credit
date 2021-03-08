@@ -5,6 +5,7 @@
  */
 package ci.gouv.dgbf.appmodele.backing;
 
+import ci.gouv.dgbf.agc.dto.*;
 import ci.gouv.dgbf.appmodele.util.Messages;
 import org.primefaces.PrimeFaces;
 
@@ -301,5 +302,34 @@ public class BaseBacking implements Serializable {
         symbols.setGroupingSeparator(' ');
         formatter.setDecimalFormatSymbols(symbols);
         return formatter.format(value);
+    }
+
+    public String concateCodeLibelle(Object object){
+        String strConcate = "";
+        if (object instanceof Section){
+            Section section = (Section) object;
+            strConcate = section.getCode()+" - "+section.getLibelle();
+        }
+
+        if (object instanceof ActiviteDeService){
+            ActiviteDeService activiteDeService = (ActiviteDeService) object;
+            strConcate = activiteDeService.getAdsCode()+" - "+ activiteDeService.getAdsLibelle();
+        }
+
+        if (object instanceof NatureEconomique){
+            NatureEconomique natureEconomique = (NatureEconomique) object;
+            strConcate = natureEconomique.getCode()+" - "+natureEconomique.getLibelleLong();
+        }
+
+        if (object instanceof Bailleur){
+            Bailleur bailleur = (Bailleur) object;
+            strConcate = bailleur.getCode()+" - "+bailleur.getDesignation();
+        }
+
+        if (object instanceof SourceFinancement){
+            SourceFinancement sourceFinancement = (SourceFinancement) object;
+            strConcate = sourceFinancement.getCode()+" - "+sourceFinancement.getLibelle();
+        }
+        return strConcate;
     }
 }

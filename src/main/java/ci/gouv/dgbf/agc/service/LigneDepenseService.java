@@ -1,6 +1,5 @@
 package ci.gouv.dgbf.agc.service;
 
-import ci.gouv.dgbf.agc.client.ActiviteClient;
 import ci.gouv.dgbf.agc.client.LigneDepenseClient;
 import ci.gouv.dgbf.agc.dto.LigneDepense;
 import ci.gouv.dgbf.agc.dto.Operation;

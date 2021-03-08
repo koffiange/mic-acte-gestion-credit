@@ -1,15 +1,19 @@
 package ci.gouv.dgbf.agc.service;
 
 import ci.gouv.dgbf.agc.client.OperationClient;
+import ci.gouv.dgbf.agc.dto.ImputationDto;
 import ci.gouv.dgbf.agc.dto.LigneDepense;
 import ci.gouv.dgbf.agc.dto.Operation;
 import ci.gouv.dgbf.agc.enumeration.DisponibiliteCreditOperation;
+import ci.gouv.dgbf.agc.enumeration.OrigineImputation;
+import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -75,6 +79,12 @@ public class OperationService implements OperationClient {
         return operationList;
     }
 
+    public List<Operation> buildOperationListFromImputationList(List<ImputationDto> imputationDtoList){
+        List<Operation> operationList = new ArrayList<>();
+        imputationDtoList.forEach(imputationDto -> operationList.add(this.convertImputationIntoOperation(imputationDto)));
+        return operationList;
+    }
+
     public Operation convertLigneDepenseIntoOperation(LigneDepense ligneDepense){
         Operation operation = new Operation();
 
@@ -95,6 +105,7 @@ public class OperationService implements OperationClient {
         operation.setNatureEconomiqueCode(ligneDepense.getNatureEconomiqueCode());
         operation.setSectionCode(ligneDepense.getSectionCode());
         operation.setSectionLibelle(ligneDepense.getSectionLibelle());
+        operation.setOrigineImputation(OrigineImputation.BUDGET);
 
         return operation;
     }
@@ -125,5 +136,31 @@ public class OperationService implements OperationClient {
     private void disponibiliteMontantSetter(Operation operation, LigneDepense ligneDepense){
         operation.setMontantDisponibleAE(ligneDepense.getMontantDisponibleAE());
         operation.setMontantDisponibleCP(ligneDepense.getMontantDisponibleCP());
+    }
+
+    public Operation convertImputationIntoOperation(ImputationDto imputationDto){
+        Operation operation = new Operation();
+
+        operation.setActiviteCode(imputationDto.getActiviteDeService().getAdsCode());
+        operation.setActiviteLibelle(imputationDto.getActiviteDeService().getAdsLibelle());
+        operation.setLigneDepenseUuid(imputationDto.getUuid());
+        operation.setSourceFinancementId(imputationDto.getSourceFinancement().getId());
+        operation.setSourceFinancementCode(imputationDto.getSourceFinancement().getCode());
+        operation.setSourceFinancementLibelle(imputationDto.getSourceFinancement().getLibelle());
+        operation.setBudgetActuelAE(BigDecimal.ZERO);
+        operation.setBudgetActuelCP(BigDecimal.ZERO);
+        operation.setMontantDisponibleAE(BigDecimal.ZERO);
+        operation.setMontantDisponibleCP(BigDecimal.ZERO);
+        operation.setExercice(imputationDto.getExercice());
+        operation.setBailleurId(imputationDto.getBailleur().getId());
+        operation.setBailleurLibelle(imputationDto.getBailleur().getDesignation());
+        operation.setNatureEconomiqueCode(imputationDto.getNatureEcnomique().getCode());
+        operation.setNatureEconomiqueLibelle(imputationDto.getNatureEcnomique().getLibelleLong());
+        operation.setSectionCode(imputationDto.getSection().getCode());
+        operation.setSectionLibelle(imputationDto.getSection().getLibelle());
+        operation.setTypeOperation(TypeOperation.DESTINATION);
+        operation.setOrigineImputation(OrigineImputation.NOUVELLE_LIGNE);
+
+        return operation;
     }
 }

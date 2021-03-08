@@ -116,8 +116,8 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
                                                       .peek(operation -> operation.setMontantOperationAE(operation.getMontantOperationAE().negate())).collect(Collectors.toList());
             List<Operation> operationDestination = acteDto.getOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.DESTINATION)).collect(Collectors.toList());
 
-            operationBagOrigine = new OperationBag(TypeOperation.ORIGINE,operationOrigine);
-            operationBagDestination = new OperationBag(TypeOperation.DESTINATION,operationDestination);
+            operationBagOrigine = new OperationBag(TypeOperation.ORIGINE,operationOrigine, new ArrayList<>());
+            operationBagDestination = new OperationBag(TypeOperation.DESTINATION,operationDestination, new ArrayList<>());
             operationBagOrigine.setOperationList(operationService.operationListDisponibiliteSetter(operationBagOrigine.getOperationList()));
             operationBagDestination.setOperationList(operationService.operationListDisponibiliteSetter(operationBagDestination.getOperationList()));
 
@@ -208,10 +208,11 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
         options.replace("height", "90vh");
         Map<String, List<String>> params = new HashMap<>();
 
-        LOG.info("section : "+operationBagOrigine.getSectionCodeList().size());
-
-        if (TypeOperation.valueOf(typeImputation).equals(TypeOperation.DESTINATION))
-            params.put("sectionCode", operationBagOrigine.getSectionCodeList());
+        if (TypeOperation.valueOf(typeImputation).equals(TypeOperation.DESTINATION)) {
+            List<String> sectionCodeList = new ArrayList<>();
+            sectionCodeList.add(this.retrieveSectionCodeToSend());
+            params.put("sectionCode", sectionCodeList);
+        }
 
         List<String> natureTransactionList = new ArrayList<>();
         natureTransactionList.add(acte.getNatureTransaction().toString());
@@ -224,6 +225,16 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
         PrimeFaces.current().dialog().openDynamic("rechercher-source-financement-dlg", options, params);
     }
 
+    /**
+     * Permet de retrouver le coe de la section à envoyé au dialog de recherche des lignes de dépense
+     * ou de creation d'imputation.
+     * @return
+     */
+    private String retrieveSectionCodeToSend(){
+        return (acte.getNatureTransaction().equals(NatureTransaction.VIREMENT) && !operationBagOrigine.getOperationList().isEmpty()) ?
+                operationBagOrigine.getOperationList().get(0).getSectionCode() : "";
+    }
+
     public void cumules(){
         operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementAE);
         // operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
@@ -233,12 +244,13 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
 
     public void handleReturn(SelectEvent event){
         OperationBag operationBag = (OperationBag) event.getObject();
-        this.completeSectionCodeList(operationBag.getTypeOperation(), operationBag.getSectionCodeList());
+        // this.completeSectionCodeList(operationBag.getTypeOperation(), operationBag.getSectionCodeList());
         this.completeOperationList(operationBag.getTypeOperation(), operationBag.getOperationList());
         this.cumules();
         showSuccess();
     }
 
+    /*
     private void completeSectionCodeList(TypeOperation typeOperation, List<String> sectionCodeList){
         sectionCodeList.forEach(code -> {
             if (typeOperation.equals(TypeOperation.ORIGINE) && !operationBagOrigine.getSectionCodeList().contains(code))
@@ -248,6 +260,8 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
                 operationBagDestination.getSectionCodeList().add(code);
         });
     }
+
+     */
 
     private void completeOperationList(TypeOperation typeOperation, List<Operation> operationList){
         operationList.forEach(operation -> {

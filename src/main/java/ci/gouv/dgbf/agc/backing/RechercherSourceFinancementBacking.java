@@ -27,7 +27,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Inject
     SectionService sectionService;
     @Inject
-    ActiviteService activiteService;
+    ActiviteDeServiceService activiteService;
     @Inject
     NatureEconomiqueService natureEconomiqueService;
     @Inject
@@ -42,7 +42,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     private List<NatureEconomique> natureEconomiqueList = new ArrayList<>();
     /*
     @Getter @Setter
-    private List<Activite> activiteList;
+    private List<ActiviteDeService> activiteList;
      */
 
 
@@ -57,7 +57,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Getter @Setter
     private Section selectedSection;
     @Getter @Setter
-    private Activite selectedActivite = new Activite();
+    private ActiviteDeService selectedActiviteDeService = new ActiviteDeService();
     @Getter @Setter
     private NatureEconomique selectedNatureEconomique;
     @Getter @Setter
@@ -126,7 +126,8 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     }
 
     public boolean disableSectionField(){
-        return natureTransaction.equals(NatureTransaction.VIREMENT) && operationBag.getTypeOperation().equals(TypeOperation.DESTINATION);
+        // return natureTransaction.equals(NatureTransaction.VIREMENT) && operationBag.getTypeOperation().equals(TypeOperation.DESTINATION);
+        return true;
     }
 
     public boolean filterBudget(Object value, Object filter, Locale locale) {
@@ -170,7 +171,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     }
 
     public void ajouter(){
-        operationBag.getSectionCodeList().add(selectedSection.getCode());
+        // operationBag.getSectionCodeList().add(selectedSection.getCode());
         this.typeOperationSetter();
         operationBag.getOperationList().addAll(selectedOperationList);
         PrimeFaces.current().dialog().closeDynamic(operationBag);
@@ -184,25 +185,6 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
                 operation.setTypeOperation(TypeOperation.DESTINATION);
             }
         });
-    }
-
-    public String concateCodeLibelle(Object object){
-        String strConcate = "";
-        if (object instanceof Section){
-            Section section = (Section) object;
-            strConcate = section.getCode()+" - "+section.getLibelle();
-        }
-
-        if (object instanceof Activite){
-            Activite activite = (Activite) object;
-            strConcate = activite.getCode()+" - "+activite.getLibelleLong();
-        }
-
-        if (object instanceof NatureEconomique){
-            NatureEconomique natureEconomique = (NatureEconomique) object;
-            strConcate = natureEconomique.getCode()+" - "+natureEconomique.getLibelleLong();
-        }
-        return strConcate;
     }
 
     public void onSectionSelect(){

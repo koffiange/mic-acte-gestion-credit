@@ -13,16 +13,17 @@ public class OperationBag {
     @Getter @Setter
     private TypeOperation typeOperation;
     @Getter @Setter
-    private List<String> sectionCodeList = new ArrayList<>();
-    @Getter @Setter
     private List<Operation> operationList = new ArrayList<>();
+    @Getter @Setter
+    private List<ImputationDto> imputationDtoList = new ArrayList<>();
 
     public OperationBag() {
     }
 
-    public OperationBag(TypeOperation typeOperation, List<Operation> operationList) {
+    public OperationBag(TypeOperation typeOperation, List<Operation> operationList, List<ImputationDto> imputationDtoList) {
         this.typeOperation = typeOperation;
         this.operationList = operationList;
+        this.imputationDtoList = imputationDtoList;
     }
 
     @Override
@@ -30,22 +31,20 @@ public class OperationBag {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OperationBag that = (OperationBag) o;
-        return typeOperation == that.typeOperation &&
-                Objects.equals(sectionCodeList, that.sectionCodeList) &&
-                Objects.equals(operationList, that.operationList);
+        return typeOperation == that.typeOperation && Objects.equals(operationList, that.operationList) && Objects.equals(imputationDtoList, that.imputationDtoList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(typeOperation, sectionCodeList, operationList);
+        return Objects.hash(typeOperation, operationList, imputationDtoList);
     }
 
     @Override
     public String toString() {
         return "OperationBag{" +
                 "typeOperation=" + typeOperation +
-                ", sectionCodeList=" + sectionCodeList +
                 ", operationList=" + operationList +
+                ", imputationDtoList=" + imputationDtoList +
                 '}';
     }
 }

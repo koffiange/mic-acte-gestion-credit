@@ -16,15 +16,11 @@ import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.validator.ValidatorException;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.validation.ValidationException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -106,6 +102,9 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     @Getter @Setter
     private boolean addSignataireLock = false;
 
+    @Getter @Setter
+    private boolean destinationBtnStatus = true;
+
     @PostConstruct
     public void init(){
         acte = new Acte();
@@ -161,7 +160,6 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     private void buildActeDto(){
         this.buildActe();
         acteDto.setActe(acte);
-        // acteDto.setSignataireList(signataireList);
         operationList.addAll(operationBagOrigine.getOperationList());
         operationList.addAll(operationBagDestination.getOperationList());
         acteDto.setOperationList(operationList);
@@ -179,10 +177,21 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
             // Montant AE egal Montant CP
             operationBag.getOperationList().forEach(operation -> operation.setMontantOperationCP(operation.getMontantOperationAE()));
             LOG.info("=> Montant AE egal Montant CP [ok]");
+
         } catch (Exception exception){
             LOG.info(exception.getMessage());
         }
     }
+
+    public void handleReturn(SelectEvent event){
+        OperationBag operationBag = (OperationBag) event.getObject();
+        this.completeOperationList(operationBag.getTypeOperation(), operationBag.getOperationList());
+        this.completeImputationDTOList(operationBag);
+        this.cumules();
+        destinationBtnStatus = operationBagOrigine.getOperationList().isEmpty();
+        showSuccess();
+    }
+
 
     public void persist(boolean appliquerActe){
         try{
@@ -195,7 +204,7 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
             this.treatOperationBagBeforePersisting(operationBagDestination);
             LOG.info("Traitement des opérations avant persist [ok]");
             this.buildActeDto();
-            LOG.info("Construction de ACTEDTO [ok]");
+            LOG.info("Construction de ACTE DTO [ok]");
             Acte actePersisted = acteService.persist(acteDto);
             LOG.info("Sauvegarde [ok]");
             if (appliquerActe)
@@ -254,8 +263,11 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         options.replace("height", "90vh");
         Map<String, List<String>> params = new HashMap<>();
 
-        if (TypeOperation.valueOf(typeImputation).equals(TypeOperation.DESTINATION))
-            params.put("sectionCode", operationBagOrigine.getSectionCodeList());
+        if (TypeOperation.valueOf(typeImputation).equals(TypeOperation.DESTINATION)) {
+            List<String> sectionCodeList = new ArrayList<>();
+            sectionCodeList.add(this.retrieveSectionCodeToSend());
+            params.put("sectionCode", sectionCodeList);
+        }
 
         List<String> natureTransactionList = new ArrayList<>();
         natureTransactionList.add(acte.getNatureTransaction().toString());
@@ -266,6 +278,35 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         params.put("typeImputation", typeImputationList);
 
         PrimeFaces.current().dialog().openDynamic("rechercher-source-financement-dlg", options, params);
+    }
+
+    /**
+     * Permet de retrouver le coe de la section à envoyé au dialog de recherche des lignes de dépense
+     * ou de creation d'imputation.
+     * @return
+     */
+    private String retrieveSectionCodeToSend(){
+        return (acte.getNatureTransaction().equals(NatureTransaction.VIREMENT) && !operationBagOrigine.getOperationList().isEmpty()) ?
+                operationBagOrigine.getOperationList().get(0).getSectionCode() : "";
+    }
+
+    public void openNouvelleLigneDialog(String typeImputation){
+        Map<String,Object> options = getLevelOneDialogOptions();
+        options.replace("width", "90vw");
+        options.replace("height", "90vh");
+        Map<String, List<String>> params = new HashMap<>();
+
+        if (TypeOperation.valueOf(typeImputation).equals(TypeOperation.DESTINATION)) {
+            List<String> sectionCodeList = new ArrayList<>();
+            sectionCodeList.add(this.retrieveSectionCodeToSend());
+            params.put("sectionCode", sectionCodeList);
+        }
+
+        List<String> natureTransactionList = new ArrayList<>();
+        natureTransactionList.add(acte.getNatureTransaction().toString());
+        params.put("natureTransaction", natureTransactionList);
+
+        PrimeFaces.current().dialog().openDynamic("creer-imputation-dlg", options, params);
     }
 
     public void openCorpusDialog(){
@@ -284,14 +325,8 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         PrimeFaces.current().dialog().openDynamic("acte-corpus-dlg", options, params);
     }
 
-    public void handleReturn(SelectEvent event){
-        OperationBag operationBag = (OperationBag) event.getObject();
-        this.completeSectionCodeList(operationBag.getTypeOperation(), operationBag.getSectionCodeList());
-        this.completeOperationList(operationBag.getTypeOperation(), operationBag.getOperationList());
-        this.cumules();
-        showSuccess();
-    }
 
+    /*
     private void completeSectionCodeList(TypeOperation typeOperation, List<String> sectionCodeList){
         sectionCodeList.forEach(code -> {
             if (typeOperation.equals(TypeOperation.ORIGINE) && !operationBagOrigine.getSectionCodeList().contains(code))
@@ -300,6 +335,12 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
             if (typeOperation.equals(TypeOperation.DESTINATION) && !operationBagDestination.getSectionCodeList().contains(code))
                 operationBagDestination.getSectionCodeList().add(code);
         });
+    }
+     */
+
+    private void completeImputationDTOList(OperationBag operationBag){
+        if(operationBag.getTypeOperation().equals(TypeOperation.DESTINATION))
+            acteDto.getImputationDtoList().addAll(operationBag.getImputationDtoList());
     }
 
     private void completeOperationList(TypeOperation typeOperation, List<Operation> operationList){
@@ -328,6 +369,7 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
         if (typeOperation.equals(TypeOperation.ORIGINE)){
             operationBagOrigine.getOperationList().remove(operation);
+            destinationBtnStatus = operationBagOrigine.getOperationList().isEmpty();
         } else{
             operationBagDestination.getOperationList().remove(operation);
         }

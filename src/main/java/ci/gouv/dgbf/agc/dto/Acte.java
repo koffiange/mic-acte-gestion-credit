@@ -35,6 +35,8 @@ public class Acte extends BaseDto{
     private ModeleVisa modeleVisa;
     @Getter @Setter
     private LocalDateTime createdDate;
+    @Getter @Setter
+    private String exercice = String.valueOf(LocalDate.now().getYear());
 
     public Acte() {
     }

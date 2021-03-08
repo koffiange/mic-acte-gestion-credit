@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:o="http://omnifaces.org/ui"
+      xmlns:of="http://omnifaces.org/functions"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+<h:head>
+    <title style="font-size: larger; font-weight: bold">Création d'une nouvelle imputation</title>
+    <ui:include src="/resources/common/css.xhtml"/>
+</h:head>
+
+<h:body styleClass="main-body">
+    <h:form id="createForm">
+        <p:growl globalOnly="true" showDetail="true" showSummary="true" severity="info, warn, error" life="15000"/>
+        <p:importEnum type="ci.gouv.dgbf.agc.enumeration.NatureDepense" var="NatureDepense" allSuffix="ALL_ITEM_VALUE"/>
+        <p:importEnum type="ci.gouv.dgbf.agc.enumeration.SourceFinancement" var="SourceFinancement" allSuffix="ALL_ITEM_VALUE"/>
+
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <p:fieldset id="nouvelleImputationFls"  legend="Nouvelle Imputation">
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <p:outputLabel value="Section" styleClass="text-bold"/>
+                            <br />
+                            <p:selectOneMenu value="#{imputationCreateBacking.imputationDto.section}" filter="true" filterMatchMode="contains"
+                                             style="width: 97% !important;" styleClass="ui-selectonemenu-filter-container"
+                                             converter="omnifaces.SelectItemsConverter" disabled="#{imputationCreateBacking.disableSectionField()}">
+                                <f:selectItem itemLabel="-- Selectionnez une section --" noSelectionOption="true" />
+                                <f:selectItems var="section" value="#{imputationCreateBacking.sectionList}" itemLabel="#{of:abbreviate(imputationCreateBacking.concateCodeLibelle(section), 140)}" itemValue="#{section}"/>
+                                <p:ajax event="change" listener="#{imputationCreateBacking.onSectionSelected()}" update="@form:activitePanel"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-g-12">
+                            <p:outputPanel id="activitePanel">
+                                <p:outputLabel value="Activité" styleClass="text-bold"/><br />
+                                <p:selectOneMenu value="#{imputationCreateBacking.imputationDto.activiteDeService}" filter="true" filterMatchMode="contains"
+                                                 style="width: 97% !important;" styleClass="ui-selectonemenu-filter-container"
+                                                 converter="omnifaces.SelectItemsConverter">
+                                    <f:selectItem itemLabel="-- Selectionneez une activité --" noSelectionOption="true" />
+                                    <f:selectItems var="activiteDeService" value="#{imputationCreateBacking.activiteDeServiceList}" itemLabel="#{of:abbreviate(imputationCreateBacking.concateCodeLibelle(activiteDeService), 140)}" itemValue="#{activiteDeService}"/>
+                                </p:selectOneMenu>
+                            </p:outputPanel>
+                        </div>
+
+                        <div class="ui-g-4">
+                            <p:outputLabel value="Nature Economique" styleClass="text-bold"/><br />
+                            <p:selectOneMenu value="#{imputationCreateBacking.imputationDto.natureEcnomique}" filter="true" filterMatchMode="contains"
+                                             style="width: 90% !important;" styleClass="ui-selectonemenu-filter-container"
+                                             converter="omnifaces.SelectItemsConverter">
+                                <f:selectItem itemLabel="-- Selectionneez une nature economique --" noSelectionOption="true" />
+                                <f:selectItems var="nature" value="#{imputationCreateBacking.natureEconomiqueList}" itemLabel="#{of:abbreviate(imputationCreateBacking.concateCodeLibelle(nature), 60)}" itemValue="#{nature}"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-g-4">
+                            <p:outputLabel value="Bailleur" styleClass="text-bold"/><br />
+                            <p:selectOneMenu value="#{imputationCreateBacking.imputationDto.bailleur}" filter="true" filterMatchMode="contains"
+                                             style="width: 90% !important;" styleClass="ui-selectonemenu-filter-container"
+                                             converter="omnifaces.SelectItemsConverter">
+                                <f:selectItem itemLabel="-- Selectionneez un bailleur --" noSelectionOption="true" />
+                                <f:selectItems var="bailleur" value="#{imputationCreateBacking.bailleurList}" itemLabel="#{of:abbreviate(imputationCreateBacking.concateCodeLibelle(bailleur), 60)}" itemValue="#{bailleur}"/>
+                            </p:selectOneMenu>
+                        </div>
+
+                        <div class="ui-g-4">
+                            <p:outputLabel value="Source de Financement" styleClass="text-bold"/><br />
+                            <p:selectOneMenu value="#{imputationCreateBacking.imputationDto.sourceFinancement}" filter="true" filterMatchMode="contains"
+                                             style="width: 90% !important;" styleClass="ui-selectonemenu-filter-container"
+                                             converter="omnifaces.SelectItemsConverter">
+                                <f:selectItem itemLabel="-- Selectionneez une source de financement --" noSelectionOption="true" />
+                                <f:selectItems var="financement" value="#{imputationCreateBacking.sourceFinancementList}" itemLabel="#{of:abbreviate(imputationCreateBacking.concateCodeLibelle(financement), 60)}" itemValue="#{financement}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <p:commandButton value="Enregistrer l'imputation"
+                                             icon="fa fa-save"
+                                             action="#{imputationCreateBacking.creer()}"
+                                             update="@form:imputationFls:imputationDT @form:nouvelleImputationFls"
+                                             styleClass="btn-block text-centered"/>
+                        </div>
+                    </div>
+
+                </p:fieldset>
+
+                <p:fieldset id="imputationFls" legend="Liste des nouvelles imputations">
+                    <p:dataTable id="imputationDT" value="#{imputationCreateBacking.imputationDtoList}"
+                                 var="imputation"
+                                 widgetVar="imputationDT"
+                                 rowIndexVar="index"
+                                 emptyMessage="#{messages.empty_dataTable_message}"
+                                 tableStyle="font-size: 11px;">
+                        <p:column headerText="#" styleClass="col-w3">#{index + 1}</p:column>
+                        <p:column headerText="Section" styleClass="col-w20">#{imputation.section.code} - #{imputation.section.libelle}</p:column>
+                        <p:column headerText="Activité" styleClass="col-w20">#{imputation.activiteDeService.adsCode} - #{imputation.activiteDeService.adsLibelle}</p:column>
+                        <p:column headerText="Nature Eco." styleClass="col-w20">#{imputation.natureEcnomique.code} - #{imputation.natureEcnomique.libelleLong}</p:column>
+                        <p:column headerText="Bailleur" styleClass="col-w20">#{imputation.bailleur.code} - #{imputation.natureEcnomique.libelleLong}</p:column>
+                        <p:column headerText="Sour. Fin." styleClass="col-w10">#{imputation.sourceFinancement.libelle}</p:column>
+                        <p:column headerText="" styleClass="col-w10">
+                            <p:commandButton value="Suppimer" action="#{imputationCreateBacking.supprimer(imputation)}" update="@form:imputationFls:imputationDT"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:fieldset>
+
+                <!--
+                <p:fieldset id="nouvelleImputationFls" legend="Liste des imputations correspondants aux critères de recherche">
+                    <p:panelGrid columns="4" layout="grid" columnClasses="ui-g5-3 , ui-g5-3, ui-g5-3, ui-g5-2">
+                        <p:outputLabel value="Nature Economique" styleClass="text-bold"/>
+                        <p:outputLabel value="Activité" styleClass="text-bold"/>
+                        <p:outputLabel value="Exercice" styleClass="text-bold"/>
+                        <p:outputLabel value=""/>
+
+                        <p:selectOneMenu value="#{rchSourceFinancementBacking.selectedNatureEconomique}" filter="true" filterMatchMode="contains"
+                                         style="width: 20vw !important;" styleClass="ui-selectonemenu-filter-container"
+                                         converter="omnifaces.SelectItemsConverter" >
+                            <f:selectItem itemLabel="- Sélectionner une nature économique -" noSelectionOption="true"/>
+                            <f:selectItems var="nec" value="#{rchSourceFinancementBacking.natureEconomiqueList}" itemLabel="#{of:abbreviate(rchSourceFinancementBacking.concateCodeLibelle(nec), 60)}" itemValue="#{nec}"/>
+                            <p:ajax event="change" listener="#{rchSourceFinancementBacking.onNatureEconomiqueSelect()}"/>
+                        </p:selectOneMenu>
+                        <p:inputText value="#{rchSourceFinancementBacking.activiteCode}" placeholder="Activité" styleClass="form-control"/>
+                        <p:inputText value="#{rchSourceFinancementBacking.exercice}" placeholder="Année de l'exercice" styleClass="form-control"/>
+                        <p:commandButton value="Rechercher" action="#{rchSourceFinancementBacking.rechercher}" styleClass="btn-block" icon="fa fa-search" update="@form"/>
+                        <p:outputLabel value=""/>
+                    </p:panelGrid>
+                </p:fieldset>
+                -->
+
+                <p:spacer height="20" width="10"/>
+
+                <div class="ui-g">
+                    <div class="ui-g-6" style="margin: 0px auto !important;">
+                        <p:commandButton action="#{imputationCreateBacking.ajouter()}"
+                                         value="Ajouter aux imputations" style="width: 100%"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AJAX LOADER -->
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+            <p:graphicImage name="images/ajaxloadingbar.gif"  library="atlantis-layout"/>
+        </p:dialog>
+
+    </h:form>
+</h:body>
+</html>

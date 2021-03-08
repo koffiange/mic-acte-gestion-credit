@@ -105,6 +105,14 @@ body .ui-breadcrumb{
     text-align: center !important;
 }
 
+.col-w2{
+    width: 2% !important;
+}
+
+.col-w3{
+    width: 3% !important;
+}
+
 .col-w5{
     width: 5% !important;
 }
