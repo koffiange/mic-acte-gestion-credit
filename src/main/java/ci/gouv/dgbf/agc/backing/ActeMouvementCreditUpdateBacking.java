@@ -240,6 +240,12 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
         // operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
         operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutAE);
         // operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
+        this.handleDisponibleRestant();
+    }
+
+    private void handleDisponibleRestant(){
+        operationBagOrigine.getOperationList().forEach(operation -> operation.setDisponibleRestantAE(operation.getMontantDisponibleAE().subtract(operation.getMontantOperationAE())));
+        operationBagDestination.getOperationList().forEach(operation -> operation.setDisponibleRestantAE(operation.getMontantDisponibleAE().subtract(operation.getMontantOperationAE())));
     }
 
     public void handleReturn(SelectEvent event){

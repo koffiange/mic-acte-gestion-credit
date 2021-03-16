@@ -35,6 +35,10 @@ public class LigneDepense {
     @Getter @Setter
     private String usbId;
     @Getter @Setter
+    private String usbCode;
+    @Getter @Setter
+    private String usbLibelle;
+    @Getter @Setter
     private String sectionId;
     @Getter @Setter
     private String sectionCode;

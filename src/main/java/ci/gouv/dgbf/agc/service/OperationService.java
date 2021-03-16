@@ -88,6 +88,8 @@ public class OperationService implements OperationClient {
     public Operation convertLigneDepenseIntoOperation(LigneDepense ligneDepense){
         Operation operation = new Operation();
 
+        operation.setUsbCode(ligneDepense.getUsbCode());
+        operation.setUsbLibelle(ligneDepense.getUsbLibelle());
         operation.setActiviteCode(ligneDepense.getActiviteCode());
         operation.setActiviteLibelle(ligneDepense.getActiviteLibelle());
         operation.setSourceFinancementId(ligneDepense.getSourceFinancementId());
@@ -95,6 +97,8 @@ public class OperationService implements OperationClient {
         operation.setBudgetActuelCP(ligneDepense.getMontantCp());
         operation.setMontantDisponibleAE(ligneDepense.getMontantDisponibleAE());
         operation.setMontantDisponibleCP(ligneDepense.getMontantDisponibleCP());
+        operation.setDisponibleRestantAE(ligneDepense.getMontantDisponibleAE());
+        operation.setDisponibleRestantCP(ligneDepense.getMontantDisponibleCP());
         operation.setExercice(ligneDepense.getExercice());
         operation.setLigneDepenseUuid(ligneDepense.getLigneDepenseId());
         operation.setSourceFinancementCode(ligneDepense.getSourceFinancementCode());
@@ -151,6 +155,8 @@ public class OperationService implements OperationClient {
         operation.setBudgetActuelCP(BigDecimal.ZERO);
         operation.setMontantDisponibleAE(BigDecimal.ZERO);
         operation.setMontantDisponibleCP(BigDecimal.ZERO);
+        operation.setDisponibleRestantAE(BigDecimal.ZERO);
+        operation.setDisponibleRestantCP(BigDecimal.ZERO);
         operation.setExercice(imputationDto.getExercice());
         operation.setBailleurId(imputationDto.getBailleur().getId());
         operation.setBailleurLibelle(imputationDto.getBailleur().getDesignation());

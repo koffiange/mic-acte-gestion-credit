@@ -8,6 +8,7 @@ import ci.gouv.dgbf.agc.enumeration.StatutActe;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.*;
 import java.util.Date;
 import java.util.Objects;
@@ -37,6 +38,14 @@ public class Acte extends BaseDto{
     private LocalDateTime createdDate;
     @Getter @Setter
     private String exercice = String.valueOf(LocalDate.now().getYear());
+    @Getter @Setter
+    private BigDecimal cumulRetranchementAE;
+    @Getter @Setter
+    private BigDecimal cumulRetranchementCP;
+    @Getter @Setter
+    private BigDecimal cumulAjoutAE;
+    @Getter @Setter
+    private BigDecimal cumulAjoutCP;
 
     public Acte() {
     }

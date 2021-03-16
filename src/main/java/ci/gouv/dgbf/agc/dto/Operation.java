@@ -18,6 +18,10 @@ public class Operation{
     @Getter @Setter
     private String ligneDepenseUuid;
     @Getter @Setter
+    private String usbCode;
+    @Getter @Setter
+    private String usbLibelle;
+    @Getter @Setter
     private String activiteCode;
     @Getter @Setter
     private String activiteLibelle;
@@ -26,13 +30,13 @@ public class Operation{
     @Getter @Setter
     private String natureEconomiqueLibelle;
     @Getter @Setter
-    private String exercice;
-    @Getter @Setter
     private String sourceFinancementId;
     @Getter @Setter
     private String sourceFinancementCode;
     @Getter @Setter
     private String sourceFinancementLibelle;
+    @Getter @Setter
+    private String exercice;
     @Getter @Setter
     private BigDecimal budgetActuelAE;
     @Getter @Setter
@@ -45,6 +49,10 @@ public class Operation{
     private BigDecimal montantDisponibleAE;
     @Getter @Setter
     private BigDecimal montantDisponibleCP;
+    @Getter @Setter
+    private BigDecimal disponibleRestantAE;
+    @Getter @Setter
+    private BigDecimal disponibleRestantCP;
     @Getter @Setter
     private TypeOperation typeOperation;
     @Getter @Setter

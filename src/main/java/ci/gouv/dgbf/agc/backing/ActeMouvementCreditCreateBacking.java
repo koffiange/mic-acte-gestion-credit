@@ -20,7 +20,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -159,6 +158,10 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
     private void buildActeDto(){
         this.buildActe();
+        acte.setCumulRetranchementAE(cumulRetranchementAE);
+        acte.setCumulRetranchementCP(cumulRetranchementCP);
+        acte.setCumulAjoutAE(cumulAjoutAE);
+        acte.setCumulAjoutCP(cumulAjoutCP);
         acteDto.setActe(acte);
         operationList.addAll(operationBagOrigine.getOperationList());
         operationList.addAll(operationBagDestination.getOperationList());
@@ -176,6 +179,7 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
             LOG.info("=> Négation des montans prélevé [ok]");
             // Montant AE egal Montant CP
             operationBag.getOperationList().forEach(operation -> operation.setMontantOperationCP(operation.getMontantOperationAE()));
+            operationBag.getOperationList().forEach(operation -> operation.setDisponibleRestantCP(operation.getDisponibleRestantAE()));
             LOG.info("=> Montant AE egal Montant CP [ok]");
 
         } catch (Exception exception){
@@ -378,9 +382,21 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
     public void cumules(){
         operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementAE);
-        // operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
+        operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
         operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutAE);
-        // operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
+        operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
+        this.handleDisponibleRestant();
+    }
+
+    private void handleDisponibleRestant(){
+        operationBagOrigine.getOperationList().forEach(operation -> {
+            operation.setDisponibleRestantAE(operation.getMontantDisponibleAE().subtract(operation.getMontantOperationAE()));
+            operation.setDisponibleRestantCP(operation.getMontantDisponibleCP().subtract(operation.getMontantOperationCP()));
+        });
+        operationBagDestination.getOperationList().forEach(operation -> {
+            operation.setDisponibleRestantAE(operation.getMontantDisponibleAE().add(operation.getMontantOperationAE()));
+            operation.setDisponibleRestantCP(operation.getMontantDisponibleCP().add(operation.getMontantOperationCP()));
+        });
     }
 
     public String equilibreAE(){
