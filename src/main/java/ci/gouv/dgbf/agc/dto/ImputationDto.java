@@ -3,7 +3,6 @@ package ci.gouv.dgbf.agc.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -18,7 +17,7 @@ public class ImputationDto {
     @Getter @Setter
     private ActiviteDeService activiteDeService;
     @Getter @Setter
-    private NatureEconomique natureEcnomique;
+    private NatureEconomique natureEconomique;
     @Getter @Setter
     private SourceFinancement sourceFinancement;
     @Getter @Setter
@@ -31,7 +30,7 @@ public class ImputationDto {
     public String toString() {
         return "ImputationDto{" +
                 "activiteDeService=" + activiteDeService +
-                ", natureEcnomique=" + natureEcnomique +
+                ", natureEcnomique=" + natureEconomique +
                 ", sourceFinancement=" + sourceFinancement +
                 ", bailleur=" + bailleur +
                 '}';

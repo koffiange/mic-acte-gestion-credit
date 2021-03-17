@@ -160,8 +160,8 @@ public class OperationService implements OperationClient {
         operation.setExercice(imputationDto.getExercice());
         operation.setBailleurId(imputationDto.getBailleur().getId());
         operation.setBailleurLibelle(imputationDto.getBailleur().getDesignation());
-        operation.setNatureEconomiqueCode(imputationDto.getNatureEcnomique().getCode());
-        operation.setNatureEconomiqueLibelle(imputationDto.getNatureEcnomique().getLibelleLong());
+        operation.setNatureEconomiqueCode(imputationDto.getNatureEconomique().getCode());
+        operation.setNatureEconomiqueLibelle(imputationDto.getNatureEconomique().getLibelleLong());
         operation.setSectionCode(imputationDto.getSection().getCode());
         operation.setSectionLibelle(imputationDto.getSection().getLibelle());
         operation.setTypeOperation(TypeOperation.DESTINATION);

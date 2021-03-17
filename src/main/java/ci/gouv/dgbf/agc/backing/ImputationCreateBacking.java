@@ -8,6 +8,7 @@ import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Named
 @ViewScoped
@@ -66,9 +68,14 @@ public class ImputationCreateBacking extends BaseBacking {
 
     @PostConstruct
     public void init(){
-        imputationDto = new ImputationDto();
-        exercice = String.valueOf(LocalDate.now().getYear());
+        bailleurList = bailleurService.listAll();
+        natureEconomiqueList = natureEconomiqueService.findAll();
+        sourceFinancementList = sourceFinancementService.listAll();
         sectionList = sectionService.list();
+
+        this.initImputationDto();
+        exercice = String.valueOf(LocalDate.now().getYear());
+
         operationBag = new OperationBag();
         operationBag.setTypeOperation(TypeOperation.DESTINATION);
         params = getRequestParameterMap();
@@ -87,9 +94,45 @@ public class ImputationCreateBacking extends BaseBacking {
             activiteDeServiceList = activiteService.findBySectionCode(imputationDto.getSection().getCode());
         }
 
-        bailleurList = bailleurService.listAll();
-        natureEconomiqueList = natureEconomiqueService.findAll();
-        sourceFinancementList = sourceFinancementService.listAll();
+
+    }
+
+    private void initImputationDto(){
+        imputationDto = new ImputationDto();
+        this.initBailleur();
+        this.initSourceFinancement();
+    }
+
+    private void initBailleur(){
+        if (!bailleurList.isEmpty())
+            bailleurList.stream().filter(bailleur -> bailleur.getCode().equals("ET")).findFirst().ifPresent(bailleur -> imputationDto.setBailleur(bailleur));
+    }
+
+    private void initSourceFinancement(){
+        if (!sourceFinancementList.isEmpty())
+            sourceFinancementList.stream().filter(sourceFinancement -> sourceFinancement.getCode().equals("1"))
+                                 .findFirst().ifPresent(sourceFinancement -> imputationDto.setSourceFinancement(sourceFinancement));
+        List<SourceFinancement> toRemoveList = sourceFinancementList.stream().filter(sourceFinancement -> !sourceFinancement.getCode().equals("1")).collect(Collectors.toList());
+        sourceFinancementList.removeAll(toRemoveList);
+        LOG.info("sourceFinancementList size : "+sourceFinancementList.size());
+    }
+
+    public boolean disableSourceFinancementItem(){
+        return imputationDto.getBailleur().getCode().equals("ET");
+    }
+
+    public void onBailleurSelected(SelectEvent event){
+        Bailleur bailleur = (Bailleur) event.getObject();
+        imputationDto.setBailleur(bailleur);
+        if (!bailleur.getCode().equals("ET")){
+            sourceFinancementList = sourceFinancementService.listAll();
+            // Suppression de la source de financement Trésor
+            sourceFinancementList.stream().filter(sourceFinancement -> sourceFinancement.getCode().equals("1"))
+                    .findFirst().ifPresent(sourceFinancement -> sourceFinancementList.remove(sourceFinancement));
+        } else {
+            sourceFinancementList = sourceFinancementService.listAll();
+            initSourceFinancement();
+        }
     }
 
     public boolean disableSectionField(){
@@ -103,7 +146,9 @@ public class ImputationCreateBacking extends BaseBacking {
 
     public void creer(){
         imputationDtoList.add(imputationDto);
-        imputationDto = new ImputationDto();
+        bailleurList = bailleurService.listAll();
+        sourceFinancementList = sourceFinancementService.listAll();
+        this.initImputationDto();
         imputationDto.setSection(selectedSection);
     }
 

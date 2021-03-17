@@ -79,7 +79,8 @@
                                     <p:ajax event="rowUnselectCheckbox" update="@form:tabview:applicationMultipleBtn" listener="#{acteBacking.onRowUnSelect}" />
                                     <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
                                     <p:column headerText="#" style="width:20px;text-align:center">#{index + 1}</p:column>
-                                    <p:column headerText="Référence" filterMatchMode="contains" filterBy="#{acte.reference}">#{acte.reference}</p:column>
+                                    <p:column headerText="Référence Acte" filterMatchMode="contains" filterBy="#{acte.reference}">#{acte.reference}</p:column>
+                                    <p:column headerText="Référence Projet" filterMatchMode="contains" filterBy="#{acte.referenceProjetActe}">#{acte.referenceProjetActe}</p:column>
                                     <p:column headerText="Categorie d'acte" styleClass="col-w30"  filterMatchMode="exact" filterBy="#{acte.categorieActe}">
                                         <f:facet name="filter">
                                             <p:selectOneMenu onchange="PF('acteDT').filter()" styleClass="custom-filter">

@@ -48,11 +48,13 @@
 
                         <div class="ui-g-4">
                             <p:outputLabel value="Nature Economique" styleClass="text-bold"/><br />
-                            <p:selectOneMenu value="#{imputationCreateBacking.imputationDto.natureEcnomique}" filter="true" filterMatchMode="contains"
+                            <p:selectOneMenu value="#{imputationCreateBacking.imputationDto.natureEconomique}" filter="true" filterMatchMode="contains"
                                              style="width: 90% !important;" styleClass="ui-selectonemenu-filter-container"
                                              converter="omnifaces.SelectItemsConverter">
                                 <f:selectItem itemLabel="-- Selectionneez une nature economique --" noSelectionOption="true" />
-                                <f:selectItems var="nature" value="#{imputationCreateBacking.natureEconomiqueList}" itemLabel="#{of:abbreviate(imputationCreateBacking.concateCodeLibelle(nature), 60)}" itemValue="#{nature}"/>
+                                <f:selectItems var="nature" value="#{imputationCreateBacking.natureEconomiqueList}"
+                                               itemLabel="#{of:abbreviate(imputationCreateBacking.concateCodeLibelle(nature), 60)}"
+                                               itemValue="#{nature}"/>
                             </p:selectOneMenu>
                         </div>
 
@@ -62,7 +64,10 @@
                                              style="width: 90% !important;" styleClass="ui-selectonemenu-filter-container"
                                              converter="omnifaces.SelectItemsConverter">
                                 <f:selectItem itemLabel="-- Selectionneez un bailleur --" noSelectionOption="true" />
-                                <f:selectItems var="bailleur" value="#{imputationCreateBacking.bailleurList}" itemLabel="#{of:abbreviate(imputationCreateBacking.concateCodeLibelle(bailleur), 60)}" itemValue="#{bailleur}"/>
+                                <f:selectItems var="bailleur" value="#{imputationCreateBacking.bailleurList}"
+                                               itemLabel="#{of:abbreviate(imputationCreateBacking.concateCodeLibelle(bailleur), 60)}"
+                                               itemValue="#{bailleur}"/>
+                                <p:ajax event="itemSelect" listener="#{imputationCreateBacking.onBailleurSelected}" update="@form:sourceFinSOM"/>
                             </p:selectOneMenu>
                         </div>
 
@@ -70,9 +75,11 @@
                             <p:outputLabel value="Source de Financement" styleClass="text-bold"/><br />
                             <p:selectOneMenu value="#{imputationCreateBacking.imputationDto.sourceFinancement}" filter="true" filterMatchMode="contains"
                                              style="width: 90% !important;" styleClass="ui-selectonemenu-filter-container"
-                                             converter="omnifaces.SelectItemsConverter">
+                                             converter="omnifaces.SelectItemsConverter" id="sourceFinSOM">
                                 <f:selectItem itemLabel="-- Selectionneez une source de financement --" noSelectionOption="true" />
-                                <f:selectItems var="financement" value="#{imputationCreateBacking.sourceFinancementList}" itemLabel="#{of:abbreviate(imputationCreateBacking.concateCodeLibelle(financement), 60)}" itemValue="#{financement}"/>
+                                <f:selectItems var="financement" value="#{imputationCreateBacking.sourceFinancementList}"
+                                               itemLabel="#{of:abbreviate(imputationCreateBacking.concateCodeLibelle(financement), 60)}"
+                                               itemValue="#{financement}"/>
                             </p:selectOneMenu>
                         </div>
                     </div>
@@ -98,8 +105,8 @@
                         <p:column headerText="#" styleClass="col-w3">#{index + 1}</p:column>
                         <p:column headerText="Section" styleClass="col-w20">#{imputation.section.code} - #{imputation.section.libelle}</p:column>
                         <p:column headerText="Activité" styleClass="col-w20">#{imputation.activiteDeService.adsCode} - #{imputation.activiteDeService.adsLibelle}</p:column>
-                        <p:column headerText="Nature Eco." styleClass="col-w20">#{imputation.natureEcnomique.code} - #{imputation.natureEcnomique.libelleLong}</p:column>
-                        <p:column headerText="Bailleur" styleClass="col-w20">#{imputation.bailleur.code} - #{imputation.natureEcnomique.libelleLong}</p:column>
+                        <p:column headerText="Nature Eco." styleClass="col-w20">#{imputation.natureEconomique.code} - #{imputation.natureEconomique.libelleLong}</p:column>
+                        <p:column headerText="Bailleur" styleClass="col-w20">#{imputation.bailleur.code} - #{imputation.natureEconomique.libelleLong}</p:column>
                         <p:column headerText="Sour. Fin." styleClass="col-w10">#{imputation.sourceFinancement.libelle}</p:column>
                         <p:column headerText="" styleClass="col-w10">
                             <p:commandButton value="Suppimer" action="#{imputationCreateBacking.supprimer(imputation)}" update="@form:imputationFls:imputationDT"/>
