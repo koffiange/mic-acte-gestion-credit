@@ -1,14 +1,18 @@
 package ci.gouv.dgbf.agc.backing;
 
+import ci.gouv.dgbf.agc.dto.Acte;
 import ci.gouv.dgbf.agc.dto.ActeDto;
 import ci.gouv.dgbf.agc.dto.Composition;
 import ci.gouv.dgbf.agc.dto.Operation;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import ci.gouv.dgbf.agc.service.ActeService;
 import ci.gouv.dgbf.agc.service.CompositionService;
+import ci.gouv.dgbf.agc.service.JasperReportService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -30,6 +34,8 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
     ActeService acteService;
     @Inject
     CompositionService compositionService;
+    @Inject
+    JasperReportService jasperReportService;
 
     @Getter @Setter
     private ActeDto acteDto;
@@ -39,6 +45,8 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
     private BigDecimal cumulAE;
     @Getter @Setter
     private BigDecimal cumulCP;
+    @Setter
+    private StreamedContent ficheActeFile;
 
     private Map<String, String> params;
 
@@ -67,5 +75,14 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
 
     public String goBack(){
         return "/protected/user/pages/acte/index.xhtml";
+    }
+
+    public StreamedContent getFicheActeFile(){
+        ficheActeFile = DefaultStreamedContent.builder()
+                .name("fiche_acte_"+acteDto.getActe().getReference()+".pdf")
+                .contentType("application/pdf")
+                .stream(() -> jasperReportService.downloadFicheActe(acteDto.getActe().getUuid()))
+                .build();
+        return ficheActeFile;
     }
 }

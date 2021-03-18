@@ -32,7 +32,9 @@
                         </f:facet>
 
                         <f:facet name="right">
-                            <p:commandButton value="Imprimer" action="#{cmcBacking.fictiveAction()}" icon="fa fa-print" styleClass="steel-btn"/>
+                            <p:commandButton value="Imprimer" action="#{cmcBacking.fictiveAction()}" ajax="false" icon="fa fa-print" styleClass="steel-btn">
+                                <p:fileDownload value="#{cmcBacking.ficheActeFile}"/>
+                            </p:commandButton>
                             <p:commandButton value="Appliquer" action="#{cmcBacking.fictiveAction()}" icon="fa fa-check"/>
                         </f:facet>
                     </p:toolbar>
