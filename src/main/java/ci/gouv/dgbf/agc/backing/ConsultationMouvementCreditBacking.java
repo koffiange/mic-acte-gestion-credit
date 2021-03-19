@@ -4,6 +4,7 @@ import ci.gouv.dgbf.agc.dto.Acte;
 import ci.gouv.dgbf.agc.dto.ActeDto;
 import ci.gouv.dgbf.agc.dto.Composition;
 import ci.gouv.dgbf.agc.dto.Operation;
+import ci.gouv.dgbf.agc.enumeration.StatutActe;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import ci.gouv.dgbf.agc.service.ActeService;
 import ci.gouv.dgbf.agc.service.CompositionService;
@@ -20,6 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.swing.plaf.ButtonUI;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -47,6 +49,8 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
     private BigDecimal cumulCP;
     @Setter
     private StreamedContent ficheActeFile;
+    @Setter
+    private StreamedContent ficheListeActeFile;
 
     private Map<String, String> params;
 
@@ -84,5 +88,14 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
                 .stream(() -> jasperReportService.downloadFicheActe(acteDto.getActe().getUuid()))
                 .build();
         return ficheActeFile;
+    }
+
+    public StreamedContent getFicheListeActeFile(String statut){
+        ficheListeActeFile = DefaultStreamedContent.builder()
+                .name("fiche_liste_acte_en_attente_application.pdf")
+                .contentType("application/pdf")
+                .stream(() -> jasperReportService.downloadFicheListeActe(statut, String.valueOf(LocalDate.now().getYear())))
+                .build();
+        return ficheListeActeFile;
     }
 }

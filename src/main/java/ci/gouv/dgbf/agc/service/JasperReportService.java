@@ -50,4 +50,8 @@ public class JasperReportService {
         return client.downloadFicheActe(acteId, j_username, j_password);
     }
 
+    public InputStream downloadFicheListeActe(@QueryParam("STATUT_ACTE") String statutActe, @QueryParam("EXERCICE") String exercice){
+        return client.downloadFicheListeActe(statutActe, exercice, j_username, j_password);
+    }
+
 }

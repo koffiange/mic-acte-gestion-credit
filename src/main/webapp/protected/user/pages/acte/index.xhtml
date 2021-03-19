@@ -58,6 +58,11 @@
                                         <p:commandButton value="Appliquer les actes sélectionnés" icon="fa fa-check"
                                                           actionListener="#{acteBacking.appliquerPlusieur()}" disabled="#{acteBacking.displayApplicationMultipleBtn}"
                                                          update="@form :messageForm"/>
+
+                                        <p:commandButton value="Imprimer " ajax="false" icon="fa fa-print" styleClass="steel-btn"
+                                                         actionListener="#{acteBacking.appliquerPlusieur()}" disabled="#{acteBacking.findByStatut('EN_ATTENTE').isEmpty()}">
+                                            <p:fileDownload value="#{cmcBacking.getFicheListeActeFile('EN_ATTENTE')}"/>
+                                        </p:commandButton>
                                     </p:outputPanel>
                                 </f:facet>
 
@@ -72,8 +77,10 @@
                                              rowIndexVar="index"
                                              tableStyle="font-size: 13px;"
                                              rowSelectMode="checkbox"
-                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                             rowsPerPageTemplate="6,12,16"
+                                             rows="40"
+                                             paginator="true"
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="40,60,80"
                                              currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
                                     <p:ajax event="rowSelectCheckbox" update="@form:tabview:applicationMultipleBtn" listener="#{acteBacking.onRowSelect}" />
                                     <p:ajax event="rowUnselectCheckbox" update="@form:tabview:applicationMultipleBtn" listener="#{acteBacking.onRowUnSelect}" />
@@ -159,13 +166,21 @@
                             </p:tab>
 
                             <p:tab title="Actes appliqués">
+                                <f:facet name="actions">
+                                    <p:commandButton value="Imprimer " ajax="false" icon="fa fa-print" styleClass="steel-btn"
+                                                     actionListener="#{acteBacking.appliquerPlusieur()}" disabled="#{acteBacking.findByStatut('APPLIQUE').isEmpty()}">
+                                        <p:fileDownload value="#{cmcBacking.getFicheListeActeFile('APPLIQUE')}"/>
+                                    </p:commandButton>
+                                </f:facet>
                                 <p:dataTable id="listActeApplique" value="#{acteBacking.findByStatut('APPLIQUE')}"
                                              emptyMessage="#{messages.empty_dataTable_message}"
                                              var="acte"
                                              rowIndexVar="index"
                                              tableStyle="font-size: 13px;"
-                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                             rowsPerPageTemplate="6,12,16"
+                                             rows="40"
+                                             paginator="true"
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="40,60,80"
                                              currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
                                     <p:column styleClass="col-w5" headerText="#">#{index + 1}</p:column>
                                     <p:column styleClass="col-w10" headerText="Categorie d'acte">#{acte.categorieActe.libelle}</p:column>
@@ -184,13 +199,21 @@
                             </p:tab>
 
                             <p:tab title="Actes échoué">
+                                <f:facet name="actions">
+                                    <p:commandButton value="Imprimer " ajax="false" icon="fa fa-print" styleClass="steel-btn"
+                                                     actionListener="#{acteBacking.appliquerPlusieur()}" disabled="#{acteBacking.findByStatut('APPLICATION_ECHOUE').isEmpty()}">
+                                        <p:fileDownload value="#{cmcBacking.getFicheListeActeFile('APPLICATION_ECHOUE')}"/>
+                                    </p:commandButton>
+                                </f:facet>
                                 <p:dataTable id="listActeEchoue" value="#{acteBacking.findByStatut('APPLICATION_ECHOUE')}"
                                              emptyMessage="#{messages.empty_dataTable_message}"
                                              var="acte"
                                              rowIndexVar="index"
                                              tableStyle="font-size: 13px;"
-                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                             rowsPerPageTemplate="6,12,16"
+                                             rows="40"
+                                             paginator="true"
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="40,60,80"
                                              currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
                                     <p:column styleClass="col-w5" headerText="#">#{index + 1}</p:column>
                                     <p:column styleClass="col-w10" headerText="Categorie d'acte">#{acte.categorieActe.libelle}</p:column>

@@ -15,10 +15,10 @@ public interface JasperReportClient {
                                   @QueryParam("j_password") String j_password);
 
     @GET
-    @Path("/sigobe/Actes_de_gestion/FicheListeActe.pdf")
+    @Path("/reports/sigobe/Actes_de_gestion/FicheListeActe.pdf")
         // @Path("/reports/sigobe/Documents_budgetaires/Elaboration_DPPD/Livre/dppd_1.1.0.pdf")
     InputStream downloadFicheListeActe(@QueryParam("STATUT_ACTE") String statut,
-                                       String exercice,
+                                       @QueryParam("EXERCICE") String exercice,
                                        @QueryParam("j_username") String j_username,
                                        @QueryParam("j_password") String j_password);
 
