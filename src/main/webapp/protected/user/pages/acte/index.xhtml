@@ -62,7 +62,7 @@
 
                                 <p:ajax event="change" update="@form:createBtn"/>
                             </p:selectOneMenu>
-                            <p:commandButton id="createBtn" value="Créer un nouvelle acte de gestion" action="#{acteBacking.fictiveAction}" disabled="#{acteBacking.newActeCatégorie eq null}"/>
+                            <p:commandButton id="createBtn" value="Créer un nouvelle acte de gestion" action="#{acteBacking.openCreateDialog()}" disabled="#{acteBacking.newActeCatégorie eq null}"/>
                         </f:facet>
                     </p:toolbar>
                 </h:form>
