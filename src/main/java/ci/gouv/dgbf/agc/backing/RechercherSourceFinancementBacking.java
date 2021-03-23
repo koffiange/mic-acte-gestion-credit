@@ -49,11 +49,11 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Getter @Setter
     private List<LigneDepense> ligneDepenseList;
     @Getter @Setter
-    private List<Operation> operationList;
+    private List<LigneOperation> ligneOperationList;
     @Getter @Setter
-    private List<Operation> filteredOperationList;
+    private List<LigneOperation> filteredLigneOperationList;
     @Getter @Setter
-    private List<Operation> selectedOperationList;
+    private List<LigneOperation> selectedLigneOperationList;
     @Getter @Setter
     private Section selectedSection;
     @Getter @Setter
@@ -113,16 +113,19 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
         }
 
         if(params.containsKey("typeImputation")){
-            operationBag.setTypeOperation(TypeOperation.valueOf(params.get("typeImputation")));
+            // operationBag.setTypeOperation(TypeOperation.valueOf(params.get("typeImputation")));
         }
     }
 
     public String displayTitleText(){
+        /*
         if (operationBag.getTypeOperation().equals(TypeOperation.ORIGINE)){
             return "Imputation d'Origine : rechercher des sources de financement.";
         } else {
             return "Imputation de Destinantion : rechercher de source de financement.";
         }
+         */
+        return null;
     }
 
     public boolean disableSectionField(){
@@ -160,7 +163,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
 
     public void rechercher(){
         ligneDepenseList = ligneDepenseService.findByCritere(exercice, sourceFinancement, natureEconomiqueCode, activiteCode, bailleur, sectionCode, natureDepense, programme, action);
-        operationList = operationService.buildOperationListFromLigneDepenseList(ligneDepenseList);
+        ligneOperationList = operationService.buildLigneOperationListFromLigneDepenseList(ligneDepenseList);
         this.initCritereRecherche();
     }
 
@@ -173,18 +176,21 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     public void ajouter(){
         // operationBag.getSectionCodeList().add(selectedSection.getCode());
         this.typeOperationSetter();
-        operationBag.getOperationList().addAll(selectedOperationList);
+        operationBag.getLigneOperationList().addAll(selectedLigneOperationList);
         PrimeFaces.current().dialog().closeDynamic(operationBag);
     }
 
     private void typeOperationSetter(){
-        selectedOperationList.forEach(operation -> {
+        /*
+        selectedLigneOperationList.forEach(operation -> {
             if (operationBag.getTypeOperation().equals(TypeOperation.ORIGINE)){
                 operation.setTypeOperation(TypeOperation.ORIGINE);
             } else {
                 operation.setTypeOperation(TypeOperation.DESTINATION);
             }
         });
+
+         */
     }
 
     public void onSectionSelect(){

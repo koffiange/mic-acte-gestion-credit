@@ -13,7 +13,7 @@ public class ActeDto {
     @Getter @Setter
     private List<Signataire> signataireList;
     @Getter @Setter
-    private List<Operation> operationList;
+    private List<LigneOperation> ligneOperationList;
     @Getter @Setter
     private List<ImputationDto> imputationDtoList = new ArrayList<>();
 
@@ -27,12 +27,12 @@ public class ActeDto {
         ActeDto acteDto = (ActeDto) o;
         return Objects.equals(acte, acteDto.acte) &&
                 Objects.equals(signataireList, acteDto.signataireList) &&
-                Objects.equals(operationList, acteDto.operationList);
+                Objects.equals(ligneOperationList, acteDto.ligneOperationList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(acte, signataireList, operationList);
+        return Objects.hash(acte, signataireList, ligneOperationList);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ActeDto {
         return "ActeDto{" +
                 "acte=" + acte +
                 ", signataireList=" + signataireList +
-                ", operationList=" + operationList +
+                ", ligneOperationList=" + ligneOperationList +
                 ", imputationDtoList=" + imputationDtoList +
                 '}';
     }

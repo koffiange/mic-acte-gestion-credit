@@ -1,8 +1,11 @@
 package ci.gouv.dgbf.agc.backing;
 
 import ci.gouv.dgbf.agc.dto.Acte;
-import ci.gouv.dgbf.agc.enumeration.StatutActe;
+import ci.gouv.dgbf.agc.dto.Operation;
+import ci.gouv.dgbf.agc.dto.OperationBag;
+import ci.gouv.dgbf.agc.enumeration.StatutOperation;
 import ci.gouv.dgbf.agc.service.ActeService;
+import ci.gouv.dgbf.agc.service.OperationService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +18,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -27,8 +31,10 @@ public class ActeBacking extends BaseBacking {
     @Inject
     ActeService acteService;
 
-    @Getter @Setter
-    private List<Acte> acteList;
+    @Inject
+    OperationService operationService;
+
+    private List<OperationBag> operationBagList;
 
     @Getter @Setter
     private List<Acte> filteredActeList;
@@ -41,20 +47,22 @@ public class ActeBacking extends BaseBacking {
 
     @PostConstruct
     public void init(){
-        acteList = acteService.listAll();
+        operationBagList = operationService.listAll();
     }
 
-    public List<Acte> findByStatut(String s){
-        StatutActe statut = StatutActe.valueOf(s);
-        return acteList.stream()
-                .filter(acte -> acte.getStatutActe().equals(statut))
-                .sorted(Comparator.comparing(Acte::getCreatedDate).reversed())
+    public List<OperationBag> findByStatut(String s){
+        StatutOperation statut = StatutOperation.valueOf(s);
+        return operationBagList.stream()
+                .filter(operationBag -> operationBag.getOperation().getStatutOperation().equals(statut))
+                .sorted(Comparator.comparing(OperationBag::getOperation, (o1, o2) -> {
+                    return o2.getCreatedDate().compareTo(o1.getCreatedDate());
+                }))
                 .collect(Collectors.toList());
     }
 
     public void handleReturn(SelectEvent event){
         LOG.info("Handled!");
-        acteList = acteService.listAll();
+        this.init();
         if (event != null)
             showSuccess();
     }
@@ -103,8 +111,8 @@ public class ActeBacking extends BaseBacking {
 
     public void delete(String uuid){
         try{
-            acteService.delete(uuid);
-            acteList = acteService.listAll();
+            operationService.delete(uuid);
+            this.init();
             showSuccess();
         } catch (Exception e){
             showError(e.getMessage());
@@ -113,19 +121,25 @@ public class ActeBacking extends BaseBacking {
 
     public void appliquer(String uuid){
         try {
-            acteService.appliquer(uuid);
-            acteList = acteService.listAll();
+            AtomicReference<OperationBag> operationBag = null;
+            operationBagList.stream().filter(ob -> ob.getOperation().getUuid().equals(uuid)).findFirst().ifPresent(ob1 -> operationBag.set(ob1));
+            operationService.appliquer(operationBag.get());
+            this.init();
             showSuccess();
         } catch (Exception e){
             showError(e.getMessage());
         }
     }
 
+
     public void appliquerPlusieur(){
+        /*
         List<String> uuidList = selectedActeList.stream().map(Acte::getUuid).collect(Collectors.toList());
         acteService.appliquerPlusieur(uuidList);
         acteList = acteService.listAll();
         showSuccess();
+        */
     }
+
 
 }

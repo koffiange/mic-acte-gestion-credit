@@ -77,11 +77,11 @@ public class ImputationCreateBacking extends BaseBacking {
         exercice = String.valueOf(LocalDate.now().getYear());
 
         operationBag = new OperationBag();
-        operationBag.setTypeOperation(TypeOperation.DESTINATION);
+        // operationBag.setTypeOperation(TypeOperation.DESTINATION);
         params = getRequestParameterMap();
 
         if(params.containsKey("typeImputation")){
-            operationBag.setTypeOperation(TypeOperation.valueOf(params.get("typeImputation")));
+            // operationBag.setTypeOperation(TypeOperation.valueOf(params.get("typeImputation")));
         }
 
         if(params.containsKey("natureTransaction")){
@@ -158,7 +158,7 @@ public class ImputationCreateBacking extends BaseBacking {
 
     public void ajouter(){
         operationBag.setImputationDtoList(imputationDtoList);
-        operationBag.setOperationList(operationService.buildOperationListFromImputationList(imputationDtoList));
+        operationBag.setLigneOperationList(operationService.buildLigneOperationListFromImputationList(imputationDtoList));
         PrimeFaces.current().dialog().closeDynamic(operationBag);
     }
 }

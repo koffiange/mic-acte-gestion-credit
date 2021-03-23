@@ -27,15 +27,15 @@
                     <h:form id="listModeleForm">
                         <p:dataTable id="listModeleDataTable" value="#{parametreBacking.typeActeList}"
                                      emptyMessage="#{messages.empty_dataTable_message}"
-                                     var="acte"
+                                     var="operationBag"
                                      rowIndexVar="index"
                                      tableStyle="font-size: 13px;"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      rowsPerPageTemplate="6,12,16"
                                      currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
                             <p:column styleClass="col-w5" headerText="#">#{index + 1}</p:column>
-                            <p:column styleClass="col-w10" headerText="Code">#{acte.code}</p:column>
-                            <p:column headerText="Libelle">#{acte.libelle}</p:column>
+                            <p:column styleClass="col-w10" headerText="Code">#{operationBag.code}</p:column>
+                            <p:column headerText="Libelle">#{operationBag.libelle}</p:column>
                         </p:dataTable>
                     </h:form>
                 </p:fieldset>

@@ -17,8 +17,6 @@ public class Acte extends BaseDto{
     @Getter @Setter
     private String libelle;
     @Getter @Setter
-    private String referenceProjetActe;
-    @Getter @Setter
     private String corpus;
     @Getter @Setter
     private CategorieActe categorieActe;

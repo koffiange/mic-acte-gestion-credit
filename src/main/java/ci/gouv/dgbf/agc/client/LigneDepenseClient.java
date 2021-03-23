@@ -1,7 +1,7 @@
 package ci.gouv.dgbf.agc.client;
 
 import ci.gouv.dgbf.agc.dto.LigneDepense;
-import ci.gouv.dgbf.agc.dto.Operation;
+import ci.gouv.dgbf.agc.dto.LigneOperation;
 
 import javax.ws.rs.*;
 import java.util.List;
@@ -37,5 +37,5 @@ public interface LigneDepenseClient {
 
     @POST
     @Path("/criteres/operations")
-    List<LigneDepense> findByOperation(List<Operation> operationList);
+    List<LigneDepense> findByOperation(List<LigneOperation> ligneOperationList);
 }

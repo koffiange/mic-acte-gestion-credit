@@ -69,45 +69,44 @@
 
                                 <p:dataTable id="listActeEnAttenteApplication" value="#{acteBacking.findByStatut('EN_ATTENTE')}"
                                              emptyMessage="#{messages.empty_dataTable_message}"
-                                             var="acte"
+                                             var="operationBag"
                                              widgetVar="acteDT"
-                                             selection="#{acteBacking.selectedActeList}"
                                              filteredValue="#{acteBacking.filteredActeList}"
-                                             rowKey="#{acte.uuid}"
                                              rowIndexVar="index"
                                              tableStyle="font-size: 13px;"
-                                             rowSelectMode="checkbox"
                                              rows="40"
                                              paginator="true"
                                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                              rowsPerPageTemplate="40,60,80"
                                              currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
-                                    <p:ajax event="rowSelectCheckbox" update="@form:tabview:applicationMultipleBtn" listener="#{acteBacking.onRowSelect}" />
-                                    <p:ajax event="rowUnselectCheckbox" update="@form:tabview:applicationMultipleBtn" listener="#{acteBacking.onRowUnSelect}" />
-                                    <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
                                     <p:column headerText="#" style="width:20px;text-align:center">#{index + 1}</p:column>
-                                    <p:column headerText="Référence Acte" filterMatchMode="contains" filterBy="#{acte.reference}">#{acte.reference}</p:column>
-                                    <p:column headerText="Référence Projet" filterMatchMode="contains" filterBy="#{acte.referenceProjetActe}">#{acte.referenceProjetActe}</p:column>
-                                    <p:column headerText="Categorie d'acte" styleClass="col-w30"  filterMatchMode="exact" filterBy="#{acte.categorieActe}">
+                                    <p:column headerText="Référence Operation" filterMatchMode="contains" filterBy="#{operationBag.operation.codeOperation}">#{operationBag.operation.codeOperation}</p:column>
+                                    <p:column headerText="Référence Acte" filterMatchMode="contains" filterBy="#{operationBag.acte.reference}">#{operationBag.acte.reference}</p:column>
+                                    <p:column headerText="Date Création">#{operationBag.dateSignature}</p:column>
+                                    <p:column headerText="Variation du Budget">
+                                        AE :  <br/>
+                                        CP :
+                                    </p:column>
+                                    <!--
+                                    <p:column headerText="Categorie d'acte" styleClass="col-w30"  filterMatchMode="exact" filterBy="#{operationBag.categorieActe}">
                                         <f:facet name="filter">
                                             <p:selectOneMenu onchange="PF('acteDT').filter()" styleClass="custom-filter">
                                                 <f:selectItem itemLabel="Tout" itemValue="#{null}" noSelectionOption="true"/>
                                                 <f:selectItems value="#{CategorieActe.ALL_ITEM_VALUE}" var="cat" itemLabel="#{cat.libelle}"  itemValue="#{cat}"/>
                                             </p:selectOneMenu>
                                         </f:facet>
-                                        #{acte.categorieActe.libelle}
+                                        #{operationBag.categorieActe.libelle}
                                     </p:column>
-                                    <p:column headerText="Nature d'acte" filterMatchMode="exact" filterBy="#{acte.natureActe}"  styleClass="custom-filter">
+                                    <p:column headerText="Nature d'acte" filterMatchMode="exact" filterBy="#{operationBag.natureActe}" styleClass="custom-filter">
                                         <f:facet name="filter">
                                             <p:selectOneMenu onchange="PF('acteDT').filter()" styleClass="custom-filter">
                                                 <f:selectItem itemLabel="Tout" itemValue="#{null}" noSelectionOption="true"/>
                                                 <f:selectItems value="#{NatureActe.ALL_ITEM_VALUE}" var="nat" itemLabel="#{nat.libelle}"  itemValue="#{nat}"/>
                                             </p:selectOneMenu>
                                         </f:facet>
-                                        #{acte.natureActe.libelle}
+                                        #{operationBag.natureActe.libelle}
                                     </p:column>
-                                    <p:column headerText="Date signature">#{acte.dateSignature}</p:column>
-                                    <!--
+
                                     <p:column headerText="Statut acte">#{acte.statutActe.libelle}</p:column>
 
                                     <p:column headerText="Date Création">#{acteBacking.displayFormatedDateTime(acte.createdDate)}</p:column>
@@ -122,15 +121,24 @@
                                                         hideEffect="fade" showCloseIcon="true">
                                             <p:link value="Consulter" styleClass="text-bold" style="color: #ffffff"
                                                 outcome="/protected/user/pages/acte/consulter-acte-mouvement-credit">
-                                                <f:param name="uuid" value="#{acte.uuid}"/>
+                                                <f:param name="uuid" value="#{operationBag.uuid}"/>
                                             </p:link>
                                             <br/>
-                                            <p:commandLink value="Appliquer"
-                                                           actionListener="#{acteBacking.appliquer(acte.uuid)}"
+                                            <p:commandLink value="Signer Acte"
+                                                           actionListener="#{acteBacking.appliquer(operationBag.uuid)}"
                                                            styleClass="text-bold"
-                                                           update="@form messageForm">
+                                                           update="@form messageForm" rendered="#{operationBag.operation.dateSignature eq null}">
                                                 <p:confirm header="Confirmation"
-                                                           message="Êtes-vous sûr de vouloir appliquer l'acte suivant : #{acte.libelle}"
+                                                           message="Êtes-vous sûr de vouloir appliquer l'acte suivant : #{operationBag.libelle}"
+                                                           icon="ui-icon-alert">
+                                                </p:confirm>
+                                            </p:commandLink>
+                                            <p:commandLink value="Appliquer"
+                                                           actionListener="#{acteBacking.appliquer(operationBag.uuid)}"
+                                                           styleClass="text-bold"
+                                                           update="@form messageForm" rendered="#{operationBag.operation.dateSignature ne null}">
+                                                <p:confirm header="Confirmation"
+                                                           message="Êtes-vous sûr de vouloir appliquer l'acte suivant : #{operationBag.codeOperation}"
                                                            icon="ui-icon-alert">
                                                 </p:confirm>
                                             </p:commandLink>
@@ -145,18 +153,18 @@
                                             -->
                                             <hr style="border: dashed 1px #ffffff"/>
                                             <p:commandLink value="Modifier"
-                                                           actionListener="#{acteBacking.openUpdateDialog(acte)}"
+                                                           actionListener="#{acteBacking.fictiveAction}"
                                                            styleClass="text-bold">
                                                 <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}"
                                                         update=":listModeleForm messageForm"/>
                                             </p:commandLink>
                                             <br/>
                                             <p:commandLink value="Supprimer"
-                                                           actionListener="#{acteBacking.delete(acte.uuid)}"
+                                                           actionListener="#{acteBacking.delete(operationBag.operation.uuid)}"
                                                            styleClass="text-bold"
                                                            update="@form">
                                                 <p:confirm header="Confirmation"
-                                                           message="#{acteBacking.getDeleteMessage(acte.libelle)}"
+                                                           message="#{acteBacking.getDeleteMessage(operationBag.operation.codeOperation)}"
                                                            icon="ui-icon-alert">
                                                 </p:confirm>
                                             </p:commandLink>
@@ -174,25 +182,27 @@
                                 </f:facet>
                                 <p:dataTable id="listActeApplique" value="#{acteBacking.findByStatut('APPLIQUE')}"
                                              emptyMessage="#{messages.empty_dataTable_message}"
-                                             var="acte"
-                                             rowIndexVar="index"
+                                             var="operationBag"
                                              tableStyle="font-size: 13px;"
                                              rows="40"
                                              paginator="true"
                                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                              rowsPerPageTemplate="40,60,80"
                                              currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
-                                    <p:column styleClass="col-w5" headerText="#">#{index + 1}</p:column>
-                                    <p:column styleClass="col-w10" headerText="Categorie d'acte">#{acte.categorieActe.libelle}</p:column>
-                                    <p:column headerText="Nature d'acte">#{acte.natureActe.libelle}</p:column>
-                                    <p:column headerText="Date signature">#{acte.dateSignature}</p:column>
-                                    <p:column headerText="Référence Demande">#{acte.reference}</p:column>
-                                    <p:column headerText="Statut acte">#{acte.statutActe.libelle}</p:column>
-                                    <p:column headerText="Date Création">#{acteBacking.displayFormatedDateTime(acte.createdDate)}</p:column>
+                                    <p:column style="width:20px;text-align:center" headerText="#">#{index + 1}</p:column>
+                                    <p:column headerText="Référence Operation" filterMatchMode="contains" filterBy="#{operationBag.operation.codeOperation}">#{operationBag.operation.codeOperation}</p:column>
+                                    <p:column headerText="Référence Acte" filterMatchMode="contains" filterBy="#{operationBag.acte.reference}">#{operationBag.acte.reference}</p:column>
+                                    <p:column headerText="Catégorie Acte" filterMatchMode="contains" filterBy="#{operationBag.acte.categorieActe.libelle}">#{operationBag.acte.categorieActe.libelle}</p:column>
+                                    <p:column headerText="Nature d'acte">#{operationBag.acte.natureActe.libelle}</p:column>
+                                    <p:column headerText="Date Signateur">#{operationBag.acte.dateSignature}</p:column>
+                                    <p:column headerText="Variation du Budget">
+                                        AE :  <br/>
+                                        CP :
+                                    </p:column>
                                     <p:column headerText="Actions" styleClass="col-w10">
                                         <p:linkButton value="Consulter" icon="fa fa-eye" styleClass="text-bold btn-block" style="color: #ffffff"
                                                 outcome="/protected/user/pages/acte/consulter-acte-mouvement-credit">
-                                            <f:param name="uuid" value="#{acte.uuid}"/>
+                                            <f:param name="uuid" value="#{operationBag.operation.uuid}"/>
                                         </p:linkButton>
                                     </p:column>
                                 </p:dataTable>
@@ -207,7 +217,7 @@
                                 </f:facet>
                                 <p:dataTable id="listActeEchoue" value="#{acteBacking.findByStatut('APPLICATION_ECHOUE')}"
                                              emptyMessage="#{messages.empty_dataTable_message}"
-                                             var="acte"
+                                             var="operationBag"
                                              rowIndexVar="index"
                                              tableStyle="font-size: 13px;"
                                              rows="40"
@@ -215,17 +225,20 @@
                                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                              rowsPerPageTemplate="40,60,80"
                                              currentPageReportTemplate="{startRecord}-{endRecord} / {totalRecords} enregistrements">
-                                    <p:column styleClass="col-w5" headerText="#">#{index + 1}</p:column>
-                                    <p:column styleClass="col-w10" headerText="Categorie d'acte">#{acte.categorieActe.libelle}</p:column>
-                                    <p:column headerText="Nature d'acte">#{acte.natureActe.libelle}</p:column>
-                                    <p:column headerText="Date signature">#{acte.dateSignature}</p:column>
-                                    <p:column headerText="Référence Demande">#{acte.reference}</p:column>
-                                    <p:column headerText="Statut acte">#{acte.statutActe.libelle}</p:column>
-                                    <p:column headerText="Date Création">#{acteBacking.displayFormatedDateTime(acte.createdDate)}</p:column>
+                                    <p:column style="width:20px;text-align:center" headerText="#">#{index + 1}</p:column>
+                                    <p:column headerText="Référence Operation" filterMatchMode="contains" filterBy="#{operationBag.operation.codeOperation}">#{operationBag.operation.codeOperation}</p:column>
+                                    <p:column headerText="Référence Acte" filterMatchMode="contains" filterBy="#{operationBag.acte.reference}">#{operationBag.acte.reference}</p:column>
+                                    <p:column headerText="Catégorie Acte" filterMatchMode="contains" filterBy="#{operationBag.acte.categorieActe.libelle}">#{operationBag.acte.categorieActe.libelle}</p:column>
+                                    <p:column headerText="Nature d'acte">#{operationBag.acte.natureActe.libelle}</p:column>
+                                    <p:column headerText="Date Signateur">#{operationBag.acte.dateSignature}</p:column>
+                                    <p:column headerText="Variation du Budget">
+                                        AE :  <br/>
+                                        CP :
+                                    </p:column>
                                     <p:column headerText="Actions" styleClass="col-w10">
                                         <p:linkButton value="Consulter" icon="fa fa-eye" styleClass="text-bold btn-block" style="color: #ffffff"
                                                       outcome="/protected/user/pages/acte/consulter-acte-mouvement-credit">
-                                            <f:param name="uuid" value="#{acte.uuid}"/>
+                                            <f:param name="uuid" value="#{operationBag.operation.uuid}"/>
                                         </p:linkButton>
                                     </p:column>
                                 </p:dataTable>

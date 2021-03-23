@@ -151,58 +151,58 @@
 
                         <p:spacer height="5"/>
 
-                        <p:dataTable id="origineDT" var="operation" value="#{amcUpdateBacking.operationBagOrigine.operationList}"
+                        <p:dataTable id="origineDT" var="ligneOperation" value="#{amcUpdateBacking.operationBagOrigine.ligneOperationList}"
                                      rowIndexVar="index" emptyMessage="#{messages.empty_dataTable_message}">
                             <p:column headerText="#" style="width:16px;text-align:center">
                                 <h:outputText value="#{index + 1}" />
                             </p:column>
 
                             <p:column headerText="Section" styleClass="col-w10">
-                                <h:outputText value="#{operation.sectionCode} - #{operation.sectionLibelle}" styleClass="text-smaller"/>
+                                <h:outputText value="#{ligneOperation.sectionCode} - #{ligneOperation.sectionLibelle}" styleClass="text-smaller"/>
                             </p:column>
 
                             <p:column headerText="Activité" styleClass="col-w15">
-                                <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" styleClass="text-smaller"/>
+                                <h:outputText value="#{ligneOperation.activiteCode} - #{ligneOperation.activiteLibelle}" styleClass="text-smaller"/>
                             </p:column>
 
                             <p:column headerText="Nature Economique" styleClass="col-w10">
-                                <h:outputText value="#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}" styleClass="text-smaller"/>
+                                <h:outputText value="#{ligneOperation.natureEconomiqueCode} - #{ligneOperation.natureEconomiqueLibelle}" styleClass="text-smaller"/>
                             </p:column>
 
                             <p:column headerText="Source Fin." styleClass="col-w10">
-                                <h:outputText value="#{operation.sourceFinancementLibelle}"  styleClass="text-smaller"/>
+                                <h:outputText value="#{ligneOperation.sourceFinancementLibelle}"  styleClass="text-smaller"/>
                             </p:column>
 
                             <p:column headerText="Bailleur" styleClass="col-w10">
-                                <h:outputText value="#{operation.bailleurLibelle}"  styleClass="text-smaller"/>
+                                <h:outputText value="#{ligneOperation.bailleurLibelle}"  styleClass="text-smaller"/>
                             </p:column>
 
                             <p:column headerText="Budget actuel" styleClass="col-w10">
-                                <h:outputText value="#{amcUpdateBacking.displayBigDecimalThousandSeparator(operation.budgetActuelAE)}" />
+                                <h:outputText value="#{amcUpdateBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelAE)}" />
                                 <!--
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{amcUpdateBacking.displayBigDecimalThousandSeparator(operation.budgetActuelCP)}" />
+                                <h:outputText value="CP : #{amcUpdateBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelCP)}" />
                                 -->
                             </p:column>
 
                             <p:column headerText="C. disponibles" styleClass="col-w10">
-                                <h:outputText value="#{amcUpdateBacking.displayBigDecimalThousandSeparator(operation.montantDisponibleAE)}" />
+                                <h:outputText value="#{amcUpdateBacking.displayBigDecimalThousandSeparator(ligneOperation.montantDisponibleAE)}" />
                                 <!--
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{amcUpdateBacking.displayBigDecimalThousandSeparator(operation.montantDisponibleCP)}" />
+                                <h:outputText value="CP : #{amcUpdateBacking.displayBigDecimalThousandSeparator(ligneOperation.montantDisponibleCP)}" />
                                 -->
                             </p:column>
 
                             <p:column headerText="Prélèvements" styleClass="col-w20">
                                 <div class="ui-inputgroup">
-                                    <p:inputNumber value="#{operation.montantOperationAE}" thousandSeparator="."
+                                    <p:inputNumber value="#{ligneOperation.montantOperationAE}" thousandSeparator="."
                                                    decimalSeparator="," symbolPosition="s" decimalPlaces="0" onchange="cumuleCallBack()"/>
                                     <span class="ui-inputgroup-addon">FCFA</span>
                                 </div>
                                 <!--
                                 <div class="ui-inputgroup">
                                     <span class="ui-inputgroup-addon">CP</span>
-                                    <p:inputNumber value="#{operation.montantOperationCP}" minValue="-#{amcUpdateBacking.handleMaxValue(operation.montantDisponibleAE)}"
+                                    <p:inputNumber value="#{ligneOperation.montantOperationCP}" minValue="-#{amcUpdateBacking.handleMaxValue(ligneOperation.montantDisponibleAE)}"
                                                    maxValue="0" symbol=" FCFA" thousandSeparator="."
                                                    decimalSeparator="," symbolPosition="s" decimalPlaces="0" onchange="cumuleCallBack()"/>
                                 </div>
@@ -210,7 +210,7 @@
                             </p:column>
 
                             <p:column headerText="" styleClass="col-w10">
-                                <p:commandButton action="#{amcUpdateBacking.deleteOperation('ORIGINE', operation)}" value="supprimer"
+                                <p:commandButton action="#{amcUpdateBacking.deleteOperation('ORIGINE', ligneOperation)}" value="supprimer"
                                                  update="createForm:origineDT createForm:equilibreDG createForm:enregisterBTN" styleClass="btn-block" icon="fa fa-trash"/>
                             </p:column>
                         </p:dataTable>
@@ -229,58 +229,58 @@
 
                         <p:spacer height="5"/>
 
-                        <p:dataTable id="destinationDT" var="operation" value="#{amcUpdateBacking.operationBagDestination.operationList}"
+                        <p:dataTable id="destinationDT" var="ligneOperation" value="#{amcUpdateBacking.operationBagDestination.ligneOperationList}"
                                      rowIndexVar="index" emptyMessage="#{messages.empty_dataTable_message}">
                             <p:column headerText="#" style="width:16px;text-align:center">
                                 <h:outputText value="#{index + 1}" />
                             </p:column>
 
                             <p:column headerText="Section" styleClass="col-w10">
-                                <h:outputText value="#{operation.sectionCode} - #{operation.sectionLibelle}" styleClass="text-smaller"/>
+                                <h:outputText value="#{ligneOperation.sectionCode} - #{ligneOperation.sectionLibelle}" styleClass="text-smaller"/>
                             </p:column>
 
                             <p:column headerText="Activité" styleClass="col-w15">
-                                <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" styleClass="text-smaller"/>
+                                <h:outputText value="#{ligneOperation.activiteCode} - #{ligneOperation.activiteLibelle}" styleClass="text-smaller"/>
                             </p:column>
 
                             <p:column headerText="Nature Economique" styleClass="col-w10">
-                                <h:outputText value="#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}" styleClass="text-smaller"/>
+                                <h:outputText value="#{ligneOperation.natureEconomiqueCode} - #{ligneOperation.natureEconomiqueLibelle}" styleClass="text-smaller"/>
                             </p:column>
 
                             <p:column headerText="Source Fin." styleClass="col-w10">
-                                <h:outputText value="#{operation.sourceFinancementLibelle}"  styleClass="text-smaller"/>
+                                <h:outputText value="#{ligneOperation.sourceFinancementLibelle}"  styleClass="text-smaller"/>
                             </p:column>
 
                             <p:column headerText="Bailleur" styleClass="col-w10">
-                                <h:outputText value="#{operation.bailleurLibelle}"  styleClass="text-smaller"/>
+                                <h:outputText value="#{ligneOperation.bailleurLibelle}"  styleClass="text-smaller"/>
                             </p:column>
 
                             <p:column headerText="Budget actuel" styleClass="col-w10">
-                                <h:outputText value="#{amcUpdateBacking.displayBigDecimalThousandSeparator(operation.budgetActuelAE)}" />
+                                <h:outputText value="#{amcUpdateBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelAE)}" />
                                 <!--
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{amcUpdateBacking.displayBigDecimalThousandSeparator(operation.budgetActuelCP)}" />
+                                <h:outputText value="CP : #{amcUpdateBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelCP)}" />
                                 -->
                             </p:column>
 
                             <p:column headerText="Crédits disponibles" styleClass="col-w10">
-                                <h:outputText value="#{amcUpdateBacking.displayBigDecimalThousandSeparator(operation.montantDisponibleAE)}" />
+                                <h:outputText value="#{amcUpdateBacking.displayBigDecimalThousandSeparator(ligneOperation.montantDisponibleAE)}" />
                                 <!--
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{amcUpdateBacking.displayBigDecimalThousandSeparator(operation.montantDisponibleCP)}" />
+                                <h:outputText value="CP : #{amcUpdateBacking.displayBigDecimalThousandSeparator(ligneOperation.montantDisponibleCP)}" />
                                 -->
                             </p:column>
 
                             <p:column headerText="Compléments" styleClass="col-w20">
                                 <div class="ui-inputgroup">
-                                    <p:inputNumber value="#{operation.montantOperationAE}" thousandSeparator="."
+                                    <p:inputNumber value="#{ligneOperation.montantOperationAE}" thousandSeparator="."
                                                    decimalSeparator="," symbolPosition="s" decimalPlaces="0" onchange="cumuleCallBack()"/>
                                     <span class="ui-inputgroup-addon">FCFA</span>
                                 </div>
                                 <!--
                                 <div class="ui-inputgroup">
                                     <span class="ui-inputgroup-addon">CP</span>
-                                    <p:inputNumber value="#{operation.montantOperationCP}" minValue="0"
+                                    <p:inputNumber value="#{ligneOperation.montantOperationCP}" minValue="0"
                                                    maxValue="#{amcUpdateBacking.handleMaxValue(amcUpdateBacking.cumulRetranchementCP)}" symbol=" FCFA" thousandSeparator="."
                                                    decimalSeparator="," symbolPosition="s" decimalPlaces="0" onchange="cumuleCallBack()"/>
                                 </div>
@@ -288,7 +288,7 @@
                             </p:column>
 
                             <p:column headerText="" styleClass="col-w10">
-                                <p:commandButton action="#{amcUpdateBacking.deleteOperation('DESTINATION', operation)}" value="supprimer"
+                                <p:commandButton action="#{amcUpdateBacking.deleteOperation('DESTINATION', ligneOperation)}" value="supprimer"
                                                  update="createForm:destinationDT createForm:equilibreDG createForm:enregisterBTN" styleClass="btn-block" icon="fa fa-trash"/>
                             </p:column>
                         </p:dataTable>

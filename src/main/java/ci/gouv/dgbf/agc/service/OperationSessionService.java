@@ -1,8 +1,7 @@
 package ci.gouv.dgbf.agc.service;
 
 import ci.gouv.dgbf.agc.dto.ImputationDto;
-import ci.gouv.dgbf.agc.dto.Operation;
-import ci.gouv.dgbf.appmodele.backing.BaseBacking;
+import ci.gouv.dgbf.agc.dto.LigneOperation;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,15 +14,15 @@ import java.util.List;
 public class OperationSessionService implements Serializable {
 
     @Getter @Setter
-    private List<Operation> operationOrigineList = new ArrayList<>();
+    private List<LigneOperation> ligneOperationOrigineList = new ArrayList<>();
     @Getter @Setter
-    private List<Operation> operationDestinationList = new ArrayList<>();
+    private List<LigneOperation> ligneOperationDestinationList = new ArrayList<>();
     @Getter @Setter
     private List<ImputationDto> imputationDtoList = new ArrayList<>();
 
     public void reset(){
-        operationOrigineList = new ArrayList<>();
-        operationDestinationList = new ArrayList<>();
+        ligneOperationOrigineList = new ArrayList<>();
+        ligneOperationDestinationList = new ArrayList<>();
         imputationDtoList = new ArrayList<>();
     }
 }

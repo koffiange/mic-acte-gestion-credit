@@ -1,76 +1,44 @@
 package ci.gouv.dgbf.agc.dto;
 
-
-import ci.gouv.dgbf.agc.enumeration.DisponibiliteCreditOperation;
-import ci.gouv.dgbf.agc.enumeration.EffetOperation;
-import ci.gouv.dgbf.agc.enumeration.OrigineImputation;
-import ci.gouv.dgbf.agc.enumeration.TypeOperation;
+import ci.gouv.dgbf.agc.enumeration.StatutOperation;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
-public class Operation{
+public class Operation {
     @Getter @Setter
-    private String uuid = UUID.randomUUID().toString();
+    private String uuid;
     @Getter @Setter
-    private String ligneDepenseUuid;
+    private String codeOperation;
     @Getter @Setter
-    private String usbCode;
+    private BigDecimal variationAE;
     @Getter @Setter
-    private String usbLibelle;
+    private BigDecimal variationCP;
     @Getter @Setter
-    private String activiteCode;
-    @Getter @Setter
-    private String activiteLibelle;
-    @Getter @Setter
-    private String natureEconomiqueCode;
-    @Getter @Setter
-    private String natureEconomiqueLibelle;
-    @Getter @Setter
-    private String sourceFinancementId;
-    @Getter @Setter
-    private String sourceFinancementCode;
-    @Getter @Setter
-    private String sourceFinancementLibelle;
+    private StatutOperation statutOperation;
     @Getter @Setter
     private String exercice;
     @Getter @Setter
-    private BigDecimal budgetActuelAE;
+    private LocalDateTime createdDate;
     @Getter @Setter
-    private BigDecimal budgetActuelCP;
+    private LocalDateTime updatedDate;
     @Getter @Setter
-    private BigDecimal montantOperationAE = BigDecimal.ZERO;
+    private String createdBy;
     @Getter @Setter
-    private BigDecimal montantOperationCP = BigDecimal.ZERO;
-    @Getter @Setter
-    private BigDecimal montantDisponibleAE;
-    @Getter @Setter
-    private BigDecimal montantDisponibleCP;
-    @Getter @Setter
-    private BigDecimal disponibleRestantAE;
-    @Getter @Setter
-    private BigDecimal disponibleRestantCP;
-    @Getter @Setter
-    private TypeOperation typeOperation;
-    @Getter @Setter
-    private EffetOperation effetOperation;
-    @Getter @Setter
-    private DisponibiliteCreditOperation disponibiliteCredit;
-    @Getter @Setter
-    private String sectionCode;
-    @Getter @Setter
-    private String sectionLibelle;
-    @Getter @Setter
-    private String bailleurId;
-    @Getter @Setter
-    private String bailleurLibelle;
-    @Getter @Setter
-    private OrigineImputation origineImputation;
+    private String updatedBy;
 
     public Operation() {
+    }
+
+    public Operation(String codeOperation, BigDecimal variationAE, BigDecimal variationCP, StatutOperation statutOperation, String exercice) {
+        this.codeOperation = codeOperation;
+        this.variationAE = variationAE;
+        this.variationCP = variationCP;
+        this.statutOperation = statutOperation;
+        this.exercice = exercice;
     }
 
     @Override
@@ -78,40 +46,22 @@ public class Operation{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Operation operation = (Operation) o;
-        return Objects.equals(ligneDepenseUuid, operation.ligneDepenseUuid) &&
-                Objects.equals(activiteCode, operation.activiteCode) &&
-                Objects.equals(activiteLibelle, operation.activiteLibelle) &&
-                Objects.equals(natureEconomiqueCode, operation.natureEconomiqueCode) &&
-                Objects.equals(natureEconomiqueLibelle, operation.natureEconomiqueLibelle) &&
-                Objects.equals(exercice, operation.exercice) &&
-                Objects.equals(budgetActuelAE, operation.budgetActuelAE) &&
-                Objects.equals(budgetActuelCP, operation.budgetActuelCP) &&
-                Objects.equals(montantOperationAE, operation.montantOperationAE) &&
-                Objects.equals(montantOperationCP, operation.montantOperationCP) &&
-                effetOperation == operation.effetOperation &&
-                disponibiliteCredit == operation.disponibiliteCredit;
+        return Objects.equals(codeOperation, operation.codeOperation) && Objects.equals(variationAE, operation.variationAE) && Objects.equals(variationCP, operation.variationCP) && statutOperation == operation.statutOperation && Objects.equals(exercice, operation.exercice);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ligneDepenseUuid, activiteCode, activiteLibelle, natureEconomiqueCode, natureEconomiqueLibelle, exercice, budgetActuelAE, budgetActuelCP, montantOperationAE, montantOperationCP, effetOperation, disponibiliteCredit);
+        return Objects.hash(codeOperation, variationAE, variationCP, statutOperation, exercice);
     }
 
     @Override
     public String toString() {
         return "Operation{" +
-                "ligneDepenseUuid='" + ligneDepenseUuid + '\'' +
-                ", activiteCode='" + activiteCode + '\'' +
-                ", activiteLibelle='" + activiteLibelle + '\'' +
-                ", natureEconomiqueCode='" + natureEconomiqueCode + '\'' +
-                ", natureEconomique='" + natureEconomiqueLibelle + '\'' +
+                "numeroOperation='" + codeOperation + '\'' +
+                ", variationAE=" + variationAE +
+                ", variationCP=" + variationCP +
+                ", statutOperation=" + statutOperation +
                 ", exercice='" + exercice + '\'' +
-                ", budgetActuelAE=" + budgetActuelAE +
-                ", budgetActuelCP=" + budgetActuelCP +
-                ", montantOperationAE=" + montantOperationAE +
-                ", montantOperationCP=" + montantOperationCP +
-                ", effetOperation=" + effetOperation +
-                ", disponibiliteCredit=" + disponibiliteCredit +
                 '}';
     }
 }

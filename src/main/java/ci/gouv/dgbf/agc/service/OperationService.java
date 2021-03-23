@@ -3,7 +3,8 @@ package ci.gouv.dgbf.agc.service;
 import ci.gouv.dgbf.agc.client.OperationClient;
 import ci.gouv.dgbf.agc.dto.ImputationDto;
 import ci.gouv.dgbf.agc.dto.LigneDepense;
-import ci.gouv.dgbf.agc.dto.Operation;
+import ci.gouv.dgbf.agc.dto.LigneOperation;
+import ci.gouv.dgbf.agc.dto.OperationBag;
 import ci.gouv.dgbf.agc.enumeration.DisponibiliteCreditOperation;
 import ci.gouv.dgbf.agc.enumeration.OrigineImputation;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
@@ -49,23 +50,28 @@ public class OperationService implements OperationClient {
 
 
     @Override
-    public List<Operation> listAll() {
+    public List<OperationBag> listAll() {
         return client.listAll();
     }
 
     @Override
-    public Operation findById(String uuid) {
+    public OperationBag findById(String uuid) {
         return client.findById(uuid);
     }
 
     @Override
-    public void persist(Operation operation) {
-        client.persist(operation);
+    public OperationBag persist(OperationBag operationBag) {
+        return client.persist(operationBag);
     }
 
     @Override
-    public void update(Operation operation) {
-        client.update(operation);
+    public void update(OperationBag operationBag) {
+        client.update(operationBag);
+    }
+
+    @Override
+    public void appliquer(OperationBag operationBag) {
+        client.appliquer(operationBag);
     }
 
     @Override
@@ -73,100 +79,100 @@ public class OperationService implements OperationClient {
         client.delete(uuid);
     }
 
-    public List<Operation> buildOperationListFromLigneDepenseList(List<LigneDepense> ligneDepenseList){
-        List<Operation> operationList = new ArrayList<>();
-        ligneDepenseList.forEach(ligneDepense -> operationList.add(this.convertLigneDepenseIntoOperation(ligneDepense)));
-        return operationList;
+    public List<LigneOperation> buildLigneOperationListFromLigneDepenseList(List<LigneDepense> ligneDepenseList){
+        List<LigneOperation> ligneOperationList = new ArrayList<>();
+        ligneDepenseList.forEach(ligneDepense -> ligneOperationList.add(this.convertLigneDepenseIntoOperation(ligneDepense)));
+        return ligneOperationList;
     }
 
-    public List<Operation> buildOperationListFromImputationList(List<ImputationDto> imputationDtoList){
-        List<Operation> operationList = new ArrayList<>();
-        imputationDtoList.forEach(imputationDto -> operationList.add(this.convertImputationIntoOperation(imputationDto)));
-        return operationList;
+    public List<LigneOperation> buildLigneOperationListFromImputationList(List<ImputationDto> imputationDtoList){
+        List<LigneOperation> ligneOperationList = new ArrayList<>();
+        imputationDtoList.forEach(imputationDto -> ligneOperationList.add(this.convertImputationIntoOperation(imputationDto)));
+        return ligneOperationList;
     }
 
-    public Operation convertLigneDepenseIntoOperation(LigneDepense ligneDepense){
-        Operation operation = new Operation();
+    public LigneOperation convertLigneDepenseIntoOperation(LigneDepense ligneDepense){
+        LigneOperation ligneOperation = new LigneOperation();
 
-        operation.setUsbCode(ligneDepense.getUsbCode());
-        operation.setUsbLibelle(ligneDepense.getUsbLibelle());
-        operation.setActiviteCode(ligneDepense.getActiviteCode());
-        operation.setActiviteLibelle(ligneDepense.getActiviteLibelle());
-        operation.setSourceFinancementId(ligneDepense.getSourceFinancementId());
-        operation.setBudgetActuelAE(ligneDepense.getMontantAe());
-        operation.setBudgetActuelCP(ligneDepense.getMontantCp());
-        operation.setMontantDisponibleAE(ligneDepense.getMontantDisponibleAE());
-        operation.setMontantDisponibleCP(ligneDepense.getMontantDisponibleCP());
-        operation.setDisponibleRestantAE(ligneDepense.getMontantDisponibleAE());
-        operation.setDisponibleRestantCP(ligneDepense.getMontantDisponibleCP());
-        operation.setExercice(ligneDepense.getExercice());
-        operation.setLigneDepenseUuid(ligneDepense.getLigneDepenseId());
-        operation.setSourceFinancementCode(ligneDepense.getSourceFinancementCode());
-        operation.setSourceFinancementLibelle(ligneDepense.getSourceFinancementLibelle());
-        operation.setBailleurId(ligneDepense.getBailleurId());
-        operation.setBailleurLibelle(ligneDepense.getBailleurLibelle());
-        operation.setNatureEconomiqueLibelle(ligneDepense.getNatureEconomiqueLibelle());
-        operation.setNatureEconomiqueCode(ligneDepense.getNatureEconomiqueCode());
-        operation.setSectionCode(ligneDepense.getSectionCode());
-        operation.setSectionLibelle(ligneDepense.getSectionLibelle());
-        operation.setOrigineImputation(OrigineImputation.BUDGET);
+        ligneOperation.setUsbCode(ligneDepense.getUsbCode());
+        ligneOperation.setUsbLibelle(ligneDepense.getUsbLibelle());
+        ligneOperation.setActiviteCode(ligneDepense.getActiviteCode());
+        ligneOperation.setActiviteLibelle(ligneDepense.getActiviteLibelle());
+        ligneOperation.setSourceFinancementId(ligneDepense.getSourceFinancementId());
+        ligneOperation.setBudgetActuelAE(ligneDepense.getMontantAe());
+        ligneOperation.setBudgetActuelCP(ligneDepense.getMontantCp());
+        ligneOperation.setMontantDisponibleAE(ligneDepense.getMontantDisponibleAE());
+        ligneOperation.setMontantDisponibleCP(ligneDepense.getMontantDisponibleCP());
+        ligneOperation.setDisponibleRestantAE(ligneDepense.getMontantDisponibleAE());
+        ligneOperation.setDisponibleRestantCP(ligneDepense.getMontantDisponibleCP());
+        ligneOperation.setExercice(ligneDepense.getExercice());
+        ligneOperation.setLigneDepenseUuid(ligneDepense.getLigneDepenseId());
+        ligneOperation.setSourceFinancementCode(ligneDepense.getSourceFinancementCode());
+        ligneOperation.setSourceFinancementLibelle(ligneDepense.getSourceFinancementLibelle());
+        ligneOperation.setBailleurId(ligneDepense.getBailleurId());
+        ligneOperation.setBailleurLibelle(ligneDepense.getBailleurLibelle());
+        ligneOperation.setNatureEconomiqueLibelle(ligneDepense.getNatureEconomiqueLibelle());
+        ligneOperation.setNatureEconomiqueCode(ligneDepense.getNatureEconomiqueCode());
+        ligneOperation.setSectionCode(ligneDepense.getSectionCode());
+        ligneOperation.setSectionLibelle(ligneDepense.getSectionLibelle());
+        ligneOperation.setOrigineImputation(OrigineImputation.BUDGET);
 
-        return operation;
+        return ligneOperation;
     }
 
-    public List<Operation> operationListDisponibiliteSetter(List<Operation> operationListToSet){
-        List<LigneDepense> ligneDepenseList = ligneDepenseService.findByOperation(operationListToSet);
-        return operationListToSet.stream().map(operation -> this.disponibiliteSetter(operation, ligneDepenseList)).collect(Collectors.toList());
+    public List<LigneOperation> operationListDisponibiliteSetter(List<LigneOperation> ligneOperationListToSet){
+        List<LigneDepense> ligneDepenseList = ligneDepenseService.findByOperation(ligneOperationListToSet);
+        return ligneOperationListToSet.stream().map(operation -> this.disponibiliteSetter(operation, ligneDepenseList)).collect(Collectors.toList());
     }
 
-    private Operation disponibiliteSetter(Operation operation, List<LigneDepense> ligneDepenseList){
-        ligneDepenseList.stream().filter(l -> l.getLigneDepenseId().equals(operation.getLigneDepenseUuid()))
+    private LigneOperation disponibiliteSetter(LigneOperation ligneOperation, List<LigneDepense> ligneDepenseList){
+        ligneDepenseList.stream().filter(l -> l.getLigneDepenseId().equals(ligneOperation.getLigneDepenseUuid()))
                         .findFirst()
                         .ifPresent(ligneDepense -> {
-                            this.disponibiliteMontantSetter(operation, ligneDepense);
-                            this.disponibiliteStatutSetter(operation, ligneDepense);
+                            this.disponibiliteMontantSetter(ligneOperation, ligneDepense);
+                            this.disponibiliteStatutSetter(ligneOperation, ligneDepense);
                         });
-        return operation;
+        return ligneOperation;
     }
 
-    private void disponibiliteStatutSetter(Operation operation, LigneDepense ligneDepense){
-        if (ligneDepense.getMontantAe().compareTo(operation.getMontantOperationAE()) > 0){
-            operation.setDisponibiliteCredit(DisponibiliteCreditOperation.CREDIT_DISPONIBLES);
+    private void disponibiliteStatutSetter(LigneOperation ligneOperation, LigneDepense ligneDepense){
+        if (ligneDepense.getMontantAe().compareTo(ligneOperation.getMontantOperationAE()) > 0){
+            ligneOperation.setDisponibiliteCredit(DisponibiliteCreditOperation.CREDIT_DISPONIBLES);
         } else {
-            operation.setDisponibiliteCredit(DisponibiliteCreditOperation.CREDIT_INSUFFISANTS);
+            ligneOperation.setDisponibiliteCredit(DisponibiliteCreditOperation.CREDIT_INSUFFISANTS);
         }
     }
 
-    private void disponibiliteMontantSetter(Operation operation, LigneDepense ligneDepense){
-        operation.setMontantDisponibleAE(ligneDepense.getMontantDisponibleAE());
-        operation.setMontantDisponibleCP(ligneDepense.getMontantDisponibleCP());
+    private void disponibiliteMontantSetter(LigneOperation ligneOperation, LigneDepense ligneDepense){
+        ligneOperation.setMontantDisponibleAE(ligneDepense.getMontantDisponibleAE());
+        ligneOperation.setMontantDisponibleCP(ligneDepense.getMontantDisponibleCP());
     }
 
-    public Operation convertImputationIntoOperation(ImputationDto imputationDto){
-        Operation operation = new Operation();
+    public LigneOperation convertImputationIntoOperation(ImputationDto imputationDto){
+        LigneOperation ligneOperation = new LigneOperation();
 
-        operation.setActiviteCode(imputationDto.getActiviteDeService().getAdsCode());
-        operation.setActiviteLibelle(imputationDto.getActiviteDeService().getAdsLibelle());
-        operation.setLigneDepenseUuid(imputationDto.getUuid());
-        operation.setSourceFinancementId(imputationDto.getSourceFinancement().getId());
-        operation.setSourceFinancementCode(imputationDto.getSourceFinancement().getCode());
-        operation.setSourceFinancementLibelle(imputationDto.getSourceFinancement().getLibelle());
-        operation.setBudgetActuelAE(BigDecimal.ZERO);
-        operation.setBudgetActuelCP(BigDecimal.ZERO);
-        operation.setMontantDisponibleAE(BigDecimal.ZERO);
-        operation.setMontantDisponibleCP(BigDecimal.ZERO);
-        operation.setDisponibleRestantAE(BigDecimal.ZERO);
-        operation.setDisponibleRestantCP(BigDecimal.ZERO);
-        operation.setExercice(imputationDto.getExercice());
-        operation.setBailleurId(imputationDto.getBailleur().getId());
-        operation.setBailleurLibelle(imputationDto.getBailleur().getDesignation());
-        operation.setNatureEconomiqueCode(imputationDto.getNatureEconomique().getCode());
-        operation.setNatureEconomiqueLibelle(imputationDto.getNatureEconomique().getLibelleLong());
-        operation.setSectionCode(imputationDto.getSection().getCode());
-        operation.setSectionLibelle(imputationDto.getSection().getLibelle());
-        operation.setTypeOperation(TypeOperation.DESTINATION);
-        operation.setOrigineImputation(OrigineImputation.NOUVELLE_LIGNE);
+        ligneOperation.setActiviteCode(imputationDto.getActiviteDeService().getAdsCode());
+        ligneOperation.setActiviteLibelle(imputationDto.getActiviteDeService().getAdsLibelle());
+        ligneOperation.setLigneDepenseUuid(imputationDto.getUuid());
+        ligneOperation.setSourceFinancementId(imputationDto.getSourceFinancement().getId());
+        ligneOperation.setSourceFinancementCode(imputationDto.getSourceFinancement().getCode());
+        ligneOperation.setSourceFinancementLibelle(imputationDto.getSourceFinancement().getLibelle());
+        ligneOperation.setBudgetActuelAE(BigDecimal.ZERO);
+        ligneOperation.setBudgetActuelCP(BigDecimal.ZERO);
+        ligneOperation.setMontantDisponibleAE(BigDecimal.ZERO);
+        ligneOperation.setMontantDisponibleCP(BigDecimal.ZERO);
+        ligneOperation.setDisponibleRestantAE(BigDecimal.ZERO);
+        ligneOperation.setDisponibleRestantCP(BigDecimal.ZERO);
+        ligneOperation.setExercice(imputationDto.getExercice());
+        ligneOperation.setBailleurId(imputationDto.getBailleur().getId());
+        ligneOperation.setBailleurLibelle(imputationDto.getBailleur().getDesignation());
+        ligneOperation.setNatureEconomiqueCode(imputationDto.getNatureEconomique().getCode());
+        ligneOperation.setNatureEconomiqueLibelle(imputationDto.getNatureEconomique().getLibelleLong());
+        ligneOperation.setSectionCode(imputationDto.getSection().getCode());
+        ligneOperation.setSectionLibelle(imputationDto.getSection().getLibelle());
+        ligneOperation.setTypeOperation(TypeOperation.DESTINATION);
+        ligneOperation.setOrigineImputation(OrigineImputation.NOUVELLE_LIGNE);
 
-        return operation;
+        return ligneOperation;
     }
 }

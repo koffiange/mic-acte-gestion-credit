@@ -100,7 +100,7 @@
                         <h:outputLabel value="Liste des opérations d'origines" styleClass="text-bold text-large"/><br/>
                         <p:dataTable id="operationOrigineDT" value="#{cmcBacking.findByTypeOperation('ORIGINE')}"
                                      emptyMessage="#{messages.empty_dataTable_message}"
-                                     var="operation"
+                                     var="ligneOperation"
                                      rowIndexVar="index"
                                      tableStyle="font-size: 13px;"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -111,29 +111,29 @@
                             </p:column>
 
                             <p:column headerText="Activité" styleClass="col-w20">
-                                <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
+                                <h:outputText value="#{ligneOperation.activiteCode} - #{ligneOperation.activiteLibelle}" />
                             </p:column>
 
                             <p:column headerText="Nature Eco.">
-                                <h:outputText value="#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}" />
+                                <h:outputText value="#{ligneOperation.natureEconomiqueCode} - #{ligneOperation.natureEconomiqueLibelle}" />
                             </p:column>
 
                             <p:column headerText="Budget actuel">
-                                <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(operation.budgetActuelAE)}" />
+                                <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(operation.budgetActuelCP)}" />
+                                <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelCP)}" />
                             </p:column>
                             <!--
                             <p:column headerText="Crédits disponibles à la date du : #{cmcBacking.displayFormatedDateTime(cmcBacking.acteDto.acte.createdDate)}">
-                                <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(operation.montantDisponibleAE)}" />
+                                <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.montantDisponibleAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(operation.montantDisponibleCP)}" />
+                                <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.montantDisponibleCP)}" />
                             </p:column>
                             -->
                             <p:column headerText="Retranchements">
-                                <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(operation.montantOperationAE)}" />
+                                <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.montantOperationAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(operation.montantOperationCP)}" />
+                                <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.montantOperationCP)}" />
                             </p:column>
                         </p:dataTable>
 
@@ -142,7 +142,7 @@
                         <h:outputLabel value="Liste des opérations de destination" styleClass="text-bold text-large"/><br/>
                         <p:dataTable id="operationDestinantionDT" value="#{cmcBacking.findByTypeOperation('DESTINATION')}"
                                      emptyMessage="#{messages.empty_dataTable_message}"
-                                     var="operation"
+                                     var="ligneOperation"
                                      rowIndexVar="index"
                                      tableStyle="font-size: 13px;"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -154,17 +154,17 @@
                             </p:column>
 
                             <p:column headerText="Activité" styleClass="col-w20">
-                                <h:outputText value="#{operation.activiteCode} - #{operation.activiteLibelle}" />
+                                <h:outputText value="#{ligneOperation.activiteCode} - #{ligneOperation.activiteLibelle}" />
                             </p:column>
 
                             <p:column headerText="Nature Economique">
-                                <h:outputText value="#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}" />
+                                <h:outputText value="#{ligneOperation.natureEconomiqueCode} - #{ligneOperation.natureEconomiqueLibelle}" />
                             </p:column>
 
                             <p:column headerText="Budget actuel">
-                                <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(operation.budgetActuelAE)}" />
+                                <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(operation.budgetActuelCP)}" />
+                                <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelCP)}" />
                             </p:column>
                             <!--
                             <p:column headerText="Crédits disponibles">
@@ -174,9 +174,9 @@
                             </p:column>
                             -->
                             <p:column headerText="Ajouts">
-                                <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(operation.montantOperationAE)}" />
+                                <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.montantOperationAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
-                                <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(operation.montantOperationCP)}" />
+                                <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.montantOperationCP)}" />
                             </p:column>
                         </p:dataTable>
                     </p:fieldset>

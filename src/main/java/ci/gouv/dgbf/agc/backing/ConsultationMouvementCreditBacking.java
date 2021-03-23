@@ -1,10 +1,8 @@
 package ci.gouv.dgbf.agc.backing;
 
-import ci.gouv.dgbf.agc.dto.Acte;
 import ci.gouv.dgbf.agc.dto.ActeDto;
 import ci.gouv.dgbf.agc.dto.Composition;
-import ci.gouv.dgbf.agc.dto.Operation;
-import ci.gouv.dgbf.agc.enumeration.StatutActe;
+import ci.gouv.dgbf.agc.dto.LigneOperation;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import ci.gouv.dgbf.agc.service.ActeService;
 import ci.gouv.dgbf.agc.service.CompositionService;
@@ -19,7 +17,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.swing.plaf.ButtonUI;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -63,18 +60,18 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
         }
     }
 
-    public List<Operation> findByTypeOperation(String s){
+    public List<LigneOperation> findByTypeOperation(String s){
         TypeOperation typeOperation = TypeOperation.valueOf(s);
-        return acteDto.getOperationList().stream()
+        return acteDto.getLigneOperationList().stream()
                 .filter(operation -> operation.getTypeOperation().equals(typeOperation))
                 .collect(Collectors.toList());
     }
 
     private void computeCumule(){
-        acteDto.getOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
-                .map(Operation::getMontantOperationAE).map(BigDecimal::negate).reduce(BigDecimal::add).ifPresent(this::setCumulAE);
-        acteDto.getOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
-                .map(Operation::getMontantOperationCP).map(BigDecimal::negate).reduce(BigDecimal::add).ifPresent(this::setCumulCP);
+        acteDto.getLigneOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
+                .map(LigneOperation::getMontantOperationAE).map(BigDecimal::negate).reduce(BigDecimal::add).ifPresent(this::setCumulAE);
+        acteDto.getLigneOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
+                .map(LigneOperation::getMontantOperationCP).map(BigDecimal::negate).reduce(BigDecimal::add).ifPresent(this::setCumulCP);
     }
 
     public String goBack(){

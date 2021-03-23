@@ -61,16 +61,16 @@
                 </p:fieldset>
 
                 <p:fieldset id="oparationFls" legend="Liste des imputations correspondants aux critères de recherche">
-                    <p:dataTable id="oparationDT" value="#{rchSourceFinancementBacking.operationList}"
-                                 var="operation"
+                    <p:dataTable id="oparationDT" value="#{rchSourceFinancementBacking.ligneOperationList}"
+                                 var="ligneOperation"
                                  widgetVar="oparationDT"
                                  rowIndexVar="index"
-                                 selection="#{rchSourceFinancementBacking.selectedOperationList}"
-                                 rowKey="#{operation.uuid}"
+                                 selection="#{rchSourceFinancementBacking.selectedLigneOperationList}"
+                                 rowKey="#{ligneOperation.uuid}"
                                  rowSelectMode="checkbox"
                                  emptyMessage="#{messages.empty_dataTable_message}"
                                  tableStyle="font-size: 11px;"
-                                 filteredValue="#{rchSourceFinancementBacking.filteredOperationList}"
+                                 filteredValue="#{rchSourceFinancementBacking.filteredLigneOperationList}"
                                  rows="60"
                                  paginator="true"
                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -79,23 +79,23 @@
                         <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
                         <p:column headerText="#" styleClass="col-w5">#{index + 1}</p:column>
                         <!--
-                        <p:column headerText="Source de Financement">#{operation.sourceFinancement}</p:column>
+                        <p:column headerText="Source de Financement">#{ligneOperation.sourceFinancement}</p:column>
                         -->
-                        <p:column headerText="Activité" styleClass="col-w20" filterBy="#{operation.activiteCode} - #{operation.activiteLibelle}" filterMatchMode="contains">#{operation.activiteCode} - #{operation.activiteLibelle}</p:column>
-                        <p:column headerText="Nature Eco." styleClass="col-w20" filterBy="#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}" filterMatchMode="contains">#{operation.natureEconomiqueCode} - #{operation.natureEconomiqueLibelle}</p:column>
-                        <p:column headerText="Source Fin." styleClass="col-w20" filterBy="#{operation.sourceFinancementLibelle}" filterMatchMode="exact">
+                        <p:column headerText="Activité" styleClass="col-w20" filterBy="#{ligneOperation.activiteCode} - #{ligneOperation.activiteLibelle}" filterMatchMode="contains">#{ligneOperation.activiteCode} - #{ligneOperation.activiteLibelle}</p:column>
+                        <p:column headerText="Nature Eco." styleClass="col-w20" filterBy="#{ligneOperation.natureEconomiqueCode} - #{ligneOperation.natureEconomiqueLibelle}" filterMatchMode="contains">#{ligneOperation.natureEconomiqueCode} - #{ligneOperation.natureEconomiqueLibelle}</p:column>
+                        <p:column headerText="Source Fin." styleClass="col-w20" filterBy="#{ligneOperation.sourceFinancementLibelle}" filterMatchMode="exact">
                             <f:facet name="filter">
                                 <p:selectOneMenu onchange="PF('oparationDT').filter()" styleClass="custom-filter">
                                     <f:selectItem itemLabel="Tout" itemValue="#{null}" noSelectionOption="true"/>
                                     <f:selectItems value="#{SourceFinancement.ALL_ITEM_VALUE}" var="sFin" itemLabel="#{sFin.libelle}"  itemValue="#{sFin.libelle}"/>
                                 </p:selectOneMenu>
                             </f:facet>
-                            #{operation.sourceFinancementLibelle}
+                            #{ligneOperation.sourceFinancementLibelle}
                         </p:column>
-                        <p:column headerText="Budget AE" styleClass="col-w10 text-align-right" filterBy="#{operation.budgetActuelAE}" filterFunction="#{rchSourceFinancementBacking.filterBudget}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(operation.budgetActuelAE)}" /></p:column>
-                        <p:column headerText="Budget CP" styleClass="col-w10 text-align-right" filterBy="#{operation.budgetActuelCP}" filterFunction="#{rchSourceFinancementBacking.filterBudget}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(operation.budgetActuelCP)}" /></p:column>
-                        <p:column headerText="Disponible AE" styleClass="col-w10 text-align-right" filterBy="#{operation.montantDisponibleAE}" filterFunction="#{rchSourceFinancementBacking.filterDisponible}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(operation.budgetActuelAE)}" /></p:column>
-                        <p:column headerText="Disponible CP" styleClass="col-w10 text-align-right" filterBy="#{operation.montantDisponibleCP}" filterFunction="#{rchSourceFinancementBacking.filterDisponible}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(operation.budgetActuelAE)}" /></p:column>
+                        <p:column headerText="Budget AE" styleClass="col-w10 text-align-right" filterBy="#{ligneOperation.budgetActuelAE}" filterFunction="#{rchSourceFinancementBacking.filterBudget}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelAE)}" /></p:column>
+                        <p:column headerText="Budget CP" styleClass="col-w10 text-align-right" filterBy="#{ligneOperation.budgetActuelCP}" filterFunction="#{rchSourceFinancementBacking.filterBudget}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelCP)}" /></p:column>
+                        <p:column headerText="Disponible AE" styleClass="col-w10 text-align-right" filterBy="#{ligneOperation.montantDisponibleAE}" filterFunction="#{rchSourceFinancementBacking.filterDisponible}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelAE)}" /></p:column>
+                        <p:column headerText="Disponible CP" styleClass="col-w10 text-align-right" filterBy="#{ligneOperation.montantDisponibleCP}" filterFunction="#{rchSourceFinancementBacking.filterDisponible}"><h:outputText value="#{rchSourceFinancementBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelAE)}" /></p:column>
                         </p:dataTable>
                 </p:fieldset>
 

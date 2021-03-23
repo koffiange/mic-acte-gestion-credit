@@ -48,7 +48,7 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     private List<Signataire> signataireList = new ArrayList<>();
 
     @Getter @Setter
-    private List<Operation> operationList = new ArrayList<>();
+    private List<LigneOperation> ligneOperationList = new ArrayList<>();
 
     @Getter @Setter
     private OperationBag operationBagOrigine = new OperationBag();
@@ -163,23 +163,23 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         acte.setCumulAjoutAE(cumulAjoutAE);
         acte.setCumulAjoutCP(cumulAjoutCP);
         acteDto.setActe(acte);
-        operationList.addAll(operationBagOrigine.getOperationList());
-        operationList.addAll(operationBagDestination.getOperationList());
-        acteDto.setOperationList(operationList);
+        ligneOperationList.addAll(operationBagOrigine.getLigneOperationList());
+        ligneOperationList.addAll(operationBagDestination.getLigneOperationList());
+        acteDto.setLigneOperationList(ligneOperationList);
     }
 
     private void treatOperationBagBeforePersisting(OperationBag operationBag){
         try {
             LOG.info("=> OperationBag : "+operationBag.toString());
             // Négation des montans prélevé
-            operationBag.getOperationList().forEach(operation -> {
+            operationBag.getLigneOperationList().forEach(operation -> {
                 if(operation.getTypeOperation().equals(TypeOperation.ORIGINE))
                     operation.setMontantOperationAE(operation.getMontantOperationAE().negate());
             });
             LOG.info("=> Négation des montans prélevé [ok]");
             // Montant AE egal Montant CP
-            operationBag.getOperationList().forEach(operation -> operation.setMontantOperationCP(operation.getMontantOperationAE()));
-            operationBag.getOperationList().forEach(operation -> operation.setDisponibleRestantCP(operation.getDisponibleRestantAE()));
+            operationBag.getLigneOperationList().forEach(operation -> operation.setMontantOperationCP(operation.getMontantOperationAE()));
+            operationBag.getLigneOperationList().forEach(operation -> operation.setDisponibleRestantCP(operation.getDisponibleRestantAE()));
             LOG.info("=> Montant AE egal Montant CP [ok]");
 
         } catch (Exception exception){
@@ -189,10 +189,10 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
     public void handleReturn(SelectEvent event){
         OperationBag operationBag = (OperationBag) event.getObject();
-        this.completeOperationList(operationBag.getTypeOperation(), operationBag.getOperationList());
+        // this.completeOperationList(operationBag.getTypeOperation(), operationBag.getLigneOperationList());
         this.completeImputationDTOList(operationBag);
         this.cumules();
-        destinationBtnStatus = operationBagOrigine.getOperationList().isEmpty();
+        destinationBtnStatus = operationBagOrigine.getLigneOperationList().isEmpty();
         showSuccess();
     }
 
@@ -221,22 +221,22 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     }
 
     private void majOperationAvantVerification(){
-        operationBagOrigine.setOperationList(operationService.operationListDisponibiliteSetter(operationBagOrigine.getOperationList()));
+        operationBagOrigine.setLigneOperationList(operationService.operationListDisponibiliteSetter(operationBagOrigine.getLigneOperationList()));
         // this.truncateDisponible();
         LOG.info("Mise a jour des opération avant verification");
     }
 
     private void truncateDisponible(){
-        operationBagOrigine.getOperationList().forEach(operation -> operation.setMontantDisponibleAE(BigDecimal.TEN));
-        operationBagOrigine.getOperationList().forEach(operation -> operation.setMontantDisponibleCP(BigDecimal.TEN));
+        operationBagOrigine.getLigneOperationList().forEach(operation -> operation.setMontantDisponibleAE(BigDecimal.TEN));
+        operationBagOrigine.getLigneOperationList().forEach(operation -> operation.setMontantDisponibleCP(BigDecimal.TEN));
     }
 
     private void verifierDisponibilite() throws CreditInsuffisantException {
         StringBuilder msg = new StringBuilder("Crédits insufisants sur les lignes :");
         boolean hasCreditInsuffisant = false;
-        for (int i = 0; i < operationBagOrigine.getOperationList().size(); i ++){
-            Operation operation = operationBagOrigine.getOperationList().get(i);
-            if (operation.getMontantDisponibleAE().compareTo(operation.getMontantOperationAE()) < 0){
+        for (int i = 0; i < operationBagOrigine.getLigneOperationList().size(); i ++){
+            LigneOperation ligneOperation = operationBagOrigine.getLigneOperationList().get(i);
+            if (ligneOperation.getMontantDisponibleAE().compareTo(ligneOperation.getMontantOperationAE()) < 0){
                 msg.append(" #").append(i+1);
                 hasCreditInsuffisant = true;
             }
@@ -290,8 +290,8 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
      * @return
      */
     private String retrieveSectionCodeToSend(){
-        return (acte.getNatureTransaction().equals(NatureTransaction.VIREMENT) && !operationBagOrigine.getOperationList().isEmpty()) ?
-                operationBagOrigine.getOperationList().get(0).getSectionCode() : "";
+        return (acte.getNatureTransaction().equals(NatureTransaction.VIREMENT) && !operationBagOrigine.getLigneOperationList().isEmpty()) ?
+                operationBagOrigine.getLigneOperationList().get(0).getSectionCode() : "";
     }
 
     public void openNouvelleLigneDialog(String typeImputation){
@@ -343,19 +343,22 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
      */
 
     private void completeImputationDTOList(OperationBag operationBag){
+        /*
         if(operationBag.getTypeOperation().equals(TypeOperation.DESTINATION))
             acteDto.getImputationDtoList().addAll(operationBag.getImputationDtoList());
+
+         */
     }
 
-    private void completeOperationList(TypeOperation typeOperation, List<Operation> operationList){
-        operationList.forEach(operation -> {
-            if (typeOperation.equals(TypeOperation.ORIGINE) && !operationBagOrigine.getOperationList().contains(operation)) {
+    private void completeOperationList(TypeOperation typeOperation, List<LigneOperation> ligneOperationList){
+        ligneOperationList.forEach(operation -> {
+            if (typeOperation.equals(TypeOperation.ORIGINE) && !operationBagOrigine.getLigneOperationList().contains(operation)) {
                 // operation.setSectionCode(operationBagOrigine.getSectionCodeList().get(1));
-                operationBagOrigine.getOperationList().add(operation);
+                operationBagOrigine.getLigneOperationList().add(operation);
             }
 
-            if (typeOperation.equals(TypeOperation.DESTINATION) && !operationBagDestination.getOperationList().contains(operation))
-                operationBagDestination.getOperationList().add(operation);
+            if (typeOperation.equals(TypeOperation.DESTINATION) && !operationBagDestination.getLigneOperationList().contains(operation))
+                operationBagDestination.getLigneOperationList().add(operation);
         });
     }
 
@@ -368,32 +371,32 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     }
 
 
-    public void deleteOperation(String location, Operation operation){
+    public void deleteOperation(String location, LigneOperation ligneOperation){
         TypeOperation typeOperation = TypeOperation.valueOf(location);
 
         if (typeOperation.equals(TypeOperation.ORIGINE)){
-            operationBagOrigine.getOperationList().remove(operation);
-            destinationBtnStatus = operationBagOrigine.getOperationList().isEmpty();
+            operationBagOrigine.getLigneOperationList().remove(ligneOperation);
+            destinationBtnStatus = operationBagOrigine.getLigneOperationList().isEmpty();
         } else{
-            operationBagDestination.getOperationList().remove(operation);
+            operationBagDestination.getLigneOperationList().remove(ligneOperation);
         }
         this.cumules();
     }
 
     public void cumules(){
-        operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementAE);
-        operationBagOrigine.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
-        operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutAE);
-        operationBagDestination.getOperationList().stream().map(Operation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
+        operationBagOrigine.getLigneOperationList().stream().map(LigneOperation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementAE);
+        operationBagOrigine.getLigneOperationList().stream().map(LigneOperation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulRetranchementCP);
+        operationBagDestination.getLigneOperationList().stream().map(LigneOperation::getMontantOperationAE).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutAE);
+        operationBagDestination.getLigneOperationList().stream().map(LigneOperation::getMontantOperationCP).reduce(BigDecimal::add).ifPresent(this::setCumulAjoutCP);
         this.handleDisponibleRestant();
     }
 
     private void handleDisponibleRestant(){
-        operationBagOrigine.getOperationList().forEach(operation -> {
+        operationBagOrigine.getLigneOperationList().forEach(operation -> {
             operation.setDisponibleRestantAE(operation.getMontantDisponibleAE().subtract(operation.getMontantOperationAE()));
             operation.setDisponibleRestantCP(operation.getMontantDisponibleCP().subtract(operation.getMontantOperationCP()));
         });
-        operationBagDestination.getOperationList().forEach(operation -> {
+        operationBagDestination.getLigneOperationList().forEach(operation -> {
             operation.setDisponibleRestantAE(operation.getMontantDisponibleAE().add(operation.getMontantOperationAE()));
             operation.setDisponibleRestantCP(operation.getMontantDisponibleCP().add(operation.getMontantOperationCP()));
         });
