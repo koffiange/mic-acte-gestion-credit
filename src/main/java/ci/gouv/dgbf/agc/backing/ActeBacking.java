@@ -3,6 +3,7 @@ package ci.gouv.dgbf.agc.backing;
 import ci.gouv.dgbf.agc.dto.Acte;
 import ci.gouv.dgbf.agc.dto.Operation;
 import ci.gouv.dgbf.agc.dto.OperationBag;
+import ci.gouv.dgbf.agc.enumeration.CategorieActe;
 import ci.gouv.dgbf.agc.enumeration.StatutOperation;
 import ci.gouv.dgbf.agc.service.ActeService;
 import ci.gouv.dgbf.agc.service.OperationService;
@@ -45,9 +46,18 @@ public class ActeBacking extends BaseBacking {
     @Getter @Setter
     private boolean displayApplicationMultipleBtn = true;
 
+    @Getter @Setter
+    private CategorieActe newActeCatégorie;
+
+    @Getter @Setter
+    private List<CategorieActe> categorieActeList;
+
     @PostConstruct
     public void init(){
         operationBagList = operationService.listAll();
+        categorieActeList = Arrays.asList(CategorieActe.values())
+                            .stream().filter(categorieActe -> categorieActe.getUsageType().equals("GESTION"))
+                            .collect(Collectors.toList());
     }
 
     public List<OperationBag> findByStatut(String s){
@@ -100,11 +110,36 @@ public class ActeBacking extends BaseBacking {
 
     private String determineUpdateDialogName(Acte acte){
         switch (acte.getCategorieActe()){
+            case ORDONNANCE: return "acte-mouvement-credit-update-dlg";
+            case DECRET_AVANCE: return "acte-mouvement-credit-update-dlg";
+            case DECRET_PORTANT_REPORT_CREDITS: return "acte-mouvement-credit-update-dlg";
+            case DECRET_MODIFIANT_REPARTITION_CREDITS: return "acte-mouvement-credit-update-dlg";
+            case DECRET_PORTANT_GELE_DEGELE_CREDITS: return "acte-mouvement-credit-update-dlg";
+            case DECRET_PORTANT_ANNULATION_RETABLISSEMENT_CREDITS: return "acte-mouvement-credit-update-dlg";
+            case DECRET_PORTANT_INTEGRATION_RESSOURCES: return "acte-mouvement-credit-update-dlg";
+            case DECRET: return "acte-mouvement-credit-update-dlg";
+            case ARRETE_INTERMINISTERIEL_MODIFIANT_REPARTITION_CREDITS: return "acte-mouvement-credit-update-dlg";
+            case ARRETE_INTERMINISTERIEL_PORTANT_REPORT_CREDITS: return "acte-mouvement-credit-update-dlg";
+            case ARRETE_INTERMINISTERIEL_PORTANT_INTEGRATION_RESSOURCES: return "acte-mouvement-credit-update-dlg";
+            case ARRETE_MODIFIANT_REPARTITION_CREDIT: return "acte-mouvement-credit-update-dlg";
+            case ARRETE_PORTANT_INTEGRATION_RESSOURCES: return "acte-mouvement-credit-update-dlg";
+            case ARRETE_PORTANT_REPORT_CREDITS: return "acte-mouvement-credit-update-dlg";
+            case ARRETE_PORTANT_GELE_DEGELE_CREDITS: return "acte-mouvement-credit-update-dlg";
+            case ARRETE_PORTANT_ANNULATION_RETABLISSEMENT_CREDITS: return "acte-mouvement-credit-update-dlg";
+            case ARRETE: return "acte-mouvement-credit-update-dlg";
+            case DECISION_DGBF_MODIFIANT_REPARTITION_CREDITS: return "acte-mouvement-credit-update-dlg";
+            case DECISION_RESPONSABLE_PROGRAMME_PORTANT_VIREMENT_CREDITS: return "acte-mouvement-credit-update-dlg";
+            case ACTE_REGLEMENTAIRE_OUVERTURE_CREDIT: return "acte-mouvement-credit-update-dlg";
+            case ACTE_REGLEMENTAIRE_REDUCTION_CREDIT: return "acte-mouvement-credit-update-dlg";
+            case ACTE_OUVERTURE_AE_COMPLEMENTAIRE: return "acte-mouvement-credit-update-dlg";
+            /*
             case ACTE_MOUVEMENT: return "acte-mouvement-credit-update-dlg";
             case ACTE_GELE_DEGELE: return "gele-credit-update-dlg";
             case ACTE_ANNULATION: return "annulation-credit-update-dlg";
             case ACTE_INTEGRATION_RESSOURCES: return "integration-ressource-update-dlg";
             case ACTE_REPORT: return "acte-report-credit-update-dlg";
+
+             */
             default: return "";
         }
     }

@@ -152,7 +152,7 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
     private void buildActe(){
         acte.setDateSignature(convertIntoLocaleDate(date));
-        acte.setCategorieActe(CategorieActe.ACTE_MOUVEMENT);
+        // acte.setCategorieActe(CategorieActe.ACTE_MOUVEMENT);
         acte.setStatutActe(StatutActe.EN_ATTENTE);
     }
 

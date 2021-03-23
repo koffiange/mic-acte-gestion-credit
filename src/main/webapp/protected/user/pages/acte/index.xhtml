@@ -33,15 +33,36 @@
                     <p:importEnum type="ci.gouv.dgbf.agc.enumeration.NatureActe" var="NatureActe" allSuffix="ALL_ITEM_VALUE"/>
                     <p:toolbar id="viewToolBar">
                         <f:facet name="left">
-                            <p:menuButton value="Nouvel acte de gestion de crédit" menuStyleClass="ui-overlay-butonn-menu">
-                                <p:menuitem value="Acte de mouvement de crédit" action="#{acteBacking.openCreateDialog('acte-mouvement-credit-create-dlg')}" icon="fa fa-exchange">
-                                    <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}" update="listModeleForm"/>
-                                </p:menuitem>
-                                <p:menuitem value="Acte de report de crédit" action="#{acteBacking.openCreateDialog('acte-report-credit-create-dlg')}" icon="fa fa-undo"/>
-                                <p:menuitem value="Acte d'intégration de resource" action="#{acteBacking.openCreateDialog('acte-integration-resource-create-dlg')}" icon="fa fa-plus"/>
-                                <p:menuitem value="Acte portant gèle et dégèle des crédits" action="#{acteBacking.openCreateDialog('acte-gele-credit-create-dlg')}" icon="fa fa-lock"/>
-                                <p:menuitem value="Acte portant annulation de crédit" action="#{acteBacking.openCreateDialog('acte-annulation-credit-create-dlg')}" icon="fa fa-ban"/>
-                            </p:menuButton>
+                            <h:outputText value="Créer un nouvelle acte de gestion : " styleClass="text-bold text-small"/>
+                            <p:selectOneMenu value="#{acteBacking.newActeCatégorie}" filter="true"
+                                             filterMatchMode="contains" effect="fade" var="c" panelStyle="width: 40vw" styleClass="text-smaller" style="width: 40vw">
+                                <f:selectItem itemLabel=" -- Sélection une catégorie d'acte -- " noSelectionOption="true"/>
+                                <f:selectItems value="#{acteBacking.categorieActeList}" var="ca" itemLabel="#{ca.code} - #{ca.designation}" itemValue="#{ca}"/>
+
+                                <p:column style="width:10%">
+                                    <f:facet name="header">
+                                        <h:outputText value="Code"/>
+                                    </f:facet>
+                                    <h:outputText value="#{c.code}" styleClass="text-smaller"/>
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Désignation"/>
+                                    </f:facet>
+                                    <h:outputText value="#{c.designation}" styleClass="text-smaller"/>
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Nature Acte"/>
+                                    </f:facet>
+                                    <h:outputText value="#{c.natureActe}" styleClass="text-smaller"/>
+                                </p:column>
+
+                                <p:ajax event="change" update="@form:createBtn"/>
+                            </p:selectOneMenu>
+                            <p:commandButton id="createBtn" value="Créer un nouvelle acte de gestion" action="#{acteBacking.fictiveAction}" disabled="#{acteBacking.newActeCatégorie eq null}"/>
                         </f:facet>
                     </p:toolbar>
                 </h:form>
