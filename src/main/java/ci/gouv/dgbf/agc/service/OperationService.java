@@ -1,10 +1,7 @@
 package ci.gouv.dgbf.agc.service;
 
 import ci.gouv.dgbf.agc.client.OperationClient;
-import ci.gouv.dgbf.agc.dto.ImputationDto;
-import ci.gouv.dgbf.agc.dto.LigneDepense;
-import ci.gouv.dgbf.agc.dto.LigneOperation;
-import ci.gouv.dgbf.agc.dto.OperationBag;
+import ci.gouv.dgbf.agc.dto.*;
 import ci.gouv.dgbf.agc.enumeration.DisponibiliteCreditOperation;
 import ci.gouv.dgbf.agc.enumeration.OrigineImputation;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
@@ -55,8 +52,13 @@ public class OperationService implements OperationClient {
     }
 
     @Override
-    public OperationBag findById(String uuid) {
+    public Operation findById(String uuid) {
         return client.findById(uuid);
+    }
+
+    @Override
+    public OperationBag findBagById(String uuid) {
+        return client.findBagById(uuid);
     }
 
     @Override

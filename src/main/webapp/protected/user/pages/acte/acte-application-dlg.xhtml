@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:o="http://omnifaces.org/ui">
+    <h:head>
+        <title style="font-size: larger; font-weight: bold">APPLICATION D'UN ACTE DE MOUVEMENT DE CREDIT</title>
+        <ui:include src="/resources/common/css.xhtml"/>
+    </h:head>
+
+    <h:body styleClass="main-body">
+        <h:form id="createForm">
+            <p:growl globalOnly="true" showDetail="true" showSummary="true" severity="info, warn, error" life="15000" id="message"/>
+
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <p:fieldset legend="Information de l'operation">
+                        <div class="ui-g">
+                            <div class="ui-g-4">
+                                <h:outputText value="Code de l'opération : " styleClass="text-bold"/>
+                                <h:outputText value="#{acteApplicationBacking.operation.codeOperation}"/>
+                            </div>
+                            <div class="ui-g-4">
+                                <h:outputText value="Date création : " styleClass="text-bold"/>
+                                <h:outputText value="#{acteApplicationBacking.displayFormatedDateTime(acteApplicationBacking.operation.createdDate)}"/>
+                            </div>
+                        </div>
+                    </p:fieldset>
+                    <p:fieldset legend="Choissir l'acte à appliquer pour cette opération">
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <p:message for="actes"/>
+                                <p:outputLabel for="actes" value="Liste des acte de l'operation" styleClass="text-bold"/>
+                            </div>
+                            <p:selectOneMenu id="actes" value="#{acteApplicationBacking.selectedActe}" filter="true"
+                                             filterMatchMode="contains" effect="fade" var="a"
+                                             converter="omnifaces.SelectItemsConverter"
+                                             panelStyle="width: 90vw" styleClass="text-smaller" style="width: 90vw">
+                                <f:selectItem itemLabel=" -- Sélectionnez un acte -- " noSelectionOption="true"/>
+                                <f:selectItems value="#{acteApplicationBacking.acteList}" var="acte" itemLabel="#{acte.libelle}" itemValue="#{acte}"/>
+
+                                <p:column style="width:10%">
+                                    <f:facet name="header">
+                                        <h:outputText value="Référence"/>
+                                    </f:facet>
+                                    <h:outputText value="#{a.reference}" styleClass="text-smaller"/>
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Libelle"/>
+                                    </f:facet>
+                                    <h:outputText value="#{a.libelle}" styleClass="text-smaller"/>
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Date signature"/>
+                                    </f:facet>
+                                    <h:outputText value="#{a.dateSignature}" styleClass="text-smaller"/>
+                                </p:column>
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="..."/>
+                                    </f:facet>
+                                    <h:outputText value="#{a.acteParDefaut.libelle}" styleClass="text-smaller"/>
+                                </p:column>
+                            </p:selectOneMenu>
+                        </div>
+                    </p:fieldset>
+
+                    <p:spacer height="40" width="10"/>
+
+                    <div class="ui-g">
+                        <div class="ui-g-6" style="margin: 0px auto !important;">
+                            <p:commandButton action="#{acteApplicationBacking.appliquer()}" icon="fa fa-check"
+                                             value="#{messages.appliquer}" update="@form" style="width: 100%" styleClass="green-btn"/>
+                        </div>
+
+                        <div class="ui-g-6">
+                            <p:commandButton action="#{acteApplicationBacking.close()}"
+                                             icon="fa fa-ban" styleClass="black-btn"
+                                             value="#{messages.annuler}" style="width: 100%"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </h:form>
+    </h:body>
+</html>

@@ -139,11 +139,11 @@
                     <p:fieldset legend="Destinations" id="destinationFls">
                         <p:menubar>
                             <f:facet name="options">
-                                <p:commandButton value="Rechercher une imputationDto" action="#{amcCreateBacking.openLigneDepenseDialog('DESTINATION')}"
+                                <p:commandButton value="Rechercher une imputation" action="#{amcCreateBacking.openLigneDepenseDialog('DESTINATION')}"
                                                  icon="fa fa-search" styleClass="steel-btn" disabled="#{amcCreateBacking.destinationBtnStatus}">
                                     <p:ajax event="dialogReturn" listener="#{amcCreateBacking.ligneDepenseHandleReturn}" update="createForm:destinationDT createForm:equilibreDG createForm:enregisterBTN"/>
                                 </p:commandButton>
-                                <p:commandButton value="Créer une nouvelle imputationDto" action="#{amcCreateBacking.openNouvelleImputationDialog('DESTINATION')}"
+                                <p:commandButton value="Créer une nouvelle imputation" action="#{amcCreateBacking.openNouvelleImputationDialog('DESTINATION')}"
                                                  icon="fa fa-plus" styleClass="steel-btn" disabled="#{amcCreateBacking.destinationBtnStatus}">
                                     <p:ajax event="dialogReturn" listener="#{amcCreateBacking.imputationHandleReturn}" update="createForm:destinationDT createForm:equilibreDG createForm:enregisterBTN"/>
                                 </p:commandButton>

@@ -84,14 +84,15 @@
                         </div>
                     </div>
                     <div class="ui-g">
-                        <div class="ui-g-12">
-                            <p:commandButton value="Enregistrer l'imputationDto"
+                        <div class="ui-g-6" style="margin: 0px auto !important;">
+                            <p:commandButton value="Enregistrer dans la liste des nouvelles imputations"
                                              icon="fa fa-save"
                                              action="#{imputationCreateBacking.creer()}"
                                              update="@form:imputationFls:imputationDT @form:nouvelleImputationFls"
-                                             styleClass="btn-block text-centered"/>
+                                             style="width: 100%" styleClass="steel-btn"/>
                         </div>
                     </div>
+
 
                 </p:fieldset>
 
@@ -141,8 +142,8 @@
 
                 <div class="ui-g">
                     <div class="ui-g-6" style="margin: 0px auto !important;">
-                        <p:commandButton action="#{imputationCreateBacking.ajouter()}"
-                                         value="Ajouter aux imputations" style="width: 100%"/>
+                        <p:commandButton action="#{imputationCreateBacking.ajouter()}" icon="fa fa-plus"
+                                         value="Ajouter à la liste des imputations de destination" style="width: 100%; text-transform: uppercase"/>
                     </div>
                 </div>
             </div>

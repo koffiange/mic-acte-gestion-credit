@@ -112,6 +112,17 @@ public class ActeBacking extends BaseBacking {
         PrimeFaces.current().dialog().openDynamic(null, options, params);
     }
 
+    public void openAppliquerDialog(String uuid){
+        Map<String,Object> options = getLevelTwoDialogOptions();
+        options.put("closable", true);
+
+        Map<String, List<String>> params = new HashMap<>();
+        List<String> operationUuidList = new ArrayList<>();
+        operationUuidList.add(uuid);
+        params.put("uuid", operationUuidList);
+        PrimeFaces.current().dialog().openDynamic("acte-application-dlg", options, params);
+    }
+
     private String determineCreateDialogName(CategorieActe ca){
         switch (ca) {
             case ORDONNANCE:

@@ -48,6 +48,11 @@ public class ActeService implements ActeClient {
     }
 
     @Override
+    public List<Acte> findActeByOperation(String uuid) {
+        return client.findActeByOperation(uuid);
+    }
+
+    @Override
     public Acte findActeDtoById(String uuid) {
         return client.findActeDtoById(uuid);
     }

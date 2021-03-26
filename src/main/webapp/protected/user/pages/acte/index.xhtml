@@ -127,7 +127,7 @@
                                                 <f:selectItems value="#{CategorieActe.ALL_ITEM_VALUE}" var="cat" itemLabel="#{cat.libelle}"  itemValue="#{cat}"/>
                                             </p:selectOneMenu>
                                         </f:facet>
-                                        #{operationBag.categorieActe.libelle}
+                                        #{operationBag.categorieActe.designation}
                                     </p:column>
                                     <p:column headerText="Nature d'acte" filterMatchMode="exact" filterBy="#{operationBag.natureActe}" styleClass="custom-filter">
                                         <f:facet name="filter">
@@ -166,13 +166,10 @@
                                                 </p:confirm>
                                             </p:commandLink>
                                             <p:commandLink value="Appliquer"
-                                                           actionListener="#{acteBacking.appliquer(operationBag.operation.uuid)}"
-                                                           styleClass="text-bold"
-                                                           update="@form messageForm" rendered="#{operationBag.acte.dateSignature ne null}">
-                                                <p:confirm header="Confirmation"
-                                                           message="Êtes-vous sûr de vouloir appliquer l'acte suivant : #{operationBag.acte.reference}"
-                                                           icon="ui-icon-alert">
-                                                </p:confirm>
+                                                           actionListener="#{acteBacking.openAppliquerDialog(operationBag.operation.uuid)}"
+                                                           styleClass="text-bold">
+                                                <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}"
+                                                        update=":listModeleForm messageForm"/>
                                             </p:commandLink>
                                             <!--
                                             <br/>
@@ -224,7 +221,7 @@
                                     <p:column style="width:20px;text-align:center" headerText="#">#{index + 1}</p:column>
                                     <p:column headerText="Référence Operation" filterMatchMode="contains" filterBy="#{operationBag.operation.codeOperation}">#{operationBag.operation.codeOperation}</p:column>
                                     <p:column headerText="Référence Acte" filterMatchMode="contains" filterBy="#{operationBag.acte.reference}">#{operationBag.acte.reference}</p:column>
-                                    <p:column headerText="Catégorie Acte" filterMatchMode="contains" filterBy="#{operationBag.acte.categorieActe.libelle}">#{operationBag.acte.categorieActe.libelle}</p:column>
+                                    <p:column headerText="Catégorie Acte" filterMatchMode="contains" filterBy="#{operationBag.acte.categorieActe.designation}">#{operationBag.acte.categorieActe.designation}</p:column>
                                     <p:column headerText="Nature d'acte">#{operationBag.acte.natureActe.libelle}</p:column>
                                     <p:column headerText="Date Signateur">#{operationBag.acte.dateSignature}</p:column>
                                     <p:column headerText="Variation du Budget">
@@ -260,7 +257,7 @@
                                     <p:column style="width:20px;text-align:center" headerText="#">#{index + 1}</p:column>
                                     <p:column headerText="Référence Operation" filterMatchMode="contains" filterBy="#{operationBag.operation.codeOperation}">#{operationBag.operation.codeOperation}</p:column>
                                     <p:column headerText="Référence Acte" filterMatchMode="contains" filterBy="#{operationBag.acte.reference}">#{operationBag.acte.reference}</p:column>
-                                    <p:column headerText="Catégorie Acte" filterMatchMode="contains" filterBy="#{operationBag.acte.categorieActe.libelle}">#{operationBag.acte.categorieActe.libelle}</p:column>
+                                    <p:column headerText="Catégorie Acte" filterMatchMode="contains" filterBy="#{operationBag.acte.categorieActe.designation}">#{operationBag.acte.categorieActe.designation}</p:column>
                                     <p:column headerText="Nature d'acte">#{operationBag.acte.natureActe.libelle}</p:column>
                                     <p:column headerText="Date Signateur">#{operationBag.acte.dateSignature}</p:column>
                                     <p:column headerText="Variation du Budget">

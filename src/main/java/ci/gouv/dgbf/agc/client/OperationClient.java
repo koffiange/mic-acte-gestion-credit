@@ -1,6 +1,7 @@
 package ci.gouv.dgbf.agc.client;
 
 import ci.gouv.dgbf.agc.dto.LigneOperation;
+import ci.gouv.dgbf.agc.dto.Operation;
 import ci.gouv.dgbf.agc.dto.OperationBag;
 
 import javax.ws.rs.*;
@@ -13,7 +14,11 @@ public interface OperationClient {
 
     @GET
     @Path("/operation/{uuid}")
-    OperationBag findById(@PathParam("uuid") String uuid);
+    Operation findById(@PathParam("uuid") String uuid);
+
+    @GET
+    @Path("/operation/bag/{uuid}")
+    OperationBag findBagById(@PathParam("uuid") String uuid);
 
     @POST
     @Path("/operation")

@@ -64,7 +64,7 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
     public void init(){
         params = getRequestParameterMap();
         if (params.containsKey("uuid")){
-            operationBag = operationService.findById(params.get("uuid"));
+            operationBag = operationService.findBagById(params.get("uuid"));
             this.computeCumule();
         }
     }

@@ -23,6 +23,10 @@ public interface ActeClient {
     @Path("/acte")
     Acte persist(Acte acteDto);
 
+    @GET
+    @Path("/operation/{uuid}")
+    List<Acte> findActeByOperation(@PathParam("uuid") String uuid);
+
     @PUT
     @Path("/acte/dto/")
     Acte update(@QueryParam("appliquer") boolean appliquer, Acte acteDto);
