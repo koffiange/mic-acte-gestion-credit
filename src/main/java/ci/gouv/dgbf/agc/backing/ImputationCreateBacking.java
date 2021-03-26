@@ -1,5 +1,6 @@
 package ci.gouv.dgbf.agc.backing;
 
+import ci.gouv.dgbf.agc.bag.ImputationHandleReturnBag;
 import ci.gouv.dgbf.agc.dto.*;
 import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
@@ -60,7 +61,7 @@ public class ImputationCreateBacking extends BaseBacking {
     @Getter @Setter
     private Map<String, String> params;
     @Getter @Setter
-    private OperationBag operationBag;
+    private ImputationHandleReturnBag imputationHandleReturnBag = new ImputationHandleReturnBag();
     @Getter @Setter
     private String exercice;
     @Getter @Setter
@@ -76,13 +77,9 @@ public class ImputationCreateBacking extends BaseBacking {
         this.initImputationDto();
         exercice = String.valueOf(LocalDate.now().getYear());
 
-        operationBag = new OperationBag();
-        // operationBag.setTypeOperation(TypeOperation.DESTINATION);
+        imputationHandleReturnBag = new ImputationHandleReturnBag();
+        imputationHandleReturnBag.setTypeOperation(TypeOperation.DESTINATION);
         params = getRequestParameterMap();
-
-        if(params.containsKey("typeImputation")){
-            // operationBag.setTypeOperation(TypeOperation.valueOf(params.get("typeImputation")));
-        }
 
         if(params.containsKey("natureTransaction")){
             natureTransaction = NatureTransaction.valueOf(params.get("natureTransaction"));
@@ -145,7 +142,7 @@ public class ImputationCreateBacking extends BaseBacking {
     }
 
     public void creer(){
-        imputationDtoList.add(imputationDto);
+        imputationHandleReturnBag.getImputationDtoList().add(imputationDto);
         bailleurList = bailleurService.listAll();
         sourceFinancementList = sourceFinancementService.listAll();
         this.initImputationDto();
@@ -153,12 +150,12 @@ public class ImputationCreateBacking extends BaseBacking {
     }
 
     public void supprimer(ImputationDto imputationDto){
-        imputationDtoList.remove(imputationDto);
+        imputationHandleReturnBag.getImputationDtoList().remove(imputationDto);
     }
 
     public void ajouter(){
-        operationBag.setImputationDtoList(imputationDtoList);
-        operationBag.setLigneOperationList(operationService.buildLigneOperationListFromImputationList(imputationDtoList));
-        PrimeFaces.current().dialog().closeDynamic(operationBag);
+
+        imputationHandleReturnBag.setLigneOperationList(operationService.buildLigneOperationListFromImputationList(imputationHandleReturnBag.getImputationDtoList()));
+        PrimeFaces.current().dialog().closeDynamic(imputationHandleReturnBag);
     }
 }

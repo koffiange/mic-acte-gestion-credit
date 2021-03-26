@@ -59,8 +59,8 @@ public class ActeMouvementCreditUpdateBacking extends BaseBacking {
     @Getter @Setter
     private List<Section> sectionList;
 
-    @Getter @Setter
-    private ActeDto acteDto;
+
+    // private ActeDto acteDto;
 
     @Getter @Setter
     private Acte acte;

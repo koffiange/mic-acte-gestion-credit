@@ -1,7 +1,6 @@
 package ci.gouv.dgbf.agc.client;
 
 import ci.gouv.dgbf.agc.dto.Acte;
-import ci.gouv.dgbf.agc.dto.ActeDto;
 
 import javax.ws.rs.*;
 import java.util.List;
@@ -18,15 +17,15 @@ public interface ActeClient {
 
     @GET
     @Path("/acte/dto/{uuid}")
-    ActeDto findActeDtoById(@PathParam("uuid") String uuid);
+    Acte findActeDtoById(@PathParam("uuid") String uuid);
 
     @POST
     @Path("/acte")
-    Acte persist(ActeDto acteDto);
+    Acte persist(Acte acteDto);
 
     @PUT
     @Path("/acte/dto/")
-    Acte update(@QueryParam("appliquer") boolean appliquer, ActeDto acteDto);
+    Acte update(@QueryParam("appliquer") boolean appliquer, Acte acteDto);
 
     @PUT
     @Path("/acte/appliquer/{uuid}")

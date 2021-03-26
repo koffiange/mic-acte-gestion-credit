@@ -62,7 +62,9 @@
 
                                 <p:ajax event="change" update="@form:createBtn"/>
                             </p:selectOneMenu>
-                            <p:commandButton id="createBtn" value="Créer un nouvelle acte de gestion" action="#{acteBacking.openCreateDialog()}" disabled="#{acteBacking.newActeCatégorie eq null}"/>
+                            <p:commandButton id="createBtn" value="Créer un nouvelle acte de gestion" action="#{acteBacking.openCreateDialog()}" disabled="#{acteBacking.newActeCatégorie eq null}">
+                                <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}" update="@form :listModeleForm messageForm"/>
+                            </p:commandButton>
                         </f:facet>
                     </p:toolbar>
                 </h:form>
@@ -103,7 +105,16 @@
                                     <p:column headerText="#" style="width:20px;text-align:center">#{index + 1}</p:column>
                                     <p:column headerText="Référence Operation" filterMatchMode="contains" filterBy="#{operationBag.operation.codeOperation}">#{operationBag.operation.codeOperation}</p:column>
                                     <p:column headerText="Référence Acte" filterMatchMode="contains" filterBy="#{operationBag.acte.reference}">#{operationBag.acte.reference}</p:column>
-                                    <p:column headerText="Date Création">#{operationBag.dateSignature}</p:column>
+                                    <p:column headerText="Nature d'acte" filterMatchMode="exact" filterBy="#{operationBag.acte.natureActe}" styleClass="custom-filter">
+                                        <f:facet name="filter">
+                                            <p:selectOneMenu onchange="PF('acteDT').filter()" styleClass="custom-filter">
+                                                <f:selectItem itemLabel="Tout" itemValue="#{null}" noSelectionOption="true"/>
+                                                <f:selectItems value="#{NatureActe.ALL_ITEM_VALUE}" var="nat" itemLabel="#{nat.libelle}"  itemValue="#{nat}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                        #{operationBag.acte.natureActe.libelle}
+                                    </p:column>
+                                    <p:column headerText="Date Création">#{acteBacking.displayFormatedDateTime(operationBag.operation.createdDate)}</p:column>
                                     <p:column headerText="Variation du Budget">
                                         AE :  <br/>
                                         CP :
@@ -142,24 +153,24 @@
                                                         hideEffect="fade" showCloseIcon="true">
                                             <p:link value="Consulter" styleClass="text-bold" style="color: #ffffff"
                                                 outcome="/protected/user/pages/acte/consulter-acte-mouvement-credit">
-                                                <f:param name="uuid" value="#{operationBag.uuid}"/>
+                                                <f:param name="uuid" value="#{operationBag.operation.uuid}"/>
                                             </p:link>
                                             <br/>
                                             <p:commandLink value="Signer Acte"
-                                                           actionListener="#{acteBacking.appliquer(operationBag.uuid)}"
+                                                           actionListener="#{acteBacking.appliquer(operationBag.acte.uuid)}"
                                                            styleClass="text-bold"
-                                                           update="@form messageForm" rendered="#{operationBag.operation.dateSignature eq null}">
+                                                           update="@form messageForm" rendered="#{operationBag.acte.dateSignature eq null}">
                                                 <p:confirm header="Confirmation"
-                                                           message="Êtes-vous sûr de vouloir appliquer l'acte suivant : #{operationBag.libelle}"
+                                                           message="Êtes-vous sûr de vouloir appliquer l'acte suivant : #{operationBag.acte.libelle}"
                                                            icon="ui-icon-alert">
                                                 </p:confirm>
                                             </p:commandLink>
                                             <p:commandLink value="Appliquer"
-                                                           actionListener="#{acteBacking.appliquer(operationBag.uuid)}"
+                                                           actionListener="#{acteBacking.appliquer(operationBag.operation.uuid)}"
                                                            styleClass="text-bold"
-                                                           update="@form messageForm" rendered="#{operationBag.operation.dateSignature ne null}">
+                                                           update="@form messageForm" rendered="#{operationBag.acte.dateSignature ne null}">
                                                 <p:confirm header="Confirmation"
-                                                           message="Êtes-vous sûr de vouloir appliquer l'acte suivant : #{operationBag.codeOperation}"
+                                                           message="Êtes-vous sûr de vouloir appliquer l'acte suivant : #{operationBag.acte.reference}"
                                                            icon="ui-icon-alert">
                                                 </p:confirm>
                                             </p:commandLink>

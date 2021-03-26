@@ -1,10 +1,7 @@
 package ci.gouv.dgbf.agc.dto;
 
 
-import ci.gouv.dgbf.agc.enumeration.CategorieActe;
-import ci.gouv.dgbf.agc.enumeration.NatureActe;
-import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
-import ci.gouv.dgbf.agc.enumeration.StatutActe;
+import ci.gouv.dgbf.agc.enumeration.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,6 +43,8 @@ public class Acte extends BaseDto{
     private BigDecimal cumulAjoutAE;
     @Getter @Setter
     private BigDecimal cumulAjoutCP;
+    @Getter @Setter
+    private ActeRole acteParDefaut;
 
     public Acte() {
     }

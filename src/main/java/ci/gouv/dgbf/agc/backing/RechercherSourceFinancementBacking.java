@@ -1,5 +1,6 @@
 package ci.gouv.dgbf.agc.backing;
 
+import ci.gouv.dgbf.agc.bag.LigneDepenseHandleReturnBag;
 import ci.gouv.dgbf.agc.dto.*;
 import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
@@ -89,13 +90,14 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Getter @Setter
     private BigDecimal cumuleRettranchementCP = BigDecimal.ZERO;
     @Getter @Setter
-    private OperationBag operationBag;
+    LigneDepenseHandleReturnBag ligneDepenseHandleReturnBag;
 
 
     @PostConstruct
     public void init(){
         exercice = String.valueOf(LocalDate.now().getYear());
-        operationBag = new OperationBag();
+        ligneDepenseHandleReturnBag = new LigneDepenseHandleReturnBag();
+        // operationBag = new OperationBag();
         params = getRequestParameterMap();
         sectionList = sectionService.list();
         natureEconomiqueList = natureEconomiqueService.findAll();
@@ -113,16 +115,16 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
         }
 
         if(params.containsKey("typeImputation")){
-            // operationBag.setTypeOperation(TypeOperation.valueOf(params.get("typeImputation")));
+            ligneDepenseHandleReturnBag.setTypeOperation(TypeOperation.valueOf(params.get("typeImputation")));
         }
     }
 
     public String displayTitleText(){
         /*
         if (operationBag.getTypeOperation().equals(TypeOperation.ORIGINE)){
-            return "Imputation d'Origine : rechercher des sources de financement.";
+            return "ImputationDto d'Origine : rechercher des sources de financement.";
         } else {
-            return "Imputation de Destinantion : rechercher de source de financement.";
+            return "ImputationDto de Destinantion : rechercher de source de financement.";
         }
          */
         return null;
@@ -163,7 +165,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
 
     public void rechercher(){
         ligneDepenseList = ligneDepenseService.findByCritere(exercice, sourceFinancement, natureEconomiqueCode, activiteCode, bailleur, sectionCode, natureDepense, programme, action);
-        ligneOperationList = operationService.buildLigneOperationListFromLigneDepenseList(ligneDepenseList);
+        ligneOperationList = operationService.buildLigneOperationListFromLigneDepenseList(ligneDepenseList, ligneDepenseHandleReturnBag.getTypeOperation());
         this.initCritereRecherche();
     }
 
@@ -174,10 +176,9 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     }
 
     public void ajouter(){
-        // operationBag.getSectionCodeList().add(selectedSection.getCode());
         this.typeOperationSetter();
-        operationBag.getLigneOperationList().addAll(selectedLigneOperationList);
-        PrimeFaces.current().dialog().closeDynamic(operationBag);
+        ligneDepenseHandleReturnBag.getLigneOperationList().addAll(selectedLigneOperationList);
+        PrimeFaces.current().dialog().closeDynamic(ligneDepenseHandleReturnBag);
     }
 
     private void typeOperationSetter(){

@@ -8,7 +8,7 @@
       xmlns:of="http://omnifaces.org/functions"
       xmlns:pe="http://primefaces.org/ui/extensions">
 <h:head>
-    <title style="font-size: larger; font-weight: bold">Création d'une nouvelle imputation</title>
+    <title style="font-size: larger; font-weight: bold">Création d'une nouvelle imputationDto</title>
     <ui:include src="/resources/common/css.xhtml"/>
 </h:head>
 
@@ -85,7 +85,7 @@
                     </div>
                     <div class="ui-g">
                         <div class="ui-g-12">
-                            <p:commandButton value="Enregistrer l'imputation"
+                            <p:commandButton value="Enregistrer l'imputationDto"
                                              icon="fa fa-save"
                                              action="#{imputationCreateBacking.creer()}"
                                              update="@form:imputationFls:imputationDT @form:nouvelleImputationFls"
@@ -96,20 +96,20 @@
                 </p:fieldset>
 
                 <p:fieldset id="imputationFls" legend="Liste des nouvelles imputations">
-                    <p:dataTable id="imputationDT" value="#{imputationCreateBacking.imputationDtoList}"
-                                 var="imputation"
+                    <p:dataTable id="imputationDT" value="#{imputationCreateBacking.imputationHandleReturnBag.imputationDtoList}"
+                                 var="imputationDto"
                                  widgetVar="imputationDT"
                                  rowIndexVar="index"
                                  emptyMessage="#{messages.empty_dataTable_message}"
                                  tableStyle="font-size: 11px;">
                         <p:column headerText="#" styleClass="col-w3">#{index + 1}</p:column>
-                        <p:column headerText="Section" styleClass="col-w20">#{imputation.section.code} - #{imputation.section.libelle}</p:column>
-                        <p:column headerText="Activité" styleClass="col-w20">#{imputation.activiteDeService.adsCode} - #{imputation.activiteDeService.adsLibelle}</p:column>
-                        <p:column headerText="Nature Eco." styleClass="col-w20">#{imputation.natureEconomique.code} - #{imputation.natureEconomique.libelleLong}</p:column>
-                        <p:column headerText="Bailleur" styleClass="col-w20">#{imputation.bailleur.code} - #{imputation.natureEconomique.libelleLong}</p:column>
-                        <p:column headerText="Sour. Fin." styleClass="col-w10">#{imputation.sourceFinancement.libelle}</p:column>
+                        <p:column headerText="Section" styleClass="col-w20">#{imputationDto.section.code} - #{imputationDto.section.libelle}</p:column>
+                        <p:column headerText="Activité" styleClass="col-w20">#{imputationDto.activiteDeService.adsCode} - #{imputationDto.activiteDeService.adsLibelle}</p:column>
+                        <p:column headerText="Nature Eco." styleClass="col-w20">#{imputationDto.natureEconomique.code} - #{imputationDto.natureEconomique.libelleLong}</p:column>
+                        <p:column headerText="Bailleur" styleClass="col-w20">#{imputationDto.bailleur.code} - #{imputationDto.natureEconomique.libelleLong}</p:column>
+                        <p:column headerText="Sour. Fin." styleClass="col-w10">#{imputationDto.sourceFinancement.libelle}</p:column>
                         <p:column headerText="" styleClass="col-w10">
-                            <p:commandButton value="Suppimer" action="#{imputationCreateBacking.supprimer(imputation)}" update="@form:imputationFls:imputationDT"/>
+                            <p:commandButton value="Suppimer" action="#{imputationCreateBacking.supprimer(imputationDto)}" update="@form:imputationFls:imputationDT"/>
                         </p:column>
                     </p:dataTable>
                 </p:fieldset>

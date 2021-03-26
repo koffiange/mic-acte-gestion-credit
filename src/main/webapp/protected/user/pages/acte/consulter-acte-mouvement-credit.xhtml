@@ -52,29 +52,30 @@
                             <div class="ui-g-11">
                                 <div class="ui-g">
                                     <div class="ui-g-12">
-                                        <h1 class="text-large text-uppercase"><h:outputText id="libelle" value="#{cmcBacking.acteDto.acte.libelle}"/></h1>
+                                        <h1 class="text-large text-uppercase"><h:outputText id="libelle" value="#{cmcBacking.operationBag.acte.libelle}"/></h1>
                                     </div>
                                     <div class="ui-g-4">
                                         <h:outputLabel for="reference" value="Référence de l'acte" styleClass="text-bold"/><br/>
-                                        <h:outputText id="reference" value="#{cmcBacking.acteDto.acte.reference}"/>
+                                        <h:outputText id="reference" value="#{cmcBacking.operationBag.acte.reference}"/>
                                         <br/>
                                         <p:spacer height="10" width="5" />
                                         <br/>
                                         <h:outputLabel for="natureTransaction" value="Type de Mouvement" styleClass="text-bold"/><br/>
-                                        <h:outputText id="natureTransaction" value="#{cmcBacking.acteDto.acte.natureTransaction.libelle}"/>
+                                        <h:outputText id="natureTransaction" value="#{cmcBacking.operationBag.acte.natureTransaction.libelle}"/>
                                     </div>
                                     <div class="ui-g-4">
                                         <h:outputLabel for="natureActe" value="Nature d'acte" styleClass="text-bold"/><br/>
-                                        <h:outputText id="natureActe" value="#{cmcBacking.acteDto.acte.natureActe.libelle}"/>
+                                        <h:outputText id="natureActe" value="#{cmcBacking.operationBag.acte.natureActe.libelle}"/>
                                         <br/>
                                         <p:spacer height="10" width="5" />
                                         <br/>
                                         <h:outputLabel for="categorieActe" value="Categorie d'acte" styleClass="text-bold"/><br/>
-                                        <h:outputText id="categorieActe" value="#{cmcBacking.acteDto.acte.categorieActe.libelle}"/>
+                                        <h:outputText id="categorieActe" value="#{cmcBacking.operationBag.acte.categorieActe.designation}"/>
                                     </div>
                                     <div class="ui-g-4">
                                         <h:outputLabel for="dateSignature" value="Date signature" styleClass="text-bold"/><br/>
-                                        <h:outputText id="dateSignature" value="#{cmcBacking.displayFormatedDate(cmcBacking.acteDto.acte.dateSignature)}"/>
+                                        <h:outputText id="dateSignature" value="#{cmcBacking.displayFormatedDate(cmcBacking.operationBag.acte.dateSignature)}"
+                                                      rendered="#{cmcBacking.operationBag.acte.dateSignature ne null}"/>
                                         <br/>
                                         <p:spacer height="10" width="5" />
                                         <br/>
@@ -87,7 +88,7 @@
                         </div>
                         <!--
                         <h:outputLabel value="Liste des signataires" styleClass="text-bold text-large"/><br/>
-                        <p:dataTable id="signataireList" value="#{cmcBacking.acteDto.signataireList}" var="signataire" type="ordered" rowIndexVar="index"
+                        <p:dataTable id="signataireList" value="#{cmcBacking.operationBag.signataireList}" var="signataire" type="ordered" rowIndexVar="index"
                                      emptyMessage="#{messages.empty_dataTable_message}">
                             <f:facet name="header"> </f:facet>
                             <p:column headerText="#" styleClass="col-w5">#{index + 1}</p:column>
@@ -124,7 +125,7 @@
                                 <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelCP)}" />
                             </p:column>
                             <!--
-                            <p:column headerText="Crédits disponibles à la date du : #{cmcBacking.displayFormatedDateTime(cmcBacking.acteDto.acte.createdDate)}">
+                            <p:column headerText="Crédits disponibles à la date du : #{cmcBacking.displayFormatedDateTime(cmcBacking.operationBag.acte.createdDate)}">
                                 <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.montantDisponibleAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
                                 <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.montantDisponibleCP)}" />

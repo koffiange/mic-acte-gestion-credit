@@ -242,15 +242,19 @@ public class BaseBacking implements Serializable {
     }
 
     public String displayFormatedDate(LocalDate date){
+        if (date == null)
+            return "";
         String pattern = "dd-MM-yyyy";
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern, Locale.FRENCH);
-        return (date != null) ? dtf.format(date) : "";
+        return dtf.format(date);
     }
 
     public String displayFormatedDateTime(LocalDateTime date){
+        if (date == null)
+            return "";
         String pattern = "dd-MM-yyyy HH:mm:ss";
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern, Locale.FRENCH);
-        return (date != null) ? dtf.format(date) : "";
+        return dtf.format(date);
     }
 
    public LocalDate convertIntoLocaleDate(Date d){

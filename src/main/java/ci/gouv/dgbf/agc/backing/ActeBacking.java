@@ -71,10 +71,9 @@ public class ActeBacking extends BaseBacking {
     }
 
     public void handleReturn(SelectEvent event){
-        LOG.info("Handled!");
         this.init();
-        if (event != null)
-            showSuccess();
+        newActeCatégorie = null;
+        showSuccess();
     }
 
     public void onRowSelect(SelectEvent<Acte> event){
@@ -90,7 +89,12 @@ public class ActeBacking extends BaseBacking {
         options.put("closable", false);
         options.replace("height", "95vh");
         options.replace("width", "95vw");
-        PrimeFaces.current().dialog().openDynamic(determineCreateDialogName(newActeCatégorie), options, null);
+
+        Map<String, List<String>> params = new HashMap<>();
+        List<String> categorieCodeList = new ArrayList<>();
+        categorieCodeList.add(newActeCatégorie.name());
+        params.put("categorieActeCode", categorieCodeList);
+        PrimeFaces.current().dialog().openDynamic(determineCreateDialogName(newActeCatégorie), options, params);
     }
 
     public void openUpdateDialog(Acte acte){
@@ -111,49 +115,49 @@ public class ActeBacking extends BaseBacking {
     private String determineCreateDialogName(CategorieActe ca){
         switch (ca) {
             case ORDONNANCE:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case DECRET_AVANCE:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case DECRET_PORTANT_REPORT_CREDITS:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case DECRET_MODIFIANT_REPARTITION_CREDITS:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case DECRET_PORTANT_GELE_DEGELE_CREDITS:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case DECRET_PORTANT_ANNULATION_RETABLISSEMENT_CREDITS:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case DECRET_PORTANT_INTEGRATION_RESSOURCES:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case DECRET:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case ARRETE_INTERMINISTERIEL_MODIFIANT_REPARTITION_CREDITS:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case ARRETE_INTERMINISTERIEL_PORTANT_REPORT_CREDITS:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case ARRETE_INTERMINISTERIEL_PORTANT_INTEGRATION_RESSOURCES:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case ARRETE_MODIFIANT_REPARTITION_CREDIT:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case ARRETE_PORTANT_INTEGRATION_RESSOURCES:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case ARRETE_PORTANT_REPORT_CREDITS:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case ARRETE_PORTANT_GELE_DEGELE_CREDITS:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case ARRETE_PORTANT_ANNULATION_RETABLISSEMENT_CREDITS:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case ARRETE:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case DECISION_DGBF_MODIFIANT_REPARTITION_CREDITS:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case DECISION_RESPONSABLE_PROGRAMME_PORTANT_VIREMENT_CREDITS:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case ACTE_REGLEMENTAIRE_OUVERTURE_CREDIT:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case ACTE_REGLEMENTAIRE_REDUCTION_CREDIT:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             case ACTE_OUVERTURE_AE_COMPLEMENTAIRE:
-                return "acte-mouvement-credit-update-dlg";
+                return "acte-mouvement-credit-create-dlg";
             default:
                 return "";
         }

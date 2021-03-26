@@ -79,19 +79,19 @@ public class OperationService implements OperationClient {
         client.delete(uuid);
     }
 
-    public List<LigneOperation> buildLigneOperationListFromLigneDepenseList(List<LigneDepense> ligneDepenseList){
+    public List<LigneOperation> buildLigneOperationListFromLigneDepenseList(List<LigneDepense> ligneDepenseList, TypeOperation typeOperation){
         List<LigneOperation> ligneOperationList = new ArrayList<>();
-        ligneDepenseList.forEach(ligneDepense -> ligneOperationList.add(this.convertLigneDepenseIntoOperation(ligneDepense)));
+        ligneDepenseList.forEach(ligneDepense -> ligneOperationList.add(this.convertLigneDepenseIntoOperation(ligneDepense, typeOperation)));
         return ligneOperationList;
     }
 
     public List<LigneOperation> buildLigneOperationListFromImputationList(List<ImputationDto> imputationDtoList){
         List<LigneOperation> ligneOperationList = new ArrayList<>();
-        imputationDtoList.forEach(imputationDto -> ligneOperationList.add(this.convertImputationIntoOperation(imputationDto)));
+        imputationDtoList.forEach(imputation -> ligneOperationList.add(this.convertImputationIntoOperation(imputation)));
         return ligneOperationList;
     }
 
-    public LigneOperation convertLigneDepenseIntoOperation(LigneDepense ligneDepense){
+    public LigneOperation convertLigneDepenseIntoOperation(LigneDepense ligneDepense, TypeOperation typeOperation){
         LigneOperation ligneOperation = new LigneOperation();
 
         ligneOperation.setUsbCode(ligneDepense.getUsbCode());
@@ -116,6 +116,35 @@ public class OperationService implements OperationClient {
         ligneOperation.setSectionCode(ligneDepense.getSectionCode());
         ligneOperation.setSectionLibelle(ligneDepense.getSectionLibelle());
         ligneOperation.setOrigineImputation(OrigineImputation.BUDGET);
+        ligneOperation.setTypeOperation(typeOperation);
+
+        return ligneOperation;
+    }
+
+    public LigneOperation convertImputationIntoOperation(ImputationDto imputationDto){
+        LigneOperation ligneOperation = new LigneOperation();
+
+        ligneOperation.setActiviteCode(imputationDto.getActiviteDeService().getAdsCode());
+        ligneOperation.setActiviteLibelle(imputationDto.getActiviteDeService().getAdsLibelle());
+        ligneOperation.setLigneDepenseUuid(imputationDto.getUuid());
+        ligneOperation.setSourceFinancementId(imputationDto.getSourceFinancement().getId());
+        ligneOperation.setSourceFinancementCode(imputationDto.getSourceFinancement().getCode());
+        ligneOperation.setSourceFinancementLibelle(imputationDto.getSourceFinancement().getLibelle());
+        ligneOperation.setBudgetActuelAE(BigDecimal.ZERO);
+        ligneOperation.setBudgetActuelCP(BigDecimal.ZERO);
+        ligneOperation.setMontantDisponibleAE(BigDecimal.ZERO);
+        ligneOperation.setMontantDisponibleCP(BigDecimal.ZERO);
+        ligneOperation.setDisponibleRestantAE(BigDecimal.ZERO);
+        ligneOperation.setDisponibleRestantCP(BigDecimal.ZERO);
+        ligneOperation.setExercice(imputationDto.getExercice());
+        ligneOperation.setBailleurId(imputationDto.getBailleur().getId());
+        ligneOperation.setBailleurLibelle(imputationDto.getBailleur().getDesignation());
+        ligneOperation.setNatureEconomiqueCode(imputationDto.getNatureEconomique().getCode());
+        ligneOperation.setNatureEconomiqueLibelle(imputationDto.getNatureEconomique().getLibelleLong());
+        ligneOperation.setSectionCode(imputationDto.getSection().getCode());
+        ligneOperation.setSectionLibelle(imputationDto.getSection().getLibelle());
+        ligneOperation.setTypeOperation(TypeOperation.DESTINATION);
+        ligneOperation.setOrigineImputation(OrigineImputation.NOUVELLE_LIGNE);
 
         return ligneOperation;
     }
@@ -148,31 +177,5 @@ public class OperationService implements OperationClient {
         ligneOperation.setMontantDisponibleCP(ligneDepense.getMontantDisponibleCP());
     }
 
-    public LigneOperation convertImputationIntoOperation(ImputationDto imputationDto){
-        LigneOperation ligneOperation = new LigneOperation();
 
-        ligneOperation.setActiviteCode(imputationDto.getActiviteDeService().getAdsCode());
-        ligneOperation.setActiviteLibelle(imputationDto.getActiviteDeService().getAdsLibelle());
-        ligneOperation.setLigneDepenseUuid(imputationDto.getUuid());
-        ligneOperation.setSourceFinancementId(imputationDto.getSourceFinancement().getId());
-        ligneOperation.setSourceFinancementCode(imputationDto.getSourceFinancement().getCode());
-        ligneOperation.setSourceFinancementLibelle(imputationDto.getSourceFinancement().getLibelle());
-        ligneOperation.setBudgetActuelAE(BigDecimal.ZERO);
-        ligneOperation.setBudgetActuelCP(BigDecimal.ZERO);
-        ligneOperation.setMontantDisponibleAE(BigDecimal.ZERO);
-        ligneOperation.setMontantDisponibleCP(BigDecimal.ZERO);
-        ligneOperation.setDisponibleRestantAE(BigDecimal.ZERO);
-        ligneOperation.setDisponibleRestantCP(BigDecimal.ZERO);
-        ligneOperation.setExercice(imputationDto.getExercice());
-        ligneOperation.setBailleurId(imputationDto.getBailleur().getId());
-        ligneOperation.setBailleurLibelle(imputationDto.getBailleur().getDesignation());
-        ligneOperation.setNatureEconomiqueCode(imputationDto.getNatureEconomique().getCode());
-        ligneOperation.setNatureEconomiqueLibelle(imputationDto.getNatureEconomique().getLibelleLong());
-        ligneOperation.setSectionCode(imputationDto.getSection().getCode());
-        ligneOperation.setSectionLibelle(imputationDto.getSection().getLibelle());
-        ligneOperation.setTypeOperation(TypeOperation.DESTINATION);
-        ligneOperation.setOrigineImputation(OrigineImputation.NOUVELLE_LIGNE);
-
-        return ligneOperation;
-    }
 }

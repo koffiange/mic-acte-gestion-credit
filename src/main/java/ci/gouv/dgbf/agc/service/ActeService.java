@@ -3,7 +3,6 @@ package ci.gouv.dgbf.agc.service;
 
 import ci.gouv.dgbf.agc.client.ActeClient;
 import ci.gouv.dgbf.agc.dto.Acte;
-import ci.gouv.dgbf.agc.dto.ActeDto;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
@@ -49,18 +48,18 @@ public class ActeService implements ActeClient {
     }
 
     @Override
-    public ActeDto findActeDtoById(String uuid) {
+    public Acte findActeDtoById(String uuid) {
         return client.findActeDtoById(uuid);
     }
 
     @Override
-    public Acte persist(ActeDto acteDto) {
+    public Acte persist(Acte acteDto) {
         return client.persist(acteDto);
     }
 
     @Override
-    public Acte update(boolean appliquer, ActeDto acteDto) {
-        return client.update(appliquer, acteDto);
+    public Acte update(boolean appliquer, Acte acte) {
+        return client.update(appliquer, acte);
     }
 
     @Override

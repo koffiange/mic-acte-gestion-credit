@@ -1,12 +1,14 @@
 package ci.gouv.dgbf.agc.backing;
 
-import ci.gouv.dgbf.agc.dto.ActeDto;
 import ci.gouv.dgbf.agc.dto.Composition;
 import ci.gouv.dgbf.agc.dto.LigneOperation;
+import ci.gouv.dgbf.agc.dto.Operation;
+import ci.gouv.dgbf.agc.dto.OperationBag;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import ci.gouv.dgbf.agc.service.ActeService;
 import ci.gouv.dgbf.agc.service.CompositionService;
 import ci.gouv.dgbf.agc.service.JasperReportService;
+import ci.gouv.dgbf.agc.service.OperationService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,19 +33,25 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
 
     @Inject
     ActeService acteService;
+
+    @Inject
+    OperationService operationService;
+
     @Inject
     CompositionService compositionService;
+
     @Inject
     JasperReportService jasperReportService;
 
     @Getter @Setter
-    private ActeDto acteDto;
-    @Getter @Setter
-    private List<Composition> compositionList;
+    private OperationBag operationBag;
+
     @Getter @Setter
     private BigDecimal cumulAE;
+
     @Getter @Setter
     private BigDecimal cumulCP;
+
     @Setter
     private StreamedContent ficheActeFile;
     @Setter
@@ -51,26 +59,27 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
 
     private Map<String, String> params;
 
+
     @PostConstruct
     public void init(){
         params = getRequestParameterMap();
         if (params.containsKey("uuid")){
-            acteDto = acteService.findActeDtoById(params.get("uuid"));
+            operationBag = operationService.findById(params.get("uuid"));
             this.computeCumule();
         }
     }
 
     public List<LigneOperation> findByTypeOperation(String s){
         TypeOperation typeOperation = TypeOperation.valueOf(s);
-        return acteDto.getLigneOperationList().stream()
+        return operationBag.getLigneOperationList().stream()
                 .filter(operation -> operation.getTypeOperation().equals(typeOperation))
                 .collect(Collectors.toList());
     }
 
     private void computeCumule(){
-        acteDto.getLigneOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
+        operationBag.getLigneOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
                 .map(LigneOperation::getMontantOperationAE).map(BigDecimal::negate).reduce(BigDecimal::add).ifPresent(this::setCumulAE);
-        acteDto.getLigneOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
+        operationBag.getLigneOperationList().stream().filter(operation -> operation.getTypeOperation().equals(TypeOperation.ORIGINE))
                 .map(LigneOperation::getMontantOperationCP).map(BigDecimal::negate).reduce(BigDecimal::add).ifPresent(this::setCumulCP);
     }
 
@@ -80,9 +89,9 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
 
     public StreamedContent getFicheActeFile(){
         ficheActeFile = DefaultStreamedContent.builder()
-                .name("fiche_acte_"+acteDto.getActe().getReference()+".pdf")
+                .name("fiche_acte_"+operationBag.getActe().getReference()+".pdf")
                 .contentType("application/pdf")
-                .stream(() -> jasperReportService.downloadFicheActe(acteDto.getActe().getUuid()))
+                .stream(() -> jasperReportService.downloadFicheActe(operationBag.getActe().getUuid()))
                 .build();
         return ficheActeFile;
     }

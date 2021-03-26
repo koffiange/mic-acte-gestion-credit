@@ -23,9 +23,9 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.logging.Logger;
 
-@Named(value = "amcCreateBacking")
-@ViewScoped
-public class ActeMouvementCreditCreateBacking extends BaseBacking {
+
+public class ActeMouvementCreditCreateBacking_old extends BaseBacking {
+    /*
 
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
@@ -40,9 +40,6 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
 
     @Inject
     private OperationService operationService;
-
-    @Inject
-    private ModeleVisaService modeleVisaService;
 
     @Getter @Setter
     private List<Signataire> signataireList = new ArrayList<>();
@@ -110,7 +107,6 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         signataire = new Signataire();
         acteDto = new ActeDto();
         sectionList = sectionService.list();
-        modeleVisaList = modeleVisaService.listAll();
     }
 
     @PreDestroy
@@ -144,11 +140,11 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         }
     }
 
-    /*
+
     public void addSignataire(String s){
         signataireList.remove(s);
     }
-     */
+
 
     private void buildActe(){
         acte.setDateSignature(convertIntoLocaleDate(date));
@@ -245,7 +241,7 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
             throw new CreditInsuffisantException(msg.toString());
     }
 
-    /*
+
     public void verifierReference(FacesContext facesContext, UIComponent uiComponent, Object o) {
         LOG.info("Verifier reference");
         String reference = (String) o;
@@ -254,7 +250,6 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
             throw new ValidatorException(message);
     }
 
-     */
 
     public void verifierReference(String reference) throws ReferenceAlreadyExistException{
         if (acteService.checkReferenceAlreadyExist(reference))
@@ -284,11 +279,6 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         PrimeFaces.current().dialog().openDynamic("rechercher-source-financement-dlg", options, params);
     }
 
-    /**
-     * Permet de retrouver le coe de la section à envoyé au dialog de recherche des lignes de dépense
-     * ou de creation d'imputation.
-     * @return
-     */
     private String retrieveSectionCodeToSend(){
         return (acte.getNatureTransaction().equals(NatureTransaction.VIREMENT) && !operationBagOrigine.getLigneOperationList().isEmpty()) ?
                 operationBagOrigine.getLigneOperationList().get(0).getSectionCode() : "";
@@ -329,8 +319,6 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
         PrimeFaces.current().dialog().openDynamic("acte-corpus-dlg", options, params);
     }
 
-
-    /*
     private void completeSectionCodeList(TypeOperation typeOperation, List<String> sectionCodeList){
         sectionCodeList.forEach(code -> {
             if (typeOperation.equals(TypeOperation.ORIGINE) && !operationBagOrigine.getSectionCodeList().contains(code))
@@ -340,15 +328,12 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
                 operationBagDestination.getSectionCodeList().add(code);
         });
     }
-     */
 
     private void completeImputationDTOList(OperationBag operationBag){
-        /*
         if(operationBag.getTypeOperation().equals(TypeOperation.DESTINATION))
             acteDto.getImputationDtoList().addAll(operationBag.getImputationDtoList());
-
-         */
     }
+
 
     private void completeOperationList(TypeOperation typeOperation, List<LigneOperation> ligneOperationList){
         ligneOperationList.forEach(operation -> {
@@ -369,6 +354,8 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     public void corpusHandleReturn(SelectEvent event){
         acte.setCorpus(event.getObject().toString());
     }
+
+
 
 
     public void deleteOperation(String location, LigneOperation ligneOperation){
@@ -423,4 +410,6 @@ public class ActeMouvementCreditCreateBacking extends BaseBacking {
     public boolean displayEnregisterButton(){
         return (cumulRetranchementAE.subtract(cumulAjoutAE).compareTo(BigDecimal.ZERO) != 0 || cumulRetranchementCP.subtract(cumulAjoutCP).compareTo(BigDecimal.ZERO) != 0);
     }
+
+     */
 }
