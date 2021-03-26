@@ -67,8 +67,8 @@ public class OperationService implements OperationClient {
     }
 
     @Override
-    public void update(OperationBag operationBag) {
-        client.update(operationBag);
+    public OperationBag update(OperationBag operationBag) {
+        return client.update(operationBag);
     }
 
     @Override

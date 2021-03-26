@@ -29,8 +29,11 @@ public class ImputationDto {
     @Override
     public String toString() {
         return "ImputationDto{" +
-                "activiteDeService=" + activiteDeService +
-                ", natureEcnomique=" + natureEconomique +
+                "uuid='" + uuid + '\'' +
+                ", exercice='" + exercice + '\'' +
+                ", section=" + section +
+                ", activiteDeService=" + activiteDeService +
+                ", natureEconomique=" + natureEconomique +
                 ", sourceFinancement=" + sourceFinancement +
                 ", bailleur=" + bailleur +
                 '}';

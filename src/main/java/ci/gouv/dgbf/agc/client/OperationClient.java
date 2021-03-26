@@ -26,7 +26,7 @@ public interface OperationClient {
 
     @PUT
     @Path("/operation")
-    void update(OperationBag operationBag);
+    OperationBag update(OperationBag operationBag);
 
     @PUT
     @Path("/operation/appliquer")

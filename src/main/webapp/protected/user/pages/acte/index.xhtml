@@ -78,11 +78,12 @@
 
                                 <f:facet name="actions">
                                     <p:outputPanel id="applicationMultipleBtn">
+                                        <!--
                                         <p:commandButton value="Appliquer les actes sélectionnés" icon="fa fa-check"
                                                           actionListener="#{acteBacking.appliquerPlusieur()}" disabled="#{acteBacking.displayApplicationMultipleBtn}"
                                                          update="@form :messageForm"/>
-
-                                        <p:commandButton value="Imprimer " ajax="false" icon="fa fa-print" styleClass="steel-btn"
+                                        -->
+                                        <p:commandButton value="Imprimer liste des actes en attente d'application" ajax="false" icon="fa fa-print" styleClass="steel-btn"
                                                          actionListener="#{acteBacking.appliquerPlusieur()}" disabled="#{acteBacking.findByStatut('EN_ATTENTE').isEmpty()}">
                                             <p:fileDownload value="#{cmcBacking.getFicheListeActeFile('EN_ATTENTE')}"/>
                                         </p:commandButton>
@@ -182,7 +183,7 @@
                                             -->
                                             <hr style="border: dashed 1px #ffffff"/>
                                             <p:commandLink value="Modifier"
-                                                           actionListener="#{acteBacking.fictiveAction}"
+                                                           actionListener="#{acteBacking.openUpdateDialog(operationBag)}"
                                                            styleClass="text-bold">
                                                 <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}"
                                                         update=":listModeleForm messageForm"/>

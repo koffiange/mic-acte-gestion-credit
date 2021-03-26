@@ -17,4 +17,15 @@ public class OperationBag {
     private List<LigneOperation> ligneOperationList = new ArrayList<>();
     @Getter @Setter
     private List<ImputationDto> imputationDtoList = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "OperationBag{" +
+                "operation=" + operation +
+                ", acte=" + acte +
+                ", signataireList=" + signataireList +
+                ", ligneOperationList=" + ligneOperationList +
+                ", imputationDtoList=" + imputationDtoList +
+                '}';
+    }
 }

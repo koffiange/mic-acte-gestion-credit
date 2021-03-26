@@ -266,17 +266,19 @@
 
                     <p:outputPanel id="enregisterBTN">
                         <div class="ui-g">
+                            <!--
                             <div class="ui-g-4" style="margin: 0px auto !important;">
                                 <p:commandButton action="#{amcCreateBacking.persist(true)}"
                                                  disabled="#{amcCreateBacking.displayEnregisterButton()}" icon="fa fa-save"
                                                  value="#{amcCreateBacking.displayEnregisterButton() ? messages.equilibre_non_atteint_btn_message : messages.enregistrer_appliquer}"
                                                  update="@form" style="width: 100%" styleClass="green-btn"/>
                             </div>
-                            <div class="ui-g-4" style="margin: 0px auto !important;">
+                            -->
+                            <div class="ui-g-6" style="margin: 0px auto !important;">
                                 <p:commandButton action="#{amcCreateBacking.persist(false)}"
                                                  icon="fa fa-save"
                                                  value="#{messages.enregistrer}"
-                                                 update="@form" style="width: 100%" styleClass="orange-btn"/>
+                                                 update="@form" style="width: 100%"/>
                             </div>
                             <!--
                             <div class="ui-g-4" style="margin: 0px auto !important;">
@@ -287,7 +289,7 @@
                             </div>
                             -->
 
-                            <div class="ui-g-4">
+                            <div class="ui-g-6">
                                 <p:commandButton action="#{amcCreateBacking.close()}"
                                                  icon="fa fa-ban" styleClass="black-btn"
                                                  value="#{messages.annuler}" style="width: 100%"/>

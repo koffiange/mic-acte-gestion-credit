@@ -27,9 +27,8 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-@Named(value = "amcUpdateBacking")
-@ViewScoped
-public class ActeMouvementCreditUpdateBacking extends BaseBacking {
+
+public class ActeMouvementCreditUpdateBacking_old extends BaseBacking {
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
     @Inject

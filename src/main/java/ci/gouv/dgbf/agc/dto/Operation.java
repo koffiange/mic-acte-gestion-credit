@@ -57,11 +57,16 @@ public class Operation {
     @Override
     public String toString() {
         return "Operation{" +
-                "numeroOperation='" + codeOperation + '\'' +
+                "uuid='" + uuid + '\'' +
+                ", codeOperation='" + codeOperation + '\'' +
                 ", variationAE=" + variationAE +
                 ", variationCP=" + variationCP +
                 ", statutOperation=" + statutOperation +
                 ", exercice='" + exercice + '\'' +
+                ", createdDate=" + createdDate +
+                ", updatedDate=" + updatedDate +
+                ", createdBy='" + createdBy + '\'' +
+                ", updatedBy='" + updatedBy + '\'' +
                 '}';
     }
 }

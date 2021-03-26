@@ -97,7 +97,7 @@ public class ActeBacking extends BaseBacking {
         PrimeFaces.current().dialog().openDynamic(determineCreateDialogName(newActeCatégorie), options, params);
     }
 
-    public void openUpdateDialog(Acte acte){
+    public void openUpdateDialog(OperationBag operationBag){
         Map<String,Object> options = getLevelTwoDialogOptions();
         options.put("closable", false);
         options.replace("height", "95vh");
@@ -105,11 +105,11 @@ public class ActeBacking extends BaseBacking {
 
         Map<String, List<String>> params = new HashMap<>();
         List<String> uuidList = new ArrayList<>();
-        uuidList.add(acte.getUuid());
+        uuidList.add(operationBag.getOperation().getUuid());
         params.put("uuid", uuidList);
 
-        // String dlg = this.determineUpdateDialogName(acte);
-        PrimeFaces.current().dialog().openDynamic(null, options, params);
+        String dlg = this.determineUpdateDialogName(operationBag.getActe().getCategorieActe());
+        PrimeFaces.current().dialog().openDynamic(dlg, options, params);
     }
 
     public void openAppliquerDialog(String uuid){

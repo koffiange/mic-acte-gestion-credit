@@ -46,7 +46,7 @@ public class JasperReportService {
                 .build(JasperReportClient.class);
     }
 
-    public InputStream downloadFicheActe(@QueryParam("ACTE_ID") String acteId){
+    public InputStream downloadFicheActe(@QueryParam("OPERATION_ID") String acteId){
         return client.downloadFicheActe(acteId, j_username, j_password);
     }
 

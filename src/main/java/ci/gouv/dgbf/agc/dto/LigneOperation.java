@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class LigneOperation {
     @Getter @Setter
-    private String uuid = UUID.randomUUID().toString();
+    private String uuid;
     @Getter @Setter
     private String ligneDepenseUuid;
     @Getter @Setter
@@ -100,18 +100,34 @@ public class LigneOperation {
     @Override
     public String toString() {
         return "LigneOperation{" +
-                "ligneDepenseUuid='" + ligneDepenseUuid + '\'' +
+                "uuid='" + uuid + '\'' +
+                ", ligneDepenseUuid='" + ligneDepenseUuid + '\'' +
+                ", usbCode='" + usbCode + '\'' +
+                ", usbLibelle='" + usbLibelle + '\'' +
                 ", activiteCode='" + activiteCode + '\'' +
                 ", activiteLibelle='" + activiteLibelle + '\'' +
                 ", natureEconomiqueCode='" + natureEconomiqueCode + '\'' +
-                ", natureEconomique='" + natureEconomiqueLibelle + '\'' +
+                ", natureEconomiqueLibelle='" + natureEconomiqueLibelle + '\'' +
+                ", sourceFinancementId='" + sourceFinancementId + '\'' +
+                ", sourceFinancementCode='" + sourceFinancementCode + '\'' +
+                ", sourceFinancementLibelle='" + sourceFinancementLibelle + '\'' +
                 ", exercice='" + exercice + '\'' +
                 ", budgetActuelAE=" + budgetActuelAE +
                 ", budgetActuelCP=" + budgetActuelCP +
                 ", montantOperationAE=" + montantOperationAE +
                 ", montantOperationCP=" + montantOperationCP +
+                ", montantDisponibleAE=" + montantDisponibleAE +
+                ", montantDisponibleCP=" + montantDisponibleCP +
+                ", disponibleRestantAE=" + disponibleRestantAE +
+                ", disponibleRestantCP=" + disponibleRestantCP +
+                ", typeOperation=" + typeOperation +
                 ", effetOperation=" + effetOperation +
                 ", disponibiliteCredit=" + disponibiliteCredit +
+                ", sectionCode='" + sectionCode + '\'' +
+                ", sectionLibelle='" + sectionLibelle + '\'' +
+                ", bailleurId='" + bailleurId + '\'' +
+                ", bailleurLibelle='" + bailleurLibelle + '\'' +
+                ", origineImputation=" + origineImputation +
                 '}';
     }
 }

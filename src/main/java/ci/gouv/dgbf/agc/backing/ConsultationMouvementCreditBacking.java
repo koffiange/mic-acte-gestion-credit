@@ -91,7 +91,7 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
         ficheActeFile = DefaultStreamedContent.builder()
                 .name("fiche_acte_"+operationBag.getActe().getReference()+".pdf")
                 .contentType("application/pdf")
-                .stream(() -> jasperReportService.downloadFicheActe(operationBag.getActe().getUuid()))
+                .stream(() -> jasperReportService.downloadFicheActe(operationBag.getOperation().getUuid()))
                 .build();
         return ficheActeFile;
     }
