@@ -39,7 +39,7 @@ public class ActeMouvementCreditCreateBacking_old extends BaseBacking {
     private OperationSessionService operationSessionService;
 
     @Inject
-    private OperationService operationService;
+    private LigneOperationService ligneOperationService;
 
     @Getter @Setter
     private List<Signataire> signataireList = new ArrayList<>();
@@ -217,7 +217,7 @@ public class ActeMouvementCreditCreateBacking_old extends BaseBacking {
     }
 
     private void majOperationAvantVerification(){
-        operationBagOrigine.setLigneOperationList(operationService.operationListDisponibiliteSetter(operationBagOrigine.getLigneOperationList()));
+        operationBagOrigine.setLigneOperationList(ligneOperationService.operationListDisponibiliteSetter(operationBagOrigine.getLigneOperationList()));
         // this.truncateDisponible();
         LOG.info("Mise a jour des opération avant verification");
     }

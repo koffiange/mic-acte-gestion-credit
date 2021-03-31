@@ -34,7 +34,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
     @Inject
     LigneDepenseService ligneDepenseService;
     @Inject
-    OperationService operationService;
+    LigneOperationService ligneOperationService;
     @Inject
     OperationSessionService operationSessionService;
     @Getter @Setter
@@ -165,7 +165,7 @@ public class RechercherSourceFinancementBacking extends BaseBacking {
 
     public void rechercher(){
         ligneDepenseList = ligneDepenseService.findByCritere(exercice, sourceFinancement, natureEconomiqueCode, activiteCode, bailleur, sectionCode, natureDepense, programme, action);
-        ligneOperationList = operationService.buildLigneOperationListFromLigneDepenseList(ligneDepenseList, ligneDepenseHandleReturnBag.getTypeOperation());
+        ligneOperationList = ligneOperationService.buildLigneOperationListFromLigneDepenseList(ligneDepenseList, ligneDepenseHandleReturnBag.getTypeOperation());
         this.initCritereRecherche();
     }
 

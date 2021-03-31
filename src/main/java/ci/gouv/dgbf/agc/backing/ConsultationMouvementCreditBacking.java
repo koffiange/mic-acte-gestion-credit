@@ -1,14 +1,12 @@
 package ci.gouv.dgbf.agc.backing;
 
-import ci.gouv.dgbf.agc.dto.Composition;
 import ci.gouv.dgbf.agc.dto.LigneOperation;
-import ci.gouv.dgbf.agc.dto.Operation;
 import ci.gouv.dgbf.agc.dto.OperationBag;
 import ci.gouv.dgbf.agc.enumeration.TypeOperation;
 import ci.gouv.dgbf.agc.service.ActeService;
 import ci.gouv.dgbf.agc.service.CompositionService;
 import ci.gouv.dgbf.agc.service.JasperReportService;
-import ci.gouv.dgbf.agc.service.OperationService;
+import ci.gouv.dgbf.agc.service.LigneOperationService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,7 +33,7 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
     ActeService acteService;
 
     @Inject
-    OperationService operationService;
+    LigneOperationService ligneOperationService;
 
     @Inject
     CompositionService compositionService;
@@ -64,7 +62,7 @@ public class ConsultationMouvementCreditBacking extends BaseBacking {
     public void init(){
         params = getRequestParameterMap();
         if (params.containsKey("uuid")){
-            operationBag = operationService.findBagById(params.get("uuid"));
+            operationBag = ligneOperationService.findBagById(params.get("uuid"));
             this.computeCumule();
         }
     }

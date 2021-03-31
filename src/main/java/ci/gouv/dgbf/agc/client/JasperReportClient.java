@@ -10,7 +10,7 @@ public interface JasperReportClient {
     @GET
     @Path("/reports/sigobe/Actes_de_gestion/FicheActeV2.pdf")
     // @Path("/reports/sigobe/Documents_budgetaires/Elaboration_DPPD/Livre/dppd_1.1.0.pdf")
-    InputStream downloadFicheActe(@QueryParam("ACTE_ID") String acteId,
+    InputStream downloadFicheActe(@QueryParam("OPERATION_ID") String acteId,
                                   @QueryParam("j_username") String j_username,
                                   @QueryParam("j_password") String j_password);
 

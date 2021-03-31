@@ -119,7 +119,7 @@
                                 <h:outputText value="#{ligneOperation.natureEconomiqueCode} - #{ligneOperation.natureEconomiqueLibelle}" />
                             </p:column>
 
-                            <p:column headerText="Budget actuel">
+                            <p:column headerText="Budget actuel" >
                                 <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
                                 <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelCP)}" />
@@ -162,7 +162,7 @@
                                 <h:outputText value="#{ligneOperation.natureEconomiqueCode} - #{ligneOperation.natureEconomiqueLibelle}" />
                             </p:column>
 
-                            <p:column headerText="Budget actuel">
+                            <p:column headerText="Budget actuel" styleClass="text-align-right">
                                 <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
                                 <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelCP)}" />
@@ -174,7 +174,7 @@
                                 <h:outputText value="CP : -" />
                             </p:column>
                             -->
-                            <p:column headerText="Ajouts">
+                            <p:column headerText="Ajouts" styleClass="text-align-right">
                                 <h:outputText value="AE : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.montantOperationAE)}" />
                                 <p:separator style="border: dotted 1px #000000"/>
                                 <h:outputText value="CP : #{cmcBacking.displayBigDecimalThousandSeparator(ligneOperation.montantOperationCP)}" />

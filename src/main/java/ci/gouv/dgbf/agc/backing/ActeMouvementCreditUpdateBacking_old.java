@@ -1,31 +1,18 @@
 package ci.gouv.dgbf.agc.backing;
 
 import ci.gouv.dgbf.agc.dto.*;
-import ci.gouv.dgbf.agc.enumeration.CategorieActe;
-import ci.gouv.dgbf.agc.enumeration.NatureTransaction;
-import ci.gouv.dgbf.agc.enumeration.StatutActe;
-import ci.gouv.dgbf.agc.enumeration.TypeOperation;
-import ci.gouv.dgbf.agc.exception.CreditInsuffisantException;
-import ci.gouv.dgbf.agc.exception.ReferenceAlreadyExistException;
 import ci.gouv.dgbf.agc.service.ActeService;
-import ci.gouv.dgbf.agc.service.OperationService;
+import ci.gouv.dgbf.agc.service.LigneOperationService;
 import ci.gouv.dgbf.agc.service.OperationSessionService;
 import ci.gouv.dgbf.agc.service.SectionService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
-import org.primefaces.PrimeFaces;
-import org.primefaces.event.SelectEvent;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 
 public class ActeMouvementCreditUpdateBacking_old extends BaseBacking {
@@ -41,7 +28,7 @@ public class ActeMouvementCreditUpdateBacking_old extends BaseBacking {
     private OperationSessionService operationSessionService;
 
     @Inject
-    private OperationService operationService;
+    private LigneOperationService ligneOperationService;
 
     @Getter @Setter
     private List<Signataire> signataireList = new ArrayList<>();
@@ -115,8 +102,8 @@ public class ActeMouvementCreditUpdateBacking_old extends BaseBacking {
 
             operationBagOrigine = new OperationBag(TypeOperation.ORIGINE, ligneOperationOrigine, new ArrayList<>());
             operationBagDestination = new OperationBag(TypeOperation.DESTINATION, ligneOperationDestination, new ArrayList<>());
-            operationBagOrigine.setLigneOperationList(operationService.operationListDisponibiliteSetter(operationBagOrigine.getLigneOperationList()));
-            operationBagDestination.setLigneOperationList(operationService.operationListDisponibiliteSetter(operationBagDestination.getLigneOperationList()));
+            operationBagOrigine.setLigneOperationList(ligneOperationService.operationListDisponibiliteSetter(operationBagOrigine.getLigneOperationList()));
+            operationBagDestination.setLigneOperationList(ligneOperationService.operationListDisponibiliteSetter(operationBagDestination.getLigneOperationList()));
 
             operationSessionService.setLigneOperationDestinationList(ligneOperationOrigine);
             operationSessionService.setLigneOperationDestinationList(ligneOperationDestination);
@@ -318,7 +305,7 @@ public class ActeMouvementCreditUpdateBacking_old extends BaseBacking {
     }
 
     private void majOperationAvantVerification(){
-        operationBagOrigine.setLigneOperationList(operationService.operationListDisponibiliteSetter(operationBagOrigine.getLigneOperationList()));
+        operationBagOrigine.setLigneOperationList(ligneOperationService.operationListDisponibiliteSetter(operationBagOrigine.getLigneOperationList()));
         // this.truncateDisponible();
     }
 

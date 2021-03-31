@@ -9,15 +9,19 @@ public class LigneDepense {
     @Getter @Setter
     private String ligneDepenseId;
     @Getter @Setter
-    private String exercice;
+    private String financementId;
     @Getter @Setter
-    private String activiteId;
+    private String plafonId;
+    @Getter @Setter
+    private String exercice;
     @Getter @Setter
     private String natureEconomiqueId;
     @Getter @Setter
     private String natureEconomiqueCode;
     @Getter @Setter
     private String natureEconomiqueLibelle;
+    @Getter @Setter
+    private String activiteId;
     @Getter @Setter
     private String activiteCode;
     @Getter @Setter
@@ -47,8 +51,6 @@ public class LigneDepense {
     @Getter @Setter
     private String uaId;
     @Getter @Setter
-    private String financementId;
-    @Getter @Setter
     private BigDecimal montantAe;
     @Getter @Setter
     private BigDecimal montantCp;
@@ -56,6 +58,8 @@ public class LigneDepense {
     private BigDecimal montantDisponibleAE;
     @Getter @Setter
     private BigDecimal montantDisponibleCP;
+    @Getter @Setter
+    private String natureDepense;
 
 
     public LigneDepense() {

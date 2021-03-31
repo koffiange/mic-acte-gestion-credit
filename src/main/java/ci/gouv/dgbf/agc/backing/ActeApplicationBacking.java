@@ -5,7 +5,7 @@ import ci.gouv.dgbf.agc.dto.Operation;
 import ci.gouv.dgbf.agc.dto.OperationBag;
 import ci.gouv.dgbf.agc.enumeration.ActeRole;
 import ci.gouv.dgbf.agc.service.ActeService;
-import ci.gouv.dgbf.agc.service.OperationService;
+import ci.gouv.dgbf.agc.service.LigneOperationService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +27,7 @@ public class ActeApplicationBacking extends BaseBacking {
     ActeService acteService;
 
     @Inject
-    OperationService operationService;
+    LigneOperationService ligneOperationService;
 
     @Getter @Setter
     private List<Acte> acteList;
@@ -48,7 +48,7 @@ public class ActeApplicationBacking extends BaseBacking {
         operationBag = new OperationBag();
         params = getRequestParameterMap();
         if (params.containsKey("uuid")) {
-            operation = operationService.findById(params.get("uuid"));
+            operation = ligneOperationService.findById(params.get("uuid"));
             acteList = acteService.findActeByOperation(params.get("uuid"));
             acteList.stream().filter(acte -> acte.getActeParDefaut().equals(ActeRole.PAR_DEFAUT)).findFirst().ifPresent(this::setSelectedActe);
         }
@@ -57,7 +57,7 @@ public class ActeApplicationBacking extends BaseBacking {
     public void appliquer(){
         operationBag.setOperation(operation);
         operationBag.setActe(selectedActe);
-        operationService.appliquer(operationBag);
+        ligneOperationService.appliquer(operationBag);
         closeSuccess();
     }
 

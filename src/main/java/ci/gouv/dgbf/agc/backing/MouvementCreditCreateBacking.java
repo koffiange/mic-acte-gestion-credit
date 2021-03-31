@@ -7,7 +7,7 @@ import ci.gouv.dgbf.agc.enumeration.*;
 import ci.gouv.dgbf.agc.exception.CreditInsuffisantException;
 import ci.gouv.dgbf.agc.exception.ReferenceAlreadyExistException;
 import ci.gouv.dgbf.agc.service.ActeService;
-import ci.gouv.dgbf.agc.service.OperationService;
+import ci.gouv.dgbf.agc.service.LigneOperationService;
 import ci.gouv.dgbf.agc.service.SectionService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class MouvementCreditCreateBacking extends BaseBacking {
     private SectionService sectionService;
 
     @Inject
-    private OperationService operationService;
+    private LigneOperationService ligneOperationService;
 
     @Getter @Setter
     private List<NatureTransaction> natureTransactionList = Arrays.asList(NatureTransaction.values());
@@ -259,13 +259,14 @@ public class MouvementCreditCreateBacking extends BaseBacking {
             LOG.info("Traitement des opérations avant persist [ok]");
             this.buildActe();
             this.buildOperation();
+            this.buildImputation();
             LOG.info("Construction de ACTE DTO [ok]");
             this.buildOperationBag();
             LOG.info("Construction de OPERARATIONBAG [ok]");
-            OperationBag operationBagPersisted = operationService.persist(operationBag);
+            OperationBag operationBagPersisted = ligneOperationService.persist(operationBag);
             LOG.info("Sauvegarde [ok]");
             if (appliquerActe)
-                operationService.appliquer(operationBagPersisted);
+                ligneOperationService.appliquer(operationBagPersisted);
             LOG.info("Application [ok]");
             closeSuccess();
         } catch (Exception e){
@@ -274,7 +275,7 @@ public class MouvementCreditCreateBacking extends BaseBacking {
     }
 
     private void majOperationAvantVerification(){
-        ligneOperationOrigineList = operationService.operationListDisponibiliteSetter(ligneOperationOrigineList);
+        ligneOperationOrigineList = ligneOperationService.operationListDisponibiliteSetter(ligneOperationOrigineList);
         // this.truncateDisponible();
     }
 
@@ -327,6 +328,7 @@ public class MouvementCreditCreateBacking extends BaseBacking {
         acte.setCumulAjoutAE(cumulAjoutAE);
         acte.setCumulAjoutCP(cumulAjoutAE);
         acte.setDateSignature(convertIntoLocaleDate(date));
+        acte.setStatutActe(StatutActe.EN_ATTENTE);
     }
 
     private void buildOperation(){
@@ -343,6 +345,22 @@ public class MouvementCreditCreateBacking extends BaseBacking {
         operationBag.getLigneOperationList().addAll(ligneOperationDestinationList);
         operationBag.getImputationDtoList().addAll(imputationDtoList);
 
+    }
+
+    private void buildImputation(){
+        LOG.info("imputationDtoList "+ imputationDtoList.size());
+        imputationDtoList.forEach(this::imputationMontantAeCpSetter);
+    }
+
+    private void imputationMontantAeCpSetter(ImputationDto imputationDto){
+        LOG.info("==ligneOperationDestinationList "+ ligneOperationDestinationList.size());
+        ligneOperationDestinationList.stream()
+                .filter(ligneOperation -> ligneOperation.getOrigineImputation().equals(OrigineImputation.NOUVELLE_LIGNE) && ligneOperation.getLigneDepenseUuid().equals(imputationDto.getUuid()))
+                .peek(ligneOperation -> LOG.info("Correspond : "+ ligneOperation.getLigneDepenseUuid()))
+                .findAny().ifPresent(ligneOperation -> {
+                    imputationDto.setMontantAe(ligneOperation.getMontantOperationAE());
+                    imputationDto.setMontantCp(ligneOperation.getMontantOperationCP());
+                });
     }
 
     public boolean displayEnregisterButton(){

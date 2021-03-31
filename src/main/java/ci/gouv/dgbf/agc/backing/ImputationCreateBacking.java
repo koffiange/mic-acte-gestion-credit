@@ -40,7 +40,7 @@ public class ImputationCreateBacking extends BaseBacking {
     @Inject
     OperationSessionService operationSessionService;
     @Inject
-    OperationService operationService;
+    LigneOperationService ligneOperationService;
 
     @Getter @Setter
     private List<ImputationDto> imputationDtoList = new ArrayList<>();
@@ -155,7 +155,7 @@ public class ImputationCreateBacking extends BaseBacking {
 
     public void ajouter(){
 
-        imputationHandleReturnBag.setLigneOperationList(operationService.buildLigneOperationListFromImputationList(imputationHandleReturnBag.getImputationDtoList()));
+        imputationHandleReturnBag.setLigneOperationList(ligneOperationService.buildLigneOperationListFromImputationList(imputationHandleReturnBag.getImputationDtoList()));
         PrimeFaces.current().dialog().closeDynamic(imputationHandleReturnBag);
     }
 }

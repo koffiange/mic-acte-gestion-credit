@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
-public class OperationService implements OperationClient {
+public class LigneOperationService implements OperationClient {
 
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 
@@ -83,23 +83,30 @@ public class OperationService implements OperationClient {
 
     public List<LigneOperation> buildLigneOperationListFromLigneDepenseList(List<LigneDepense> ligneDepenseList, TypeOperation typeOperation){
         List<LigneOperation> ligneOperationList = new ArrayList<>();
-        ligneDepenseList.forEach(ligneDepense -> ligneOperationList.add(this.convertLigneDepenseIntoOperation(ligneDepense, typeOperation)));
+        ligneDepenseList.forEach(ligneDepense -> ligneOperationList.add(this.convertLigneDepenseIntoLigneOperation(ligneDepense, typeOperation)));
         return ligneOperationList;
     }
 
     public List<LigneOperation> buildLigneOperationListFromImputationList(List<ImputationDto> imputationDtoList){
         List<LigneOperation> ligneOperationList = new ArrayList<>();
-        imputationDtoList.forEach(imputation -> ligneOperationList.add(this.convertImputationIntoOperation(imputation)));
+        imputationDtoList.forEach(imputation -> ligneOperationList.add(this.convertImputationIntoLigneOperation(imputation)));
         return ligneOperationList;
     }
 
-    public LigneOperation convertLigneDepenseIntoOperation(LigneDepense ligneDepense, TypeOperation typeOperation){
+    public LigneOperation convertLigneDepenseIntoLigneOperation(LigneDepense ligneDepense, TypeOperation typeOperation){
         LigneOperation ligneOperation = new LigneOperation();
 
+
+        ligneOperation.setFinancementId(ligneDepense.getFinancementId());
+        ligneOperation.setPlafonId(ligneDepense.getPlafonId());
         ligneOperation.setUsbCode(ligneDepense.getUsbCode());
         ligneOperation.setUsbLibelle(ligneDepense.getUsbLibelle());
+        ligneOperation.setActiviteId(ligneDepense.getActiviteId());
         ligneOperation.setActiviteCode(ligneDepense.getActiviteCode());
         ligneOperation.setActiviteLibelle(ligneDepense.getActiviteLibelle());
+        ligneOperation.setActionId(ligneDepense.getActiviteId());
+        ligneOperation.setActionCode(ligneDepense.getActiviteCode());
+        ligneOperation.setActionLibelle(ligneDepense.getActiviteLibelle());
         ligneOperation.setSourceFinancementId(ligneDepense.getSourceFinancementId());
         ligneOperation.setBudgetActuelAE(ligneDepense.getMontantAe());
         ligneOperation.setBudgetActuelCP(ligneDepense.getMontantCp());
@@ -113,8 +120,10 @@ public class OperationService implements OperationClient {
         ligneOperation.setSourceFinancementLibelle(ligneDepense.getSourceFinancementLibelle());
         ligneOperation.setBailleurId(ligneDepense.getBailleurId());
         ligneOperation.setBailleurLibelle(ligneDepense.getBailleurLibelle());
-        ligneOperation.setNatureEconomiqueLibelle(ligneDepense.getNatureEconomiqueLibelle());
         ligneOperation.setNatureEconomiqueCode(ligneDepense.getNatureEconomiqueCode());
+        ligneOperation.setNatureEconomiqueId(ligneDepense.getNatureEconomiqueId());
+        ligneOperation.setNatureEconomiqueLibelle(ligneDepense.getNatureEconomiqueLibelle());
+        ligneOperation.setSectionId(ligneDepense.getSectionId());
         ligneOperation.setSectionCode(ligneDepense.getSectionCode());
         ligneOperation.setSectionLibelle(ligneDepense.getSectionLibelle());
         ligneOperation.setOrigineImputation(OrigineImputation.BUDGET);
@@ -123,7 +132,7 @@ public class OperationService implements OperationClient {
         return ligneOperation;
     }
 
-    public LigneOperation convertImputationIntoOperation(ImputationDto imputationDto){
+    public LigneOperation convertImputationIntoLigneOperation(ImputationDto imputationDto){
         LigneOperation ligneOperation = new LigneOperation();
 
         ligneOperation.setActiviteCode(imputationDto.getActiviteDeService().getAdsCode());

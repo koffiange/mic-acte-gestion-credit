@@ -1,12 +1,11 @@
 package ci.gouv.dgbf.agc.backing;
 
 import ci.gouv.dgbf.agc.dto.Acte;
-import ci.gouv.dgbf.agc.dto.Operation;
 import ci.gouv.dgbf.agc.dto.OperationBag;
 import ci.gouv.dgbf.agc.enumeration.CategorieActe;
 import ci.gouv.dgbf.agc.enumeration.StatutOperation;
 import ci.gouv.dgbf.agc.service.ActeService;
-import ci.gouv.dgbf.agc.service.OperationService;
+import ci.gouv.dgbf.agc.service.LigneOperationService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,7 +32,7 @@ public class ActeBacking extends BaseBacking {
     ActeService acteService;
 
     @Inject
-    OperationService operationService;
+    LigneOperationService ligneOperationService;
 
     private List<OperationBag> operationBagList;
 
@@ -54,7 +53,7 @@ public class ActeBacking extends BaseBacking {
 
     @PostConstruct
     public void init(){
-        operationBagList = operationService.listAll();
+        operationBagList = ligneOperationService.listAll();
         categorieActeList = Arrays.asList(CategorieActe.values())
                             .stream().filter(categorieActe -> categorieActe.getUsageType().equals("GESTION"))
                             .collect(Collectors.toList());
@@ -227,7 +226,7 @@ public class ActeBacking extends BaseBacking {
 
     public void delete(String uuid){
         try{
-            operationService.delete(uuid);
+            ligneOperationService.delete(uuid);
             this.init();
             showSuccess();
         } catch (Exception e){
@@ -239,7 +238,7 @@ public class ActeBacking extends BaseBacking {
         try {
             AtomicReference<OperationBag> operationBag = null;
             operationBagList.stream().filter(ob -> ob.getOperation().getUuid().equals(uuid)).findFirst().ifPresent(ob1 -> operationBag.set(ob1));
-            operationService.appliquer(operationBag.get());
+            ligneOperationService.appliquer(operationBag.get());
             this.init();
             showSuccess();
         } catch (Exception e){

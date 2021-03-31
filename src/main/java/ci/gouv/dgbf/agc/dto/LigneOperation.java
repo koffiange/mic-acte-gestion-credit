@@ -18,13 +18,27 @@ public class LigneOperation {
     @Getter @Setter
     private String ligneDepenseUuid;
     @Getter @Setter
+    private String financementId;
+    @Getter @Setter
+    private String plafonId;
+    @Getter @Setter
     private String usbCode;
     @Getter @Setter
     private String usbLibelle;
     @Getter @Setter
+    private String activiteId;
+    @Getter @Setter
     private String activiteCode;
     @Getter @Setter
     private String activiteLibelle;
+    @Getter @Setter
+    private String actionId;
+    @Getter @Setter
+    private String actionCode;
+    @Getter @Setter
+    private String actionLibelle;
+    @Getter @Setter
+    private String natureEconomiqueId;
     @Getter @Setter
     private String natureEconomiqueCode;
     @Getter @Setter
@@ -60,6 +74,8 @@ public class LigneOperation {
     @Getter @Setter
     private DisponibiliteCreditOperation disponibiliteCredit;
     @Getter @Setter
+    private String sectionId;
+    @Getter @Setter
     private String sectionCode;
     @Getter @Setter
     private String sectionLibelle;
@@ -69,6 +85,8 @@ public class LigneOperation {
     private String bailleurLibelle;
     @Getter @Setter
     private OrigineImputation origineImputation;
+    @Getter @Setter
+    private String natureDepense;
 
     public LigneOperation() {
     }

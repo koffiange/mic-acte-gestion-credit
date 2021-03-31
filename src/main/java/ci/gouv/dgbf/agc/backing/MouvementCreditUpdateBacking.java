@@ -7,7 +7,7 @@ import ci.gouv.dgbf.agc.enumeration.*;
 import ci.gouv.dgbf.agc.exception.CreditInsuffisantException;
 import ci.gouv.dgbf.agc.exception.ReferenceAlreadyExistException;
 import ci.gouv.dgbf.agc.service.ActeService;
-import ci.gouv.dgbf.agc.service.OperationService;
+import ci.gouv.dgbf.agc.service.LigneOperationService;
 import ci.gouv.dgbf.agc.service.SectionService;
 import ci.gouv.dgbf.appmodele.backing.BaseBacking;
 import lombok.Getter;
@@ -38,7 +38,7 @@ public class MouvementCreditUpdateBacking extends BaseBacking {
     private SectionService sectionService;
 
     @Inject
-    private OperationService operationService;
+    private LigneOperationService ligneOperationService;
 
     @Getter
     @Setter
@@ -103,7 +103,7 @@ public class MouvementCreditUpdateBacking extends BaseBacking {
     public void init(){
         params = getRequestParameterMap();
         if (params.containsKey("uuid")){
-            operationBag = operationService.findBagById(params.get("uuid"));
+            operationBag = ligneOperationService.findBagById(params.get("uuid"));
             acte = operationBag.getActe();
             date = convertIntoDate(acte.getDateSignature());
             signataireList = operationBag.getSignataireList();
@@ -281,10 +281,10 @@ public class MouvementCreditUpdateBacking extends BaseBacking {
             LOG.info("== OPERARATIONBAG BUILD ==");
             LOG.info(operationBag.toString());
             LOG.info("Construction de OPERARATIONBAG [ok]");
-            OperationBag operationBagPersisted = operationService.update(operationBag);
+            OperationBag operationBagPersisted = ligneOperationService.update(operationBag);
             LOG.info("Sauvegarde [ok]");
             if (appliquerActe)
-                operationService.appliquer(operationBagPersisted);
+                ligneOperationService.appliquer(operationBagPersisted);
             LOG.info("Application [ok]");
             closeSuccess();
         } catch (Exception e){
@@ -293,7 +293,7 @@ public class MouvementCreditUpdateBacking extends BaseBacking {
     }
 
     private void majOperationAvantVerification(){
-        ligneOperationOrigineList = operationService.operationListDisponibiliteSetter(ligneOperationOrigineList);
+        ligneOperationOrigineList = ligneOperationService.operationListDisponibiliteSetter(ligneOperationOrigineList);
         // this.truncateDisponible();
     }
 

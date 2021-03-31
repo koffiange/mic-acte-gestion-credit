@@ -45,6 +45,8 @@ public class Acte extends BaseDto{
     private BigDecimal cumulAjoutCP;
     @Getter @Setter
     private ActeRole acteParDefaut;
+    @Getter @Setter
+    private String signataire;
 
     public Acte() {
     }

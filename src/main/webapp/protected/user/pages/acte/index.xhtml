@@ -60,7 +60,7 @@
                                     <h:outputText value="#{c.natureActe}" styleClass="text-smaller"/>
                                 </p:column>
 
-                                <p:ajax event="change" update="@form:createBtn"/>
+                                <p:ajax event="itemSelect" update="@form:createBtn"/>
                             </p:selectOneMenu>
                             <p:commandButton id="createBtn" value="Créer un nouvelle acte de gestion" action="#{acteBacking.openCreateDialog()}" disabled="#{acteBacking.newActeCatégorie eq null}">
                                 <p:ajax event="dialogReturn" listener="#{acteBacking.handleReturn}" update="@form :listModeleForm messageForm"/>

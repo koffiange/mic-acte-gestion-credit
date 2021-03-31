@@ -33,7 +33,7 @@
                                 <p:inputText id="libelle" value="#{amcCreateBacking.acte.libelle}" styleClass="form-control-block"/>
                             </div>
                         </div>
-                        <div>
+                        <div class="ui-g">
                             <div class="ui-g-3">
                                 <h:outputLabel for="natureTransaction" value="Nature de mouvement" styleClass="text-bold"/><br/>
                                 <p:selectOneMenu id="natureTransaction" value="#{amcCreateBacking.acte.natureTransaction}" styleClass="form-control">
@@ -44,6 +44,10 @@
                             <div class="ui-g-3">
                                 <h:outputLabel for="dateSignature" value="Date signature" styleClass="text-bold form-control"/><br/>
                                 <p:datePicker id="dateSignature" value="#{amcCreateBacking.date}" showButtonBar="true"/>
+                            </div>
+                            <div class="ui-g-12">
+                                <h:outputLabel for="signataire" value="Signataire(s)" styleClass="text-bold form-control"/><br/>
+                                <p:inputText id="signataire" value="#{amcCreateBacking.acte.signataire}" styleClass="form-control-block"/>
                             </div>
                         </div>
                     </p:fieldset>
@@ -80,15 +84,15 @@
                                 <h:outputText value="#{ligneOperation.natureEconomiqueCode} - #{ligneOperation.natureEconomiqueLibelle}"  />
                             </p:column>
 
-                            <p:column headerText="Source Fin." styleClass="col-w10">
+                            <p:column headerText="Source Fin." styleClass="col-w10 text-align-right">
                                 <h:outputText value="#{ligneOperation.sourceFinancementLibelle}"   />
                             </p:column>
 
-                            <p:column headerText="Bailleur" styleClass="col-w10">
+                            <p:column headerText="Bailleur" styleClass="col-w10 text-align-right">
                                 <h:outputText value="#{ligneOperation.bailleurLibelle}"   />
                             </p:column>
 
-                            <p:column headerText="Budget actuel" styleClass="col-w10">
+                            <p:column headerText="Budget actuel" styleClass="col-w10 text-align-right">
                                 <h:outputText value="#{amcCreateBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelAE)}" />
                                 <!--
                                 <p:separator style="border: dotted 1px #000000"/>
@@ -96,7 +100,7 @@
                                 -->
                             </p:column>
 
-                            <p:column headerText="C. disponibles" styleClass="col-w10">
+                            <p:column headerText="C. disponibles" styleClass="col-w10 text-align-right">
                                 <h:outputText value="#{amcCreateBacking.displayBigDecimalThousandSeparator(ligneOperation.montantDisponibleAE)}" />
                                 <!--
                                 <p:separator style="border: dotted 1px #000000"/>
@@ -119,7 +123,7 @@
                                 -->
                             </p:column>
 
-                            <p:column headerText="Disponibles Restant" styleClass="col-w10">
+                            <p:column headerText="Disponibles Restant" styleClass="col-w10 text-align-right">
                                 <h:outputText value="#{amcCreateBacking.displayBigDecimalThousandSeparator(ligneOperation.disponibleRestantAE)}" />
                             </p:column>
 
@@ -181,7 +185,7 @@
                                 <h:outputText value="#{ligneOperation.bailleurLibelle}"   />
                             </p:column>
 
-                            <p:column headerText="Budget actuel" styleClass="col-w10">
+                            <p:column headerText="Budget actuel" styleClass="col-w10 text-align-right">
                                 <h:outputText value="#{amcCreateBacking.displayBigDecimalThousandSeparator(ligneOperation.budgetActuelAE)}" />
                                 <!--
                                 <p:separator style="border: dotted 1px #000000"/>
@@ -189,7 +193,7 @@
                                 -->
                             </p:column>
 
-                            <p:column headerText="Crédits disponibles" styleClass="col-w10">
+                            <p:column headerText="Crédits disponibles" styleClass="col-w10 text-align-right">
                                 <h:outputText value="#{amcCreateBacking.displayBigDecimalThousandSeparator(ligneOperation.montantDisponibleAE)}" />
                                 <!--
                                 <p:separator style="border: dotted 1px #000000"/>
@@ -197,7 +201,7 @@
                                 -->
                             </p:column>
 
-                            <p:column headerText="Compléments" styleClass="col-w10">
+                            <p:column headerText="Compléments" styleClass="col-w10 text-align-right">
                                 <p:inputNumber value="#{ligneOperation.montantOperationAE}" minValue="0"
                                                maxValue="#{amcCreateBacking.handleMaxValue(amcCreateBacking.cumulRetranchementAE)}" thousandSeparator="."
                                                decimalSeparator="," symbolPosition="s" decimalPlaces="0" onchange="cumuleCallBack()"/>
@@ -211,7 +215,7 @@
                                 -->
                             </p:column>
 
-                            <p:column headerText="Disponibles Restant" styleClass="col-w10">
+                            <p:column headerText="Disponibles Restant" styleClass="col-w10 text-align-right">
                                 <h:outputText value="#{amcCreateBacking.displayBigDecimalThousandSeparator(ligneOperation.disponibleRestantAE)}" />
                             </p:column>
 

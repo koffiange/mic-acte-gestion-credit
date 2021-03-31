@@ -7,6 +7,8 @@ import java.util.Objects;
 
 public class NatureEconomique {
     @Getter @Setter
+    private String uuid;
+    @Getter @Setter
     private String code;
     @Getter @Setter
     private String libelleLong;
