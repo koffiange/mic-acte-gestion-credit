@@ -83,7 +83,7 @@
                                                           actionListener="#{acteBacking.appliquerPlusieur()}" disabled="#{acteBacking.displayApplicationMultipleBtn}"
                                                          update="@form :messageForm"/>
                                         -->
-                                        <p:commandButton value="Imprimer liste des actes en attente d'application" ajax="false" icon="fa fa-print" styleClass="steel-btn"
+                                        <p:commandButton value="Imprimer la liste des actes en attente d'application" ajax="false" icon="fa fa-print" styleClass="steel-btn"
                                                          actionListener="#{acteBacking.appliquerPlusieur()}" disabled="#{acteBacking.findByStatut('EN_ATTENTE').isEmpty()}">
                                             <p:fileDownload value="#{cmcBacking.getFicheListeActeFile('EN_ATTENTE')}"/>
                                         </p:commandButton>
@@ -117,8 +117,8 @@
                                     </p:column>
                                     <p:column headerText="Date Création">#{acteBacking.displayFormatedDateTime(operationBag.operation.createdDate)}</p:column>
                                     <p:column headerText="Variation du Budget">
-                                        AE :  <br/>
-                                        CP :
+                                        AE : 0%<br/>
+                                        CP : 0%
                                     </p:column>
                                     <!--
                                     <p:column headerText="Categorie d'acte" styleClass="col-w30"  filterMatchMode="exact" filterBy="#{operationBag.categorieActe}">
@@ -205,7 +205,7 @@
 
                             <p:tab title="Actes appliqués">
                                 <f:facet name="actions">
-                                    <p:commandButton value="Imprimer " ajax="false" icon="fa fa-print" styleClass="steel-btn"
+                                    <p:commandButton value="Imprimer la liste des actes appliqués " ajax="false" icon="fa fa-print" styleClass="steel-btn"
                                                      actionListener="#{acteBacking.appliquerPlusieur()}" disabled="#{acteBacking.findByStatut('APPLIQUE').isEmpty()}">
                                         <p:fileDownload value="#{cmcBacking.getFicheListeActeFile('APPLIQUE')}"/>
                                     </p:commandButton>
@@ -240,7 +240,7 @@
 
                             <p:tab title="Actes échoué">
                                 <f:facet name="actions">
-                                    <p:commandButton value="Imprimer " ajax="false" icon="fa fa-print" styleClass="steel-btn"
+                                    <p:commandButton value="Imprimer la liste des actes échoués " ajax="false" icon="fa fa-print" styleClass="steel-btn"
                                                      actionListener="#{acteBacking.appliquerPlusieur()}" disabled="#{acteBacking.findByStatut('APPLICATION_ECHOUE').isEmpty()}">
                                         <p:fileDownload value="#{cmcBacking.getFicheListeActeFile('APPLICATION_ECHOUE')}"/>
                                     </p:commandButton>
